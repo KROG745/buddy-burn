@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Clock, Dumbbell, MapPin, Users } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Dumbbell, MapPin, Users, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -34,10 +34,13 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
+import LocationFinder from "./LocationFinder";
+import ApiKeyInput from "./ApiKeyInput";
 
 const formSchema = z.object({
   date: z.date({
@@ -87,6 +90,15 @@ const durations = [
 const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [googleApiKey, setGoogleApiKey] = useState("");
+
+  // Check for stored API key on component mount
+  useState(() => {
+    const storedKey = localStorage.getItem('google_maps_api_key');
+    if (storedKey) {
+      setGoogleApiKey(storedKey);
+    }
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -254,7 +266,7 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
               )}
             />
 
-            {/* Location */}
+            {/* Location with Tabs */}
             <FormField
               control={form.control}
               name="location"
@@ -262,14 +274,36 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                 <FormItem>
                   <FormLabel>Location (Optional)</FormLabel>
                   <FormControl>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        placeholder="e.g., Central Park, Home Gym, Fitness Plus"
-                        className="pl-10"
-                        {...field}
-                      />
-                    </div>
+                    <Tabs defaultValue="manual" className="w-full">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="manual">Manual Input</TabsTrigger>
+                        <TabsTrigger value="finder">Find Gyms</TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="manual" className="mt-4">
+                        <div className="relative">
+                          <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input
+                            placeholder="e.g., Central Park, Home Gym, Fitness Plus"
+                            className="pl-10"
+                            {...field}
+                          />
+                        </div>
+                      </TabsContent>
+                      
+                      <TabsContent value="finder" className="mt-4">
+                        {!googleApiKey ? (
+                          <ApiKeyInput onApiKeySet={setGoogleApiKey} />
+                        ) : (
+                          <LocationFinder
+                            onLocationSelect={(location) => {
+                              field.onChange(location);
+                            }}
+                            apiKey={googleApiKey}
+                          />
+                        )}
+                      </TabsContent>
+                    </Tabs>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
