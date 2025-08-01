@@ -1,0 +1,54 @@
+import { Play, Users, Target, Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+const QuickActions = () => {
+  const actions = [
+    {
+      icon: Play,
+      label: "Start Workout",
+      variant: "fitness" as const,
+      description: "Begin your training"
+    },
+    {
+      icon: Calendar,
+      label: "Schedule",
+      variant: "fitness-outline" as const,
+      description: "Plan your week"
+    },
+    {
+      icon: Users,
+      label: "Find Friends",
+      variant: "fitness-outline" as const,
+      description: "Connect with others"
+    },
+    {
+      icon: Target,
+      label: "Set Goals",
+      variant: "fitness-outline" as const,
+      description: "Track progress"
+    },
+  ];
+
+  return (
+    <div className="grid grid-cols-2 gap-4 mb-6">
+      {actions.map((action, index) => {
+        const Icon = action.icon;
+        return (
+          <Button
+            key={index}
+            variant={action.variant}
+            className="h-20 flex-col gap-2 text-center"
+          >
+            <Icon className="w-6 h-6" />
+            <div>
+              <div className="font-semibold text-sm">{action.label}</div>
+              <div className="text-xs opacity-80">{action.description}</div>
+            </div>
+          </Button>
+        );
+      })}
+    </div>
+  );
+};
+
+export default QuickActions;
