@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar, Clock, Target, Plus, Edit, Trash2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,6 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LocationFinder from "@/components/LocationFinder";
+import ApiKeyInput from "@/components/ApiKeyInput";
 import { format, isSameDay, startOfWeek, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -57,6 +60,19 @@ const Schedule = () => {
     date: selectedDate,
     intensity: "medium"
   });
+  const [googleApiKey, setGoogleApiKey] = useState<string>("");
+
+  // Load Google API key from localStorage on component mount
+  useEffect(() => {
+    const savedApiKey = localStorage.getItem('googleMapsApiKey');
+    if (savedApiKey) {
+      setGoogleApiKey(savedApiKey);
+    }
+  }, []);
+
+  const handleLocationSelect = (location: string) => {
+    setNewWorkout({...newWorkout, location});
+  };
 
   const getWorkoutsForDate = (date: Date) => {
     return workouts.filter(workout => isSameDay(workout.date, date));
@@ -123,7 +139,7 @@ const Schedule = () => {
                 Add Workout
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-md">
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Schedule New Workout</DialogTitle>
               </DialogHeader>
@@ -207,13 +223,35 @@ const Schedule = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="location">Location (optional)</Label>
-                  <Input
-                    id="location"
-                    placeholder="Gym, Park, Home..."
-                    value={newWorkout.location || ""}
-                    onChange={(e) => setNewWorkout({...newWorkout, location: e.target.value})}
-                  />
+                  <Label htmlFor="location">Location</Label>
+                  <Tabs defaultValue="manual" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="manual">Manual Entry</TabsTrigger>
+                      <TabsTrigger value="search">Find Places</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="manual" className="mt-4">
+                      <Input
+                        id="location"
+                        placeholder="Gym, Park, Home..."
+                        value={newWorkout.location || ""}
+                        onChange={(e) => setNewWorkout({...newWorkout, location: e.target.value})}
+                      />
+                    </TabsContent>
+                    
+                    <TabsContent value="search" className="mt-4">
+                      {!googleApiKey ? (
+                        <div className="space-y-3">
+                          <p className="text-sm text-muted-foreground">
+                            To search for gyms and fitness centers, you need a Google Maps API key.
+                          </p>
+                          <ApiKeyInput onApiKeySet={setGoogleApiKey} />
+                        </div>
+                      ) : (
+                        <LocationFinder onLocationSelect={handleLocationSelect} apiKey={googleApiKey} />
+                      )}
+                    </TabsContent>
+                  </Tabs>
                 </div>
 
                 <Button onClick={handleAddWorkout} className="w-full">
