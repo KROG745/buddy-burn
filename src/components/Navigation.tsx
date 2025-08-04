@@ -1,8 +1,12 @@
 import { Home, Calendar, MessageCircle, User } from "lucide-react";
 import { useState } from "react";
 
-const Navigation = () => {
-  const [activeTab, setActiveTab] = useState("home");
+interface NavigationProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}
+
+const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
 
   const navItems = [
     { id: "home", icon: Home, label: "Home" },
@@ -21,7 +25,7 @@ const Navigation = () => {
           return (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => onTabChange(item.id)}
               className={`flex flex-col items-center justify-center space-y-1 transition-all duration-300 ${
                 isActive 
                   ? "text-primary scale-110" 

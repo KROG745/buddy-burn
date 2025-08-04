@@ -1,12 +1,25 @@
-import FitnessLogo from "@/components/FitnessLogo";
-import Navigation from "@/components/Navigation";
-import QuickActions from "@/components/QuickActions";
-import StatsOverview from "@/components/StatsOverview";
-import ActivityCard from "@/components/ActivityCard";
-import { Bell, Settings } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Bell, Settings } from "lucide-react";
+import FitnessLogo from "@/components/FitnessLogo";
+import StatsOverview from "@/components/StatsOverview";
+import QuickActions from "@/components/QuickActions";
+import ActivityCard from "@/components/ActivityCard";
+import Navigation from "@/components/Navigation";
+import ConversationsList from "@/components/ConversationsList";
+import Chat from "./Chat";
 
 const Index = () => {
+  const [activeTab, setActiveTab] = useState("home");
+
+  if (activeTab === "chat") {
+    return (
+      <>
+        <Chat />
+        <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+      </>
+    );
+  }
   // Mock data for activities
   const activities = [
     {
@@ -79,19 +92,28 @@ const Index = () => {
           <QuickActions />
         </section>
 
-        {/* Friends Activity */}
+        {/* Activities and Conversations */}
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-4">Friends Activity</h2>
-          <div className="space-y-4">
-            {activities.map((activity, index) => (
-              <ActivityCard key={index} {...activity} />
-            ))}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Activities Feed */}
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold text-foreground">Recent Activities</h2>
+              {activities.map((activity, index) => (
+                <ActivityCard key={index} {...activity} />
+              ))}
+            </div>
+            
+            {/* Recent Conversations */}
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold text-foreground">Recent Conversations</h2>
+              <ConversationsList showSearch={false} maxItems={4} />
+            </div>
           </div>
         </section>
       </main>
 
       {/* Navigation */}
-      <Navigation />
+      <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
     </div>
   );
 };
