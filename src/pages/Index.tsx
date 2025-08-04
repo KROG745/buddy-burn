@@ -8,6 +8,7 @@ import ActivityCard from "@/components/ActivityCard";
 import Navigation from "@/components/Navigation";
 import ConversationsList from "@/components/ConversationsList";
 import Chat from "./Chat";
+import Schedule from "./Schedule";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("home");
@@ -16,6 +17,15 @@ const Index = () => {
     return (
       <>
         <Chat />
+        <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+      </>
+    );
+  }
+
+  if (activeTab === "schedule") {
+    return (
+      <>
+        <Schedule />
         <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
       </>
     );
