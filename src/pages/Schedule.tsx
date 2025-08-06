@@ -12,53 +12,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LocationFinder from "@/components/LocationFinder";
 import ApiKeyInput from "@/components/ApiKeyInput";
+import { useWorkouts } from "@/contexts/WorkoutContext";
 import { format, isSameDay, startOfWeek, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
 
-interface Workout {
-  id: string;
-  title: string;
-  type: string;
-  date: Date;
-  time: string;
-  duration: number;
-  goal: string;
-  location?: string;
-  notes?: string;
-  intensity: "low" | "medium" | "high";
-}
-
 const Schedule = () => {
+  const { workouts, addWorkout, deleteWorkout, getWorkoutsForDate } = useWorkouts();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [workouts, setWorkouts] = useState<Workout[]>([
-    {
-      id: "1",
-      title: "Morning Run",
-      type: "Cardio",
-      date: new Date(),
-      time: "07:00",
-      duration: 45,
-      goal: "5km run under 25 minutes",
-      location: "Central Park",
-      intensity: "medium"
-    },
-    {
-      id: "2",
-      title: "Strength Training",
-      type: "Weight Training",
-      date: new Date(Date.now() + 86400000), // Tomorrow
-      time: "18:00",
-      duration: 60,
-      goal: "Upper body focus - bench press 3x8",
-      location: "Fitness Center",
-      intensity: "high"
-    }
-  ]);
-
-  const [newWorkout, setNewWorkout] = useState<Partial<Workout>>({
+  const [newWorkout, setNewWorkout] = useState({
+    title: "",
+    type: "",
+    time: "",
+    duration: "",
+    goal: "",
+    location: "",
+    notes: "",
     date: selectedDate,
-    intensity: "medium"
+    intensity: "medium" as 'low' | 'medium' | 'high'
   });
   const [googleApiKey, setGoogleApiKey] = useState<string>("");
 
@@ -74,10 +45,6 @@ const Schedule = () => {
     setNewWorkout({...newWorkout, location});
   };
 
-  const getWorkoutsForDate = (date: Date) => {
-    return workouts.filter(workout => isSameDay(workout.date, date));
-  };
-
   const getWeekDays = () => {
     const start = startOfWeek(selectedDate, { weekStartsOn: 1 });
     return Array.from({ length: 7 }, (_, i) => addDays(start, i));
@@ -85,27 +52,31 @@ const Schedule = () => {
 
   const handleAddWorkout = () => {
     if (newWorkout.title && newWorkout.type && newWorkout.time && newWorkout.goal) {
-      const workout: Workout = {
-        id: Date.now().toString(),
-        title: newWorkout.title!,
-        type: newWorkout.type!,
-        date: newWorkout.date || selectedDate,
-        time: newWorkout.time!,
-        duration: newWorkout.duration || 60,
-        goal: newWorkout.goal!,
+      addWorkout({
+        title: newWorkout.title,
+        type: newWorkout.type,
+        date: newWorkout.date,
+        time: newWorkout.time,
+        duration: newWorkout.duration,
+        goal: newWorkout.goal,
         location: newWorkout.location,
         notes: newWorkout.notes,
         intensity: newWorkout.intensity as "low" | "medium" | "high"
-      };
+      });
       
-      setWorkouts([...workouts, workout]);
-      setNewWorkout({ date: selectedDate, intensity: "medium" });
+      setNewWorkout({
+        title: "",
+        type: "",
+        time: "",
+        duration: "",
+        goal: "",
+        location: "",
+        notes: "",
+        date: selectedDate,
+        intensity: "medium" as 'low' | 'medium' | 'high'
+      });
       setIsDialogOpen(false);
     }
-  };
-
-  const deleteWorkout = (id: string) => {
-    setWorkouts(workouts.filter(w => w.id !== id));
   };
 
   const getIntensityColor = (intensity: string) => {
@@ -184,13 +155,13 @@ const Schedule = () => {
                   </div>
                   <div>
                     <Label htmlFor="duration">Duration (min)</Label>
-                    <Input
-                      id="duration"
-                      type="number"
-                      placeholder="60"
-                      value={newWorkout.duration || ""}
-                      onChange={(e) => setNewWorkout({...newWorkout, duration: parseInt(e.target.value)})}
-                    />
+                     <Input
+                       id="duration"
+                       type="number"
+                       placeholder="60"
+                       value={newWorkout.duration || ""}
+                       onChange={(e) => setNewWorkout({...newWorkout, duration: e.target.value})}
+                     />
                   </div>
                 </div>
 
@@ -374,10 +345,10 @@ const Schedule = () => {
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
-                        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                          <Clock className="w-4 h-4" />
-                          <span>{workout.time} ({workout.duration} min)</span>
-                        </div>
+                         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                           <Clock className="w-4 h-4" />
+                           <span>{workout.time} ({workout.duration} min)</span>
+                         </div>
                         
                         {workout.location && (
                           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
