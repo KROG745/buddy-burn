@@ -3,16 +3,20 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import ScheduleWorkoutModal from "./ScheduleWorkoutModal";
 import WeekAtGlanceModal from "./WeekAtGlanceModal";
+import SetGoalsModal from "./SetGoalsModal";
 
 const QuickActions = () => {
   const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
   const [weekGlanceModalOpen, setWeekGlanceModalOpen] = useState(false);
+  const [setGoalsModalOpen, setSetGoalsModalOpen] = useState(false);
 
   const handleActionClick = (actionLabel: string) => {
     if (actionLabel === "Schedule") {
       setScheduleModalOpen(true);
     } else if (actionLabel === "Week at a Glance") {
       setWeekGlanceModalOpen(true);
+    } else if (actionLabel === "Set Goals") {
+      setSetGoalsModalOpen(true);
     }
     // Add other action handlers here
   };
@@ -74,6 +78,11 @@ const QuickActions = () => {
       <WeekAtGlanceModal 
         open={weekGlanceModalOpen} 
         onOpenChange={setWeekGlanceModalOpen} 
+      />
+      
+      <SetGoalsModal 
+        isOpen={setGoalsModalOpen} 
+        onClose={() => setSetGoalsModalOpen(false)} 
       />
     </>
   );
