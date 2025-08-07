@@ -39,6 +39,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
+import { useWorkouts } from "@/contexts/WorkoutContext";
 import LocationFinder from "./LocationFinder";
 import ApiKeyInput from "./ApiKeyInput";
 
@@ -89,6 +90,7 @@ const durations = [
 
 const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps) => {
   const { toast } = useToast();
+  const { addWorkout } = useWorkouts();
   const [isLoading, setIsLoading] = useState(false);
   const [googleApiKey, setGoogleApiKey] = useState("");
 
@@ -110,8 +112,21 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Convert duration from "X min" format to just the number
+    const durationNumber = values.duration.replace(' min', '');
+    
+    // Add workout to context
+    addWorkout({
+      title: `${values.workoutType.charAt(0).toUpperCase() + values.workoutType.slice(1)} Workout`,
+      type: values.workoutType,
+      date: values.date,
+      time: values.time,
+      duration: durationNumber,
+      goal: `${values.workoutType} session`,
+      location: values.location,
+      notes: values.notes,
+      intensity: 'medium'
+    });
     
     toast({
       title: "Workout Scheduled! 🎉",
