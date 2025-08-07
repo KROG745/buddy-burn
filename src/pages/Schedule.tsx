@@ -283,7 +283,8 @@ const Schedule = () => {
                   hasWorkout: {
                     backgroundColor: "hsl(var(--primary))",
                     color: "hsl(var(--primary-foreground))",
-                    fontWeight: "bold"
+                    fontWeight: "bold",
+                    boxShadow: "0 0 0 2px #3b82f6"
                   }
                 }}
               />

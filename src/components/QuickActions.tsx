@@ -1,24 +1,28 @@
-import { Play, Users, Target, Calendar } from "lucide-react";
+import { Eye, Users, Target, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import ScheduleWorkoutModal from "./ScheduleWorkoutModal";
+import WeekAtGlanceModal from "./WeekAtGlanceModal";
 
 const QuickActions = () => {
   const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
+  const [weekGlanceModalOpen, setWeekGlanceModalOpen] = useState(false);
 
   const handleActionClick = (actionLabel: string) => {
     if (actionLabel === "Schedule") {
       setScheduleModalOpen(true);
+    } else if (actionLabel === "Week at a Glance") {
+      setWeekGlanceModalOpen(true);
     }
     // Add other action handlers here
   };
 
   const actions = [
     {
-      icon: Play,
-      label: "Start Workout",
+      icon: Eye,
+      label: "Week at a Glance",
       variant: "fitness" as const,
-      description: "Begin your training"
+      description: "View your weekly plan"
     },
     {
       icon: Calendar,
@@ -65,6 +69,11 @@ const QuickActions = () => {
       <ScheduleWorkoutModal 
         open={scheduleModalOpen} 
         onOpenChange={setScheduleModalOpen} 
+      />
+      
+      <WeekAtGlanceModal 
+        open={weekGlanceModalOpen} 
+        onOpenChange={setWeekGlanceModalOpen} 
       />
     </>
   );

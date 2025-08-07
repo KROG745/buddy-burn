@@ -125,3 +125,19 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  /* Calendar date highlighting for workout days */
+  .rdp-day_selected.rdp-day_button[data-has-workout] {
+    position: relative;
+    box-shadow: 0 0 0 2px #3b82f6 !important;
+    border-radius: 50% !important;
+  }
+  
+  .rdp-day_button[data-has-workout]:not(.rdp-day_selected) {
+    position: relative;
+    box-shadow: 0 0 0 2px #3b82f6;
+    border-radius: 50%;
+    background-color: transparent !important;
+  }
+}
