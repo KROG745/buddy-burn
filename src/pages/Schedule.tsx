@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, Clock, Target, Plus, Edit, Trash2, MapPin } from "lucide-react";
+import { Calendar, Clock, Target, Plus, Edit, Trash2, MapPin, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +17,7 @@ import { format, isSameDay, startOfWeek, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
 
 const Schedule = () => {
-  const { workouts, addWorkout, deleteWorkout, getWorkoutsForDate } = useWorkouts();
+  const { workouts, addWorkout, updateWorkout, deleteWorkout, getWorkoutsForDate } = useWorkouts();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newWorkout, setNewWorkout] = useState({
@@ -45,10 +45,6 @@ const Schedule = () => {
     setNewWorkout({...newWorkout, location});
   };
 
-  const getWeekDays = () => {
-    const start = startOfWeek(selectedDate, { weekStartsOn: 1 });
-    return Array.from({ length: 7 }, (_, i) => addDays(start, i));
-  };
 
   const handleAddWorkout = () => {
     if (newWorkout.title && newWorkout.type && newWorkout.time && newWorkout.goal) {
@@ -266,87 +262,32 @@ const Schedule = () => {
           </Dialog>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Calendar */}
-          <Card className="p-4 lg:col-span-1">
-            <div className="space-y-4">
-              <h3 className="font-semibold text-foreground">Calendar</h3>
-              <CalendarComponent
-                mode="single"
-                selected={selectedDate}
-                onSelect={(date) => date && setSelectedDate(date)}
-                className="rounded-md border-0"
-                modifiers={{
-                  hasWorkout: (date) => getWorkoutsForDate(date).length > 0
-                }}
-                modifiersStyles={{
-                  hasWorkout: {
-                    backgroundColor: "hsl(var(--primary))",
-                    color: "hsl(var(--primary-foreground))",
-                    fontWeight: "bold",
-                    boxShadow: "0 0 0 2px #3b82f6"
-                  }
-                }}
-              />
-            </div>
-          </Card>
-
-          {/* Week View */}
-          <div className="lg:col-span-2 space-y-4">
-            <h3 className="font-semibold text-foreground">Week Overview</h3>
-            <div className="grid grid-cols-7 gap-2">
-              {getWeekDays().map((day, index) => {
-                const dayWorkouts = getWorkoutsForDate(day);
-                const isSelected = isSameDay(day, selectedDate);
-                const isToday = isSameDay(day, new Date());
-                
-                return (
-                  <Card 
-                    key={index}
-                    className={cn(
-                      "p-3 cursor-pointer transition-all duration-200 hover:shadow-md",
-                      isSelected && "ring-2 ring-primary",
-                      isToday && "bg-primary/5"
-                    )}
-                    onClick={() => setSelectedDate(day)}
-                  >
-                    <div className="text-center">
-                      <div className="text-xs text-muted-foreground mb-1">
-                        {format(day, "EEE")}
-                      </div>
-                      <div className={cn(
-                        "text-sm font-medium mb-2",
-                        isToday && "text-primary font-bold"
-                      )}>
-                        {format(day, "dd")}
-                      </div>
-                      <div className="space-y-1">
-                        {dayWorkouts.slice(0, 2).map((workout) => (
-                          <div
-                            key={workout.id}
-                            className="text-xs bg-primary/20 text-primary px-1 py-0.5 rounded truncate"
-                          >
-                            {workout.time} {workout.title}
-                          </div>
-                        ))}
-                        {dayWorkouts.length > 2 && (
-                          <div className="text-xs text-muted-foreground">
-                            +{dayWorkouts.length - 2} more
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </Card>
-                );
-              })}
-            </div>
+        {/* Workout Calendar Selection */}
+        <Card className="p-4">
+          <div className="space-y-4">
+            <h3 className="font-semibold text-foreground">Select Date</h3>
+            <CalendarComponent
+              mode="single"
+              selected={selectedDate}
+              onSelect={(date) => date && setSelectedDate(date)}
+              className="rounded-md border-0"
+              modifiers={{
+                hasWorkout: (date) => getWorkoutsForDate(date).length > 0
+              }}
+              modifiersStyles={{
+                hasWorkout: {
+                  border: "2px solid hsl(var(--primary))",
+                  borderRadius: "50%"
+                }
+              }}
+            />
           </div>
-        </div>
+        </Card>
 
-        {/* Selected Day Workouts */}
+        {/* Enhanced Workout Log */}
         <div className="space-y-4">
           <h3 className="font-semibold text-foreground">
-            Workouts for {format(selectedDate, "EEEE, MMMM dd")}
+            Workout Log - {format(selectedDate, "EEEE, MMMM dd")}
           </h3>
           
           {getWorkoutsForDate(selectedDate).length === 0 ? (
@@ -365,24 +306,39 @@ const Schedule = () => {
               </div>
             </Card>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {getWorkoutsForDate(selectedDate).map((workout) => (
-                <Card key={workout.id} className="p-4 hover:shadow-md transition-all duration-200">
+                <Card key={workout.id} className={cn(
+                  "p-6 transition-all duration-200 hover:shadow-lg",
+                  workout.completed && "bg-green-50/50 border-green-200"
+                )}>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <h4 className="font-semibold text-foreground">{workout.title}</h4>
+                      <div className="flex items-center space-x-3 mb-3">
+                        <div className="flex items-center space-x-2">
+                          {workout.completed && (
+                            <div className="flex items-center justify-center w-6 h-6 bg-green-500 text-white rounded-full">
+                              <Check className="w-4 h-4" />
+                            </div>
+                          )}
+                          <h4 className={cn(
+                            "text-lg font-semibold",
+                            workout.completed ? "text-green-700" : "text-foreground"
+                          )}>
+                            {workout.title}
+                          </h4>
+                        </div>
                         <Badge variant="outline" className={getIntensityColor(workout.intensity)}>
                           {workout.intensity}
                         </Badge>
                         <Badge variant="secondary">{workout.type}</Badge>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
-                         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                           <Clock className="w-4 h-4" />
-                           <span>{workout.time} ({workout.duration} min)</span>
-                         </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                          <Clock className="w-4 h-4" />
+                          <span>{workout.time} ({workout.duration} min)</span>
+                        </div>
                         
                         {workout.location && (
                           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
@@ -392,7 +348,7 @@ const Schedule = () => {
                         )}
                       </div>
                       
-                      <div className="flex items-start space-x-2 mb-2">
+                      <div className="flex items-start space-x-2 mb-3">
                         <Target className="w-4 h-4 text-primary mt-0.5" />
                         <div>
                           <p className="text-sm font-medium text-foreground">Goal:</p>
@@ -401,13 +357,45 @@ const Schedule = () => {
                       </div>
                       
                       {workout.notes && (
-                        <div className="text-xs text-muted-foreground bg-muted p-2 rounded">
-                          {workout.notes}
+                        <div className="text-sm text-muted-foreground bg-muted p-3 rounded-md mb-3">
+                          <strong>Notes:</strong> {workout.notes}
+                        </div>
+                      )}
+
+                      {workout.completed && workout.completedAt && (
+                        <div className="text-xs text-green-600 bg-green-100 p-2 rounded-md">
+                          Completed at {format(workout.completedAt, "h:mm a")}
                         </div>
                       )}
                     </div>
                     
-                    <div className="flex space-x-2 ml-4">
+                    <div className="flex flex-col space-y-2 ml-4">
+                      {!workout.completed ? (
+                        <Button 
+                          onClick={() => updateWorkout(workout.id, { 
+                            completed: true, 
+                            completedAt: new Date() 
+                          })}
+                          className="bg-green-500 hover:bg-green-600 text-white"
+                          size="sm"
+                        >
+                          <Check className="w-4 h-4 mr-2" />
+                          Complete
+                        </Button>
+                      ) : (
+                        <Button 
+                          onClick={() => updateWorkout(workout.id, { 
+                            completed: false, 
+                            completedAt: undefined 
+                          })}
+                          variant="outline"
+                          size="sm"
+                          className="border-green-500 text-green-600 hover:bg-green-50"
+                        >
+                          Undo
+                        </Button>
+                      )}
+                      
                       <Button variant="ghost" size="sm">
                         <Edit className="w-4 h-4" />
                       </Button>
