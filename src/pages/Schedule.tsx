@@ -262,27 +262,6 @@ const Schedule = () => {
           </Dialog>
         </div>
 
-        {/* Workout Calendar Selection */}
-        <Card className="p-4">
-          <div className="space-y-4">
-            <h3 className="font-semibold text-foreground">Select Date</h3>
-            <CalendarComponent
-              mode="single"
-              selected={selectedDate}
-              onSelect={(date) => date && setSelectedDate(date)}
-              className="rounded-md border-0"
-              modifiers={{
-                hasWorkout: (date) => getWorkoutsForDate(date).length > 0
-              }}
-              modifiersStyles={{
-                hasWorkout: {
-                  border: "2px solid hsl(var(--primary))",
-                  borderRadius: "50%"
-                }
-              }}
-            />
-          </div>
-        </Card>
 
         {/* Enhanced Workout Log */}
         <div className="space-y-4">
