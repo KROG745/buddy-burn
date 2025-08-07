@@ -355,11 +355,11 @@ const Schedule = () => {
                             completed: true, 
                             completedAt: new Date() 
                           })}
-                          className="bg-green-500 hover:bg-green-600 text-white"
-                          size="sm"
+                          className="bg-green-600 hover:bg-green-700 text-white shadow-sm"
+                          size="default"
                         >
                           <Check className="w-4 h-4 mr-2" />
-                          Complete
+                          Mark Complete
                         </Button>
                       ) : (
                         <Button 
@@ -368,24 +368,27 @@ const Schedule = () => {
                             completedAt: undefined 
                           })}
                           variant="outline"
-                          size="sm"
+                          size="default"
                           className="border-green-500 text-green-600 hover:bg-green-50"
                         >
-                          Undo
+                          <Check className="w-4 h-4 mr-2" />
+                          Completed
                         </Button>
                       )}
                       
-                      <Button variant="ghost" size="sm">
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={() => deleteWorkout(workout.id)}
-                        className="text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      <div className="flex space-x-1">
+                        <Button variant="ghost" size="sm">
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => deleteWorkout(workout.id)}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </Card>
