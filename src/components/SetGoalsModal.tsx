@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Target, Plus, Calendar, TrendingUp, Award, Save } from "lucide-react";
+import { Target, Plus, Calendar, TrendingUp, Award, Save, CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -8,7 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface Goal {
   id: string;
@@ -16,6 +20,7 @@ interface Goal {
   type: 'weight_loss' | 'muscle_gain' | 'endurance' | 'strength' | 'flexibility' | 'general_fitness';
   target: string;
   timeframe: string;
+  targetDate?: Date;
   description: string;
   progress: number;
   isActive: boolean;
@@ -46,6 +51,7 @@ const SetGoalsModal = ({ isOpen, onClose }: SetGoalsModalProps) => {
     type: 'general_fitness' as Goal['type'],
     target: '',
     timeframe: '',
+    targetDate: undefined as Date | undefined,
     description: ''
   });
 
@@ -79,6 +85,7 @@ const SetGoalsModal = ({ isOpen, onClose }: SetGoalsModalProps) => {
         type: 'general_fitness',
         target: '',
         timeframe: '',
+        targetDate: undefined,
         description: ''
       });
       setShowAddForm(false);
@@ -150,11 +157,17 @@ const SetGoalsModal = ({ isOpen, onClose }: SetGoalsModalProps) => {
                             </Badge>
                           </div>
                         </div>
-                        <div className="text-right text-sm text-muted-foreground">
+                        <div className="text-right text-sm text-muted-foreground space-y-1">
                           <div className="flex items-center space-x-1">
                             <Calendar className="w-3 h-3" />
                             <span>{goal.timeframe}</span>
                           </div>
+                          {goal.targetDate && (
+                            <div className="flex items-center space-x-1">
+                              <CalendarIcon className="w-3 h-3" />
+                              <span>Due: {format(goal.targetDate, "MMM dd, yyyy")}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -247,6 +260,34 @@ const SetGoalsModal = ({ isOpen, onClose }: SetGoalsModalProps) => {
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+
+                <div>
+                  <Label>Target Date (Optional)</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !newGoal.targetDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {newGoal.targetDate ? format(newGoal.targetDate, "PPP") : <span>Pick a target date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <CalendarComponent
+                        mode="single"
+                        selected={newGoal.targetDate}
+                        onSelect={(date) => setNewGoal({...newGoal, targetDate: date})}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                        className="p-3 pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 <div>
