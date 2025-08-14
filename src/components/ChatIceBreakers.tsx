@@ -10,7 +10,12 @@ interface IceBreaker {
   category: string;
 }
 
-const ChatIceBreakers = () => {
+interface ChatIceBreakersProps {
+  onSelect?: (message: string) => void;
+  selectedMessage?: string;
+}
+
+const ChatIceBreakers = ({ onSelect, selectedMessage }: ChatIceBreakersProps) => {
   const iceBreakers: IceBreaker[] = [
     {
       id: "1",
@@ -69,9 +74,12 @@ const ChatIceBreakers = () => {
   };
 
   const handleIceBreakerClick = (iceBreaker: IceBreaker) => {
-    // For now, we'll just log the selection
-    // In a real app, this would open a compose message modal or navigate to a specific conversation
-    console.log(`Selected ice breaker: ${iceBreaker.title} - ${iceBreaker.message}`);
+    if (onSelect) {
+      onSelect(iceBreaker.message);
+    } else {
+      // For now, we'll just log the selection when used in the tab view
+      console.log(`Selected ice breaker: ${iceBreaker.title} - ${iceBreaker.message}`);
+    }
   };
 
   return (
@@ -85,7 +93,11 @@ const ChatIceBreakers = () => {
         {iceBreakers.map((iceBreaker) => (
           <Card 
             key={iceBreaker.id}
-            className="p-4 hover:bg-accent/50 transition-all duration-200 cursor-pointer border-border/50 bg-card/50 backdrop-blur-sm hover:scale-[1.02] active:scale-[0.98]"
+            className={`p-4 transition-all duration-200 cursor-pointer border-border/50 backdrop-blur-sm hover:scale-[1.02] active:scale-[0.98] ${
+              selectedMessage === iceBreaker.message 
+                ? "bg-primary/10 border-primary/30 shadow-md" 
+                : "bg-card/50 hover:bg-accent/50"
+            }`}
             onClick={() => handleIceBreakerClick(iceBreaker)}
           >
             <div className="space-y-3">
