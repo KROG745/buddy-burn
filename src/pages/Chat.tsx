@@ -1,6 +1,8 @@
 import { MessageCircle, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ConversationsList from "@/components/ConversationsList";
+import ChatIceBreakers from "@/components/ChatIceBreakers";
 
 const Chat = () => {
   return (
@@ -23,8 +25,21 @@ const Chat = () => {
           </Button>
         </div>
 
-        {/* Conversations List */}
-        <ConversationsList />
+        {/* Chat Tabs */}
+        <Tabs defaultValue="conversations" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="conversations">Messages</TabsTrigger>
+            <TabsTrigger value="icebreakers">Ice Breakers</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="conversations" className="mt-6">
+            <ConversationsList />
+          </TabsContent>
+          
+          <TabsContent value="icebreakers" className="mt-6">
+            <ChatIceBreakers />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
