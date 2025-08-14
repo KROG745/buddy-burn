@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Bell, Settings } from "lucide-react";
 import FitnessLogo from "@/components/FitnessLogo";
@@ -7,39 +6,8 @@ import QuickActions from "@/components/QuickActions";
 import ActivityFeed from "@/components/ActivityFeed";
 import Navigation from "@/components/Navigation";
 import ConversationsList from "@/components/ConversationsList";
-import Chat from "./Chat";
-import Schedule from "./Schedule";
-import Profile from "./Profile";
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState("home");
-
-  if (activeTab === "chat") {
-    return (
-      <>
-        <Chat />
-        <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
-      </>
-    );
-  }
-
-  if (activeTab === "schedule") {
-    return (
-      <>
-        <Schedule />
-        <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
-      </>
-    );
-  }
-
-  if (activeTab === "profile") {
-    return (
-      <>
-        <Profile />
-        <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
-      </>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -95,7 +63,7 @@ const Index = () => {
       </main>
 
       {/* Navigation */}
-      <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <Navigation />
     </div>
   );
 };

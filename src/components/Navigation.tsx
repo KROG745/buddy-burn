@@ -1,31 +1,36 @@
 import { Home, Calendar, MessageCircle, User } from "lucide-react";
-import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
-interface NavigationProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-}
-
-const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
+const Navigation = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const navItems = [
-    { id: "home", icon: Home, label: "Home" },
-    { id: "schedule", icon: Calendar, label: "Schedule" },
-    { id: "chat", icon: MessageCircle, label: "Chat" },
-    { id: "profile", icon: User, label: "Profile" },
+    { id: "home", icon: Home, label: "Home", path: "/" },
+    { id: "schedule", icon: Calendar, label: "Schedule", path: "/schedule" },
+    { id: "chat", icon: MessageCircle, label: "Chat", path: "/chat" },
+    { id: "profile", icon: User, label: "Profile", path: "/profile" },
   ];
+
+  const getActiveTab = () => {
+    if (location.pathname === "/") return "home";
+    if (location.pathname.startsWith("/chat")) return "chat";
+    if (location.pathname === "/schedule") return "schedule";
+    if (location.pathname === "/profile") return "profile";
+    return "home";
+  };
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-elevation z-50">
       <div className="flex justify-around items-center h-16 px-4">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = activeTab === item.id;
+          const isActive = getActiveTab() === item.id;
           
           return (
             <button
               key={item.id}
-              onClick={() => onTabChange(item.id)}
+              onClick={() => navigate(item.path)}
               className={`flex flex-col items-center justify-center space-y-1 transition-all duration-300 ${
                 isActive 
                   ? "text-primary scale-110" 

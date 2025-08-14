@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import ConversationsList from "@/components/ConversationsList";
 import ChatIceBreakers from "@/components/ChatIceBreakers";
+import Navigation from "@/components/Navigation";
 
 interface Contact {
   id: string;
@@ -182,6 +183,9 @@ const Chat = () => {
           </TabsContent>
         </Tabs>
       </div>
+      
+      {/* Navigation */}
+      <Navigation />
     </div>
   );
 };

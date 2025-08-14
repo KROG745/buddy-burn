@@ -7,6 +7,8 @@ import { WorkoutProvider } from "@/contexts/WorkoutContext";
 import Index from "./pages/Index";
 import Chat from "./pages/Chat";
 import ChatThread from "./pages/ChatThread";
+import Schedule from "./pages/Schedule";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +24,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/chat/:contactId" element={<ChatThread />} />
+            <Route path="/schedule" element={<Schedule />} />
+            <Route path="/profile" element={<Profile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
