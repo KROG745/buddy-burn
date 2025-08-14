@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { MessageCircle, Plus, X, Send, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,6 +19,7 @@ interface Contact {
 }
 
 const Chat = () => {
+  const navigate = useNavigate();
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [selectedIceBreaker, setSelectedIceBreaker] = useState<string>("");
@@ -44,9 +46,12 @@ const Chat = () => {
 
   const handleStartChat = () => {
     if (selectedContacts.length > 0) {
-      console.log("Starting chat with:", selectedContacts);
-      console.log("Using ice breaker:", selectedIceBreaker);
-      // In a real app, this would create the conversation and send the message
+      const contactId = selectedContacts[0]; // For now, just use the first selected contact
+      const queryParams = selectedIceBreaker 
+        ? `?iceBreaker=${encodeURIComponent(selectedIceBreaker)}`
+        : '';
+      
+      navigate(`/chat/${contactId}${queryParams}`);
       setIsNewChatOpen(false);
       setSelectedContacts([]);
       setSelectedIceBreaker("");

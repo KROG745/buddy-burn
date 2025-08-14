@@ -77,7 +77,7 @@ const ChatIceBreakers = ({ onSelect, selectedMessage }: ChatIceBreakersProps) =>
     if (onSelect) {
       onSelect(iceBreaker.message);
     } else {
-      // For now, we'll just log the selection when used in the tab view
+      // When used in the tab view, we could navigate to a general chat selection
       console.log(`Selected ice breaker: ${iceBreaker.title} - ${iceBreaker.message}`);
     }
   };
