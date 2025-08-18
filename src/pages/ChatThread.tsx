@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Navigation from "@/components/Navigation";
 
 interface Message {
   id: string;
@@ -231,6 +232,9 @@ const ChatThread = () => {
           </Button>
         </div>
       </div>
+      
+      {/* Navigation */}
+      <Navigation />
     </div>
   );
 };

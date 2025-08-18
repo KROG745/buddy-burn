@@ -15,6 +15,7 @@ import ApiKeyInput from "@/components/ApiKeyInput";
 import { useWorkouts } from "@/contexts/WorkoutContext";
 import { format, isSameDay, startOfWeek, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
+import Navigation from "@/components/Navigation";
 
 const Schedule = () => {
   const { workouts, addWorkout, updateWorkout, deleteWorkout, getWorkoutsForDate } = useWorkouts();
@@ -397,6 +398,9 @@ const Schedule = () => {
           )}
         </div>
       </div>
+      
+      {/* Navigation */}
+      <Navigation />
     </div>
   );
 };

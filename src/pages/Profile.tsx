@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import Navigation from "@/components/Navigation";
 
 interface UserProfile {
   name: string;
@@ -429,6 +430,9 @@ const Profile = () => {
           </TabsContent>
         </Tabs>
       </main>
+      
+      {/* Navigation */}
+      <Navigation />
     </div>
   );
 };
