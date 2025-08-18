@@ -81,7 +81,7 @@ const Chat = () => {
                 New Chat
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-sm">
               <DialogHeader>
                 <DialogTitle className="flex items-center space-x-2">
                   <MessageCircle className="w-5 h-5 text-primary" />
