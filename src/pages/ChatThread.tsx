@@ -200,7 +200,7 @@ const ChatThread = () => {
       </div>
 
       {/* Message Input */}
-      <div className="bg-card/50 backdrop-blur-sm border-t border-border/50 p-4">
+      <div className="bg-card backdrop-blur-sm border-t border-border p-4 shadow-lg">
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
             <Paperclip className="w-5 h-5" />
