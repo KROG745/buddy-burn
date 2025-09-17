@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
+import { useConversations } from "@/contexts/ConversationContext";
 
 interface Message {
   id: string;
@@ -26,12 +27,19 @@ interface Contact {
 const ChatThread = () => {
   const { contactId } = useParams();
   const navigate = useNavigate();
+  const { conversations, updateLastMessage } = useConversations();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Mock contact data - in real app, this would be fetched based on contactId
-  const contact: Contact = {
+  // Get contact data from conversations or use mock data
+  const conversation = conversations.find(c => c.id === contactId);
+  const contact: Contact = conversation ? {
+    id: conversation.id,
+    name: conversation.name,
+    avatar: conversation.avatar,
+    isOnline: conversation.isOnline,
+  } : {
     id: contactId || "1",
     name: "Alex Runner",
     avatar: "/placeholder.svg",
@@ -82,6 +90,11 @@ const ChatThread = () => {
       setMessages(prev => [...prev, newMessage]);
       setMessage("");
       
+      // Update conversation with the new message
+      if (contactId) {
+        updateLastMessage(contactId, message);
+      }
+      
       // Mock auto-reply
       setTimeout(() => {
         const replies = [
@@ -100,6 +113,11 @@ const ChatThread = () => {
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         };
         setMessages(prev => [...prev, reply]);
+        
+        // Update conversation with the reply
+        if (contactId) {
+          updateLastMessage(contactId, randomReply);
+        }
       }, 1000 + Math.random() * 2000);
     }
   };

@@ -3,16 +3,8 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-
-interface Conversation {
-  id: string;
-  name: string;
-  avatar: string;
-  lastMessage: string;
-  timestamp: string;
-  unreadCount: number;
-  isOnline: boolean;
-}
+import { useConversations } from "@/contexts/ConversationContext";
+import { useNavigate } from "react-router-dom";
 
 interface ConversationsListProps {
   showSearch?: boolean;
@@ -20,57 +12,16 @@ interface ConversationsListProps {
 }
 
 const ConversationsList = ({ showSearch = true, maxItems }: ConversationsListProps) => {
-  const conversations: Conversation[] = [
-    {
-      id: "1",
-      name: "Alex Runner",
-      avatar: "/placeholder.svg",
-      lastMessage: "Great workout today! Let's hit the gym tomorrow 💪",
-      timestamp: "2 min ago",
-      unreadCount: 2,
-      isOnline: true,
-    },
-    {
-      id: "2",
-      name: "Fitness Squad",
-      avatar: "/placeholder.svg",
-      lastMessage: "Sarah: Who's joining for the morning run?",
-      timestamp: "15 min ago",
-      unreadCount: 5,
-      isOnline: false,
-    },
-    {
-      id: "3",
-      name: "Maria Yoga",
-      avatar: "/placeholder.svg",
-      lastMessage: "The yoga session was amazing! 🧘‍♀️",
-      timestamp: "1 hour ago",
-      unreadCount: 0,
-      isOnline: true,
-    },
-    {
-      id: "4",
-      name: "Gym Buddies",
-      avatar: "/placeholder.svg",
-      lastMessage: "Mike: New deadlift PR! 🎉",
-      timestamp: "2 hours ago",
-      unreadCount: 1,
-      isOnline: false,
-    },
-    {
-      id: "5",
-      name: "Emma Strong",
-      avatar: "/placeholder.svg",
-      lastMessage: "Thanks for the workout tips!",
-      timestamp: "Yesterday",
-      unreadCount: 0,
-      isOnline: false,
-    },
-  ];
+  const { conversations } = useConversations();
+  const navigate = useNavigate();
 
   const displayedConversations = maxItems 
     ? conversations.slice(0, maxItems) 
     : conversations;
+
+  const handleConversationClick = (conversationId: string) => {
+    navigate(`/chat/${conversationId}`);
+  };
 
   return (
     <div className="space-y-4">
@@ -89,6 +40,7 @@ const ConversationsList = ({ showSearch = true, maxItems }: ConversationsListPro
           <Card 
             key={conversation.id} 
             className="p-4 hover:bg-accent/50 transition-all duration-200 cursor-pointer border-border/50 bg-card/50 backdrop-blur-sm"
+            onClick={() => handleConversationClick(conversation.id)}
           >
             <div className="flex items-center space-x-3">
               <div className="relative">

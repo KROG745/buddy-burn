@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import ConversationsList from "@/components/ConversationsList";
 import ChatIceBreakers from "@/components/ChatIceBreakers";
 import Navigation from "@/components/Navigation";
+import { useConversations } from "@/contexts/ConversationContext";
 
 interface Contact {
   id: string;
@@ -21,6 +22,7 @@ interface Contact {
 
 const Chat = () => {
   const navigate = useNavigate();
+  const { addConversation } = useConversations();
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [selectedIceBreaker, setSelectedIceBreaker] = useState<string>("");
@@ -48,6 +50,21 @@ const Chat = () => {
   const handleStartChat = () => {
     if (selectedContacts.length > 0) {
       const contactId = selectedContacts[0]; // For now, just use the first selected contact
+      const selectedContact = contacts.find(c => c.id === contactId);
+      
+      if (selectedContact) {
+        // Add or update conversation
+        addConversation({
+          id: contactId,
+          name: selectedContact.name,
+          avatar: selectedContact.avatar,
+          lastMessage: selectedIceBreaker || "Started a new conversation",
+          timestamp: "Just now",
+          unreadCount: 0,
+          isOnline: selectedContact.isOnline,
+        });
+      }
+      
       const queryParams = selectedIceBreaker 
         ? `?iceBreaker=${encodeURIComponent(selectedIceBreaker)}`
         : '';
