@@ -208,11 +208,11 @@ const ChatThread = () => {
           
           <div className="flex-1 relative">
             <Input
-              placeholder="Type a message..."
+              placeholder="Type your message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="pr-12 bg-background/50"
+              className="pr-12 bg-background border-border focus:ring-2 focus:ring-primary/20"
             />
             <Button
               variant="ghost"
