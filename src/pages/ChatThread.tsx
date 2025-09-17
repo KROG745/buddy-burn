@@ -112,7 +112,7 @@ const ChatThread = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-subtle">
+    <div className="flex flex-col h-screen bg-gradient-subtle pb-16">
       {/* Header */}
       <div className="bg-card/50 backdrop-blur-sm border-b border-border/50 p-4">
         <div className="flex items-center justify-between">
@@ -160,7 +160,7 @@ const ChatThread = () => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-4 max-h-[calc(100vh-280px)]">
         {messages.map((msg) => (
           <div
             key={msg.id}
