@@ -59,10 +59,10 @@ const AchievementsDisplay = () => {
       {achievements.slice(0, 4).map((achievement) => (
         <Card
           key={achievement.id}
-          className="p-4 hover:shadow-elevation transition-all duration-300 border-2"
+          className="p-4 hover:shadow-elevation transition-all duration-300 border-2 neon-hover bg-card/50 backdrop-blur-sm"
         >
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-full bg-gradient-primary text-primary-foreground">
+            <div className="p-2 rounded-full bg-gradient-primary text-primary-foreground shadow-glow">
               {getIcon(achievement.icon)}
             </div>
             <div className="flex-1 min-w-0">

@@ -13,21 +13,24 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <header className="bg-gradient-hero text-primary-foreground p-6 shadow-elevation">
-        <div className="flex items-center justify-between mb-4">
-          <FitnessLogo className="text-primary-foreground" />
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-white/20">
-              <Bell className="w-5 h-5" />
-            </Button>
-            <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-white/20">
-              <Settings className="w-5 h-5" />
-            </Button>
+      <header className="bg-gradient-hero text-primary-foreground p-6 shadow-elevation animated-gradient relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-4">
+            <FitnessLogo className="text-primary-foreground drop-shadow-lg" />
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-white/20 hover:shadow-glow">
+                <Bell className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-white/20 hover:shadow-glow">
+                <Settings className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold mb-1">Welcome back, Alex!</h1>
-          <p className="text-primary-foreground/80">Ready for today's workout?</p>
+          <div>
+            <h1 className="text-2xl font-bold mb-1 drop-shadow-md">Welcome back, Alex!</h1>
+            <p className="text-primary-foreground/90 drop-shadow-sm">Ready for today's workout?</p>
+          </div>
         </div>
       </header>
 

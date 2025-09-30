@@ -18,9 +18,9 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        fitness: "bg-gradient-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-button hover:shadow-elevation",
-        "fitness-outline": "border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-primary-foreground",
-        "fitness-secondary": "bg-fitness-accent text-fitness-secondary hover:bg-fitness-accent/90 shadow-card",
+        fitness: "bg-gradient-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-button hover:shadow-elevation animated-gradient",
+        "fitness-outline": "border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-primary-foreground hover:shadow-glow",
+        "fitness-secondary": "bg-gradient-secondary text-primary-foreground hover:scale-[1.02] active:scale-[0.98] shadow-card animated-gradient",
       },
       size: {
         default: "h-10 px-4 py-2",

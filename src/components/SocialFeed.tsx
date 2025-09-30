@@ -95,9 +95,9 @@ const SocialFeed = () => {
         if (!activity.workout) return null;
         
         return (
-          <Card key={activity.id} className="p-4 hover:shadow-elevation transition-all duration-300">
+          <Card key={activity.id} className="p-4 hover:shadow-elevation transition-all duration-300 neon-hover border-border/50">
             <div className="flex items-start gap-3">
-              <Avatar className="w-10 h-10">
+              <Avatar className="w-10 h-10 ring-2 ring-primary/20">
                 <AvatarImage src={activity.userAvatar} alt={activity.userName} />
                 <AvatarFallback className="bg-gradient-primary text-primary-foreground font-semibold">
                   {activity.userName.charAt(0)}
@@ -141,11 +141,11 @@ const SocialFeed = () => {
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" className="h-8 gap-1">
+                    <Button variant="ghost" size="sm" className="h-8 gap-1 hover:text-fitness-accent">
                       <Heart className="w-4 h-4" />
                       <span className="text-xs">0</span>
                     </Button>
-                    <Button variant="ghost" size="sm" className="h-8 gap-1">
+                    <Button variant="ghost" size="sm" className="h-8 gap-1 hover:text-fitness-electric">
                       <MessageCircle className="w-4 h-4" />
                       <span className="text-xs">0</span>
                     </Button>
