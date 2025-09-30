@@ -12,18 +12,22 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("ProtectedRoute: Starting auth check");
     let mounted = true;
 
-    // Check initial session
     const checkSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        console.log("ProtectedRoute: Checking session...");
+        const { data: { session }, error } = await supabase.auth.getSession();
+        console.log("ProtectedRoute: Session result", { session: !!session, error });
+        
         if (mounted) {
           setUser(session?.user ?? null);
           setLoading(false);
+          console.log("ProtectedRoute: Auth check complete", { hasUser: !!session?.user });
         }
       } catch (error) {
-        console.error("Auth error:", error);
+        console.error("ProtectedRoute: Auth error", error);
         if (mounted) {
           setUser(null);
           setLoading(false);
@@ -33,9 +37,9 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
     checkSession();
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
+        console.log("ProtectedRoute: Auth state changed", { event, hasUser: !!session?.user });
         if (mounted) {
           setUser(session?.user ?? null);
         }
@@ -47,6 +51,8 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       subscription.unsubscribe();
     };
   }, []);
+
+  console.log("ProtectedRoute: Render state", { loading, hasUser: !!user });
 
   if (loading) {
     return (
@@ -60,9 +66,11 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }
 
   if (!user) {
+    console.log("ProtectedRoute: Redirecting to /auth");
     return <Navigate to="/auth" replace />;
   }
 
+  console.log("ProtectedRoute: Rendering protected content");
   return <>{children}</>;
 };
 
