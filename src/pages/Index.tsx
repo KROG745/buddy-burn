@@ -13,8 +13,11 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  console.log("Index page rendering");
   const { profile, loading } = useProfile();
   const navigate = useNavigate();
+  
+  console.log("Index page state:", { hasProfile: !!profile, loading });
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -25,6 +28,8 @@ const Index = () => {
       navigate("/auth");
     }
   };
+  
+  console.log("Index about to render JSX");
 
   return (
     <div className="min-h-screen bg-background pb-20">

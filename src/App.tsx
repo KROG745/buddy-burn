@@ -18,31 +18,35 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <WorkoutProvider>
-      <ConversationProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/" element={<Index />} />
-              <Route path="/chat" element={<Chat />} />
-              <Route path="/chat/:contactId" element={<ChatThread />} />
-              <Route path="/schedule" element={<Schedule />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/friends" element={<Friends />} />
-              <Route path="/social" element={<Social />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </ConversationProvider>
-    </WorkoutProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  console.log("App component rendering");
+  
+  return (
+    <QueryClientProvider client={queryClient}>
+      <WorkoutProvider>
+        <ConversationProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/" element={<Index />} />
+                <Route path="/chat" element={<Chat />} />
+                <Route path="/chat/:contactId" element={<ChatThread />} />
+                <Route path="/schedule" element={<Schedule />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/friends" element={<Friends />} />
+                <Route path="/social" element={<Social />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </ConversationProvider>
+      </WorkoutProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
