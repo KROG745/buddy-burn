@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
-  const { profile } = useProfile();
+  const { profile, loading } = useProfile();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
