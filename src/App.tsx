@@ -19,32 +19,25 @@ import ProtectedRoute from "./components/ProtectedRoute";
 const queryClient = new QueryClient();
 
 const App = () => {
-  console.log("App component rendering - full version");
+  console.log("App rendering - testing without providers");
   
   return (
     <QueryClientProvider client={queryClient}>
-      <WorkoutProvider>
-        <ConversationProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/" element={<Index />} />
-                <Route path="/chat" element={<Chat />} />
-                <Route path="/chat/:contactId" element={<ChatThread />} />
-                <Route path="/schedule" element={<Schedule />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/friends" element={<Friends />} />
-                <Route path="/social" element={<Social />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </ConversationProvider>
-      </WorkoutProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/" element={<Index />} />
+            <Route path="/schedule" element={<Schedule />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/friends" element={<Friends />} />
+            <Route path="/social" element={<Social />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
     </QueryClientProvider>
   );
 };
