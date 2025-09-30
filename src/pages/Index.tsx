@@ -3,7 +3,8 @@ import { Bell, Settings } from "lucide-react";
 import FitnessLogo from "@/components/FitnessLogo";
 import StatsOverview from "@/components/StatsOverview";
 import QuickActions from "@/components/QuickActions";
-import ActivityFeed from "@/components/ActivityFeed";
+import SocialFeed from "@/components/SocialFeed";
+import AchievementsDisplay from "@/components/AchievementsDisplay";
 import Navigation from "@/components/Navigation";
 import ConversationsList from "@/components/ConversationsList";
 
@@ -44,21 +45,22 @@ const Index = () => {
           <QuickActions />
         </section>
 
-        {/* Activities and Conversations */}
+        {/* Achievements */}
         <section>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Activities Feed */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-foreground">Recent Activities</h2>
-              <ActivityFeed />
-            </div>
-            
-            {/* Recent Conversations */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-foreground">Recent Conversations</h2>
-              <ConversationsList showSearch={false} maxItems={4} />
-            </div>
-          </div>
+          <h2 className="text-lg font-semibold text-foreground mb-4">Recent Achievements</h2>
+          <AchievementsDisplay />
+        </section>
+
+        {/* Social Feed */}
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-4">Activity Feed</h2>
+          <SocialFeed />
+        </section>
+
+        {/* Recent Conversations */}
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-4">Recent Conversations</h2>
+          <ConversationsList showSearch={false} maxItems={4} />
         </section>
       </main>
 

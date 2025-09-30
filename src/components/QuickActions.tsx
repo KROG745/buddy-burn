@@ -1,14 +1,19 @@
-import { Eye, Users, Target, Calendar } from "lucide-react";
+import { Eye, Users, Target, Calendar, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import ScheduleWorkoutModal from "./ScheduleWorkoutModal";
 import WeekAtGlanceModal from "./WeekAtGlanceModal";
 import SetGoalsModal from "./SetGoalsModal";
+import ShareWorkoutModal from "./ShareWorkoutModal";
+import { useWorkouts } from "@/contexts/WorkoutContext";
 
 const QuickActions = () => {
+  const { workouts } = useWorkouts();
   const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
   const [weekGlanceModalOpen, setWeekGlanceModalOpen] = useState(false);
   const [setGoalsModalOpen, setSetGoalsModalOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [selectedWorkout, setSelectedWorkout] = useState<any>(null);
 
   const handleActionClick = (actionLabel: string) => {
     if (actionLabel === "Schedule") {
@@ -17,8 +22,14 @@ const QuickActions = () => {
       setWeekGlanceModalOpen(true);
     } else if (actionLabel === "Set Goals") {
       setSetGoalsModalOpen(true);
+    } else if (actionLabel === "Share Workout") {
+      // Get the last completed workout
+      const lastCompleted = workouts.find(w => w.completed);
+      if (lastCompleted) {
+        setSelectedWorkout(lastCompleted);
+        setShareModalOpen(true);
+      }
     }
-    // Add other action handlers here
   };
 
   const actions = [
@@ -35,10 +46,10 @@ const QuickActions = () => {
       description: "Plan your week"
     },
     {
-      icon: Users,
-      label: "Find Friends",
+      icon: Share2,
+      label: "Share Workout",
       variant: "fitness-outline" as const,
-      description: "Connect with others"
+      description: "Share with friends"
     },
     {
       icon: Target,
@@ -83,6 +94,12 @@ const QuickActions = () => {
       <SetGoalsModal 
         isOpen={setGoalsModalOpen} 
         onClose={() => setSetGoalsModalOpen(false)} 
+      />
+      
+      <ShareWorkoutModal
+        workout={selectedWorkout}
+        open={shareModalOpen}
+        onOpenChange={setShareModalOpen}
       />
     </>
   );
