@@ -28,13 +28,13 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/auth" element={<Auth />} />
-              <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-              <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
-              <Route path="/chat/:contactId" element={<ProtectedRoute><ChatThread /></ProtectedRoute>} />
-              <Route path="/schedule" element={<ProtectedRoute><Schedule /></ProtectedRoute>} />
-              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-              <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
-              <Route path="/social" element={<ProtectedRoute><Social /></ProtectedRoute>} />
+              <Route path="/" element={<Index />} />
+              <Route path="/chat" element={<Chat />} />
+              <Route path="/chat/:contactId" element={<ChatThread />} />
+              <Route path="/schedule" element={<Schedule />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/friends" element={<Friends />} />
+              <Route path="/social" element={<Social />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
