@@ -22,30 +22,17 @@ const App = () => {
   console.log("App component rendering");
   
   return (
-    <QueryClientProvider client={queryClient}>
-      <WorkoutProvider>
-        <ConversationProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/" element={<Index />} />
-                <Route path="/chat" element={<Chat />} />
-                <Route path="/chat/:contactId" element={<ChatThread />} />
-                <Route path="/schedule" element={<Schedule />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/friends" element={<Friends />} />
-                <Route path="/social" element={<Social />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </ConversationProvider>
-      </WorkoutProvider>
-    </QueryClientProvider>
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
+      <div className="text-white text-center">
+        <h1 className="text-4xl font-bold mb-4">BuddyBurn</h1>
+        <p className="text-xl">App is loading...</p>
+        <div className="mt-8 space-y-2">
+          <a href="/auth" className="block text-blue-200 hover:underline">Go to Auth</a>
+          <a href="/schedule" className="block text-blue-200 hover:underline">Go to Schedule</a>
+          <a href="/profile" className="block text-blue-200 hover:underline">Go to Profile</a>
+        </div>
+      </div>
+    </div>
   );
 };
 
