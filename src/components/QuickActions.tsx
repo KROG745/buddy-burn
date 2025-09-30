@@ -1,13 +1,11 @@
 import { Eye, Users, Target, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ScheduleWorkoutModal from "./ScheduleWorkoutModal";
 import WeekAtGlanceModal from "./WeekAtGlanceModal";
 import SetGoalsModal from "./SetGoalsModal";
 
 const QuickActions = () => {
-  const navigate = useNavigate();
   const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
   const [weekGlanceModalOpen, setWeekGlanceModalOpen] = useState(false);
   const [setGoalsModalOpen, setSetGoalsModalOpen] = useState(false);
@@ -19,9 +17,8 @@ const QuickActions = () => {
       setWeekGlanceModalOpen(true);
     } else if (actionLabel === "Set Goals") {
       setSetGoalsModalOpen(true);
-    } else if (actionLabel === "Find Friends") {
-      navigate('/friends');
     }
+    // Add other action handlers here
   };
 
   const actions = [
