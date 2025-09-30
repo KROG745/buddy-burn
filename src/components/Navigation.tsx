@@ -1,4 +1,4 @@
-import { Home, Calendar, MessageCircle, User } from "lucide-react";
+import { Home, Calendar, MessageCircle, User, Activity, Users } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Navigation = () => {
@@ -8,7 +8,8 @@ const Navigation = () => {
   const navItems = [
     { id: "home", icon: Home, label: "Home", path: "/" },
     { id: "schedule", icon: Calendar, label: "Schedule", path: "/schedule" },
-    { id: "chat", icon: MessageCircle, label: "Chat", path: "/chat" },
+    { id: "social", icon: Activity, label: "Social", path: "/social" },
+    { id: "friends", icon: Users, label: "Friends", path: "/friends" },
     { id: "profile", icon: User, label: "Profile", path: "/profile" },
   ];
 
@@ -16,6 +17,8 @@ const Navigation = () => {
     if (location.pathname === "/") return "home";
     if (location.pathname.startsWith("/chat")) return "chat";
     if (location.pathname === "/schedule") return "schedule";
+    if (location.pathname === "/social") return "social";
+    if (location.pathname === "/friends") return "friends";
     if (location.pathname === "/profile") return "profile";
     return "home";
   };

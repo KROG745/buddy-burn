@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LocationFinder from "@/components/LocationFinder";
 import ApiKeyInput from "@/components/ApiKeyInput";
+import ShareWorkoutModal from "@/components/ShareWorkoutModal";
 import { useWorkouts } from "@/contexts/WorkoutContext";
 import { format, isSameDay, startOfWeek, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -349,7 +350,7 @@ const Schedule = () => {
                       )}
                     </div>
                     
-                    <div className="flex flex-col space-y-2 ml-4">
+                      <div className="flex flex-col space-y-2 ml-4">
                       {!workout.completed ? (
                         <Button 
                           onClick={() => updateWorkout(workout.id, { 
@@ -363,18 +364,24 @@ const Schedule = () => {
                           Mark Complete
                         </Button>
                       ) : (
-                        <Button 
-                          onClick={() => updateWorkout(workout.id, { 
-                            completed: false, 
-                            completedAt: undefined 
-                          })}
-                          variant="outline"
-                          size="default"
-                          className="border-green-500 text-green-600 hover:bg-green-50"
-                        >
-                          <Check className="w-4 h-4 mr-2" />
-                          Completed
-                        </Button>
+                        <>
+                          <Button 
+                            onClick={() => updateWorkout(workout.id, { 
+                              completed: false, 
+                              completedAt: undefined 
+                            })}
+                            variant="outline"
+                            size="default"
+                            className="border-green-500 text-green-600 hover:bg-green-50"
+                          >
+                            <Check className="w-4 h-4 mr-2" />
+                            Completed
+                          </Button>
+                          <ShareWorkoutModal 
+                            workoutId={workout.id}
+                            workoutTitle={workout.title}
+                          />
+                        </>
                       )}
                       
                       <div className="flex space-x-1">
