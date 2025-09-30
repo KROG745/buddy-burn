@@ -1,10 +1,17 @@
-import { useState, useRef, useEffect } from "react";
-import { Loader } from "@googlemaps/js-api-loader";
-import { MapPin, Search, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MapPin, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'gmp-map': any;
+    }
+  }
+}
 
 interface FitnessLocation {
   place_id: string;
@@ -33,21 +40,20 @@ const LocationFinder = ({ onLocationSelect, apiKey }: LocationFinderProps) => {
   const [locations, setLocations] = useState<FitnessLocation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const mapRef = useRef<HTMLDivElement>(null);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [mapCenter, setMapCenter] = useState<string>("40.7128,-74.0060"); // Default: NYC
   const [service, setService] = useState<google.maps.places.PlacesService | null>(null);
 
-  // Initialize Google Maps
+  // Load Google Maps API and initialize
   useEffect(() => {
     if (!apiKey) return;
 
-    const loader = new Loader({
-      apiKey,
-      version: "weekly",
-      libraries: ["places"]
-    });
-
-    loader.load().then(() => {
+    // Load Google Maps script
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=maps,places`;
+    script.async = true;
+    script.defer = true;
+    
+    script.onload = () => {
       // Get user's current location
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -57,48 +63,47 @@ const LocationFinder = ({ onLocationSelect, apiKey }: LocationFinderProps) => {
               lng: position.coords.longitude
             };
             setUserLocation(location);
+            setMapCenter(`${location.lat},${location.lng}`);
             
-            if (mapRef.current) {
-              const mapInstance = new google.maps.Map(mapRef.current, {
-                center: location,
-                zoom: 13,
-                styles: [
-                  {
-                    featureType: "poi.business",
-                    stylers: [{ visibility: "on" }]
-                  }
-                ]
-              });
+            // Initialize Places Service
+            const mapElement = document.querySelector('gmp-map');
+            if (mapElement) {
+              const placesService = new google.maps.places.PlacesService(mapElement as any);
+              setService(placesService);
               
-              setMap(mapInstance);
-              setService(new google.maps.places.PlacesService(mapInstance));
-
               // Search for nearby gyms automatically
-              searchNearbyGyms(location);
+              searchNearbyGyms(location, placesService);
             }
           },
           () => {
-            // Default to a central location if geolocation fails
-            const defaultLocation = { lat: 40.7128, lng: -74.0060 }; // NYC
+            // Default to NYC if geolocation fails
+            const defaultLocation = { lat: 40.7128, lng: -74.0060 };
             setUserLocation(defaultLocation);
             
-            if (mapRef.current) {
-              const mapInstance = new google.maps.Map(mapRef.current, {
-                center: defaultLocation,
-                zoom: 13
-              });
-              
-              setMap(mapInstance);
-              setService(new google.maps.places.PlacesService(mapInstance));
+            // Initialize Places Service
+            const mapElement = document.querySelector('gmp-map');
+            if (mapElement) {
+              const placesService = new google.maps.places.PlacesService(mapElement as any);
+              setService(placesService);
             }
           }
         );
       }
-    });
+    };
+    
+    document.head.appendChild(script);
+    
+    return () => {
+      // Cleanup script on unmount
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+    };
   }, [apiKey]);
 
-  const searchNearbyGyms = (location: { lat: number; lng: number }) => {
-    if (!service) return;
+  const searchNearbyGyms = (location: { lat: number; lng: number }, placesService?: google.maps.places.PlacesService) => {
+    const serviceToUse = placesService || service;
+    if (!serviceToUse) return;
 
     setIsLoading(true);
     const request = {
@@ -108,7 +113,7 @@ const LocationFinder = ({ onLocationSelect, apiKey }: LocationFinderProps) => {
       keyword: 'fitness gym workout'
     };
 
-    service.nearbySearch(request, (results, status) => {
+    serviceToUse.nearbySearch(request, (results, status) => {
       setIsLoading(false);
       if (status === google.maps.places.PlacesServiceStatus.OK && results) {
         const transformedResults = results.map(result => ({
@@ -198,10 +203,11 @@ const LocationFinder = ({ onLocationSelect, apiKey }: LocationFinderProps) => {
       </div>
 
       {/* Map Container */}
-      <div 
-        ref={mapRef} 
-        className="w-full h-48 rounded-lg border border-border bg-muted"
-        style={{ minHeight: '200px' }}
+      <gmp-map
+        center={mapCenter}
+        zoom="13"
+        map-id="FITNESS_MAP"
+        style={{ height: '200px', width: '100%', borderRadius: '0.5rem', border: '1px solid hsl(var(--border))' }}
       />
 
       {/* Loading State */}
