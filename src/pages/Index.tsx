@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Bell, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import FitnessLogo from "@/components/FitnessLogo";
 import StatsOverview from "@/components/StatsOverview";
 import QuickActions from "@/components/QuickActions";
 import ActivityFeed from "@/components/ActivityFeed";
 import Navigation from "@/components/Navigation";
 import ConversationsList from "@/components/ConversationsList";
+import NotificationCenter from "@/components/NotificationCenter";
 
 const Index = () => {
 
@@ -16,9 +17,7 @@ const Index = () => {
         <div className="flex items-center justify-between mb-4">
           <FitnessLogo className="text-primary-foreground" />
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-white/20">
-              <Bell className="w-5 h-5" />
-            </Button>
+            <NotificationCenter />
             <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-white/20">
               <Settings className="w-5 h-5" />
             </Button>
