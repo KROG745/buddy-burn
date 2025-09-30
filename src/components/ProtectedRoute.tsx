@@ -12,21 +12,40 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
     // Check initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (mounted) {
+          setUser(session?.user ?? null);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Auth error:", error);
+        if (mounted) {
+          setUser(null);
+          setLoading(false);
+        }
+      }
+    };
+
+    checkSession();
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setUser(session?.user ?? null);
-        setLoading(false);
+        if (mounted) {
+          setUser(session?.user ?? null);
+        }
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   if (loading) {
