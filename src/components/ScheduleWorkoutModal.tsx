@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Clock, Dumbbell, MapPin, Users, Search } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Dumbbell, MapPin, Users, Search, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -41,6 +42,7 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useWorkouts } from "@/contexts/WorkoutContext";
 import LocationFinder from "./LocationFinder";
+import { useWorkoutShares } from "@/hooks/useWorkoutShares";
 
 const formSchema = z.object({
   date: z.date({
@@ -57,7 +59,8 @@ const formSchema = z.object({
   }),
   location: z.string().optional(),
   notes: z.string().optional(),
-  inviteFriends: z.boolean().default(false),
+  publishToFeed: z.boolean().default(false),
+  shareCaption: z.string().optional(),
 });
 
 interface ScheduleWorkoutModalProps {
@@ -90,43 +93,70 @@ const durations = [
 const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps) => {
   const { toast } = useToast();
   const { addWorkout } = useWorkouts();
+  const { shareWorkout } = useWorkoutShares();
   const [isLoading, setIsLoading] = useState(false);
   const [locationTab, setLocationTab] = useState("manual");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      inviteFriends: false,
+      publishToFeed: false,
+      shareCaption: "",
     },
   });
+
+  const publishToFeed = form.watch("publishToFeed");
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     
-    // Convert duration from "X min" format to just the number
-    const durationNumber = values.duration.replace(' min', '');
-    
-    // Add workout to context
-    addWorkout({
-      title: `${values.workoutType.charAt(0).toUpperCase() + values.workoutType.slice(1)} Workout`,
-      type: values.workoutType,
-      date: values.date,
-      time: values.time,
-      duration: durationNumber,
-      goal: `${values.workoutType} session`,
-      location: values.location,
-      notes: values.notes,
-      intensity: 'medium'
-    });
-    
-    toast({
-      title: "Workout Scheduled! 🎉",
-      description: `${values.workoutType} scheduled for ${format(values.date, "PPP")} at ${values.time}`,
-    });
-    
-    setIsLoading(false);
-    onOpenChange(false);
-    form.reset();
+    try {
+      // Convert duration from "X min" format to just the number
+      const durationNumber = values.duration.replace(' min', '');
+      
+      // Generate workout ID
+      const workoutId = Date.now().toString();
+      
+      // Add workout to context
+      addWorkout({
+        title: `${values.workoutType.charAt(0).toUpperCase() + values.workoutType.slice(1)} Workout`,
+        type: values.workoutType,
+        date: values.date,
+        time: values.time,
+        duration: durationNumber,
+        goal: `${values.workoutType} session`,
+        location: values.location,
+        notes: values.notes,
+        intensity: 'medium'
+      });
+      
+      // If publishing to feed, share the workout
+      if (values.publishToFeed) {
+        shareWorkout({
+          workout_id: workoutId,
+          caption: values.shareCaption || `Scheduled ${values.workoutType} workout for ${format(values.date, "PPP")} at ${values.time}`,
+          is_public: true,
+        });
+      }
+      
+      toast({
+        title: "Workout Scheduled! 🎉",
+        description: values.publishToFeed 
+          ? `${values.workoutType} scheduled and shared to your feed!`
+          : `${values.workoutType} scheduled for ${format(values.date, "PPP")} at ${values.time}`,
+      });
+      
+      onOpenChange(false);
+      form.reset();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to schedule workout. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -331,6 +361,53 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                 </FormItem>
               )}
             />
+
+            {/* Publish to Feed Section */}
+            <div className="space-y-4 p-4 border border-border rounded-lg bg-card">
+              <FormField
+                control={form.control}
+                name="publishToFeed"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between space-y-0">
+                    <div className="space-y-0.5">
+                      <FormLabel className="flex items-center gap-2">
+                        <Share2 className="w-4 h-4" />
+                        Publish to Feed
+                      </FormLabel>
+                      <p className="text-sm text-muted-foreground">
+                        Share this workout with your friends
+                      </p>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              {publishToFeed && (
+                <FormField
+                  control={form.control}
+                  name="shareCaption"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Caption (Optional)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Add a caption for your workout post..."
+                          className="resize-none"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+            </div>
 
             <DialogFooter className="gap-2">
               <Button
