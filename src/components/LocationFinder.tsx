@@ -1,12 +1,9 @@
-import { useState, useEffect, lazy, Suspense } from "react";
-import { MapPin, Search, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MapPin, Search, Loader2, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-// Lazy load the map component
-const GymFinderMap = lazy(() => import('./GymFinderMap'));
 
 interface FitnessLocation {
   id: string;
@@ -15,6 +12,7 @@ interface FitnessLocation {
   lat: number;
   lng: number;
   type: string;
+  distance?: number;
 }
 
 interface LocationFinderProps {
@@ -26,7 +24,6 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
   const [locations, setLocations] = useState<FitnessLocation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userLocation, setUserLocation] = useState<[number, number]>([40.7128, -74.0060]); // Default: NYC
-  const [mapCenter, setMapCenter] = useState<[number, number]>([40.7128, -74.0060]);
 
   // Get user's current location on mount
   useEffect(() => {
@@ -38,7 +35,6 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
             position.coords.longitude
           ];
           setUserLocation(location);
-          setMapCenter(location);
           
           // Search for nearby gyms automatically
           searchNearbyGyms(location);
@@ -54,6 +50,19 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
       searchNearbyGyms([40.7128, -74.0060]);
     }
   }, []);
+
+  // Calculate distance between two coordinates (Haversine formula)
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  };
 
   // Search for nearby gyms using Overpass API (OpenStreetMap)
   const searchNearbyGyms = async (location: [number, number]) => {
@@ -95,15 +104,19 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
             element.tags['addr:city']
           ].filter(Boolean).join(', ') || 'Address not available';
           
+          const distance = calculateDistance(lat, lng, elementLat, elementLng);
+          
           return {
             id: element.id.toString(),
             name: element.tags.name,
             address,
             lat: elementLat,
             lng: elementLng,
-            type: element.tags.leisure || element.tags.amenity || 'fitness'
+            type: element.tags.leisure || element.tags.amenity || 'fitness',
+            distance
           };
-        });
+        })
+        .sort((a, b) => (a.distance || 0) - (b.distance || 0)); // Sort by distance
       
       setLocations(transformedResults);
     } catch (error) {
@@ -129,7 +142,7 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
       if (geocodeData.length > 0) {
         const { lat, lon } = geocodeData[0];
         const newCenter: [number, number] = [parseFloat(lat), parseFloat(lon)];
-        setMapCenter(newCenter);
+        setUserLocation(newCenter);
         
         // Now search for gyms in that area
         await searchNearbyGyms(newCenter);
@@ -145,6 +158,11 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
 
   const handleLocationSelect = (location: FitnessLocation) => {
     onLocationSelect(`${location.name}, ${location.address}`);
+  };
+
+  const openInMaps = (location: FitnessLocation) => {
+    const url = `https://www.openstreetmap.org/?mlat=${location.lat}&mlon=${location.lng}#map=16/${location.lat}/${location.lng}`;
+    window.open(url, '_blank');
   };
 
   return (
@@ -171,15 +189,6 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
         </Button>
       </div>
 
-      {/* Map Container */}
-      <Suspense fallback={
-        <div className="h-[200px] w-full rounded-lg border border-border flex items-center justify-center bg-muted">
-          <Loader2 className="w-6 h-6 text-primary animate-spin" />
-        </div>
-      }>
-        <GymFinderMap center={mapCenter} locations={locations} />
-      </Suspense>
-
       {/* Loading State */}
       {isLoading && (
         <div className="flex justify-center py-4">
@@ -188,8 +197,8 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
       )}
 
       {/* Locations List */}
-      <div className="space-y-2 max-h-60 overflow-y-auto">
-        {locations.length > 0 && (
+      <div className="space-y-2 max-h-80 overflow-y-auto">
+        {locations.length > 0 && !isLoading && (
           <h4 className="font-medium text-sm text-muted-foreground">
             Found {locations.length} fitness centers nearby
           </h4>
@@ -198,13 +207,20 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
         {locations.map((location) => (
           <Card 
             key={location.id} 
-            className="p-3 hover:shadow-md transition-shadow cursor-pointer border border-border/50"
-            onClick={() => handleLocationSelect(location)}
+            className="p-3 hover:shadow-md transition-shadow border border-border/50"
           >
             <div className="flex items-start justify-between">
-              <div className="flex-1">
+              <div className="flex-1" onClick={() => handleLocationSelect(location)} role="button" tabIndex={0}>
                 <div className="flex items-center gap-2 mb-1">
                   <h5 className="font-medium text-sm text-foreground">{location.name}</h5>
+                  {location.distance !== undefined && (
+                    <Badge variant="secondary" className="text-xs">
+                      {location.distance < 1 
+                        ? `${(location.distance * 1000).toFixed(0)}m away`
+                        : `${location.distance.toFixed(1)}km away`
+                      }
+                    </Badge>
+                  )}
                 </div>
                 
                 <p className="text-xs text-muted-foreground mb-2">
@@ -216,7 +232,26 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
                 </Badge>
               </div>
               
-              <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-1" />
+              <div className="flex gap-1 ml-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => openInMaps(location)}
+                  className="h-8 w-8 p-0"
+                  title="Open in OpenStreetMap"
+                >
+                  <Navigation className="w-4 h-4 text-primary" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleLocationSelect(location)}
+                  className="h-8 w-8 p-0"
+                  title="Select this location"
+                >
+                  <MapPin className="w-4 h-4 text-primary" />
+                </Button>
+              </div>
             </div>
           </Card>
         ))}
