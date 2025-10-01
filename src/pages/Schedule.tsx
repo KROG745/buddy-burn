@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, Clock, Target, Plus, Edit, Trash2, MapPin, Check } from "lucide-react";
+import { Calendar, Clock, Target, Plus, Edit, Trash2, MapPin, Check, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,14 +10,19 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import LocationFinder from "@/components/LocationFinder";
 import { useWorkouts } from "@/contexts/WorkoutContext";
+import { useWorkoutShares } from "@/hooks/useWorkoutShares";
 import { format, isSameDay, startOfWeek, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import Navigation from "@/components/Navigation";
+import { useToast } from "@/hooks/use-toast";
 
 const Schedule = () => {
   const { workouts, addWorkout, updateWorkout, deleteWorkout, getWorkoutsForDate } = useWorkouts();
+  const { shareWorkout } = useWorkoutShares();
+  const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [locationTab, setLocationTab] = useState("manual");
@@ -30,7 +35,9 @@ const Schedule = () => {
     location: "",
     notes: "",
     date: selectedDate,
-    intensity: "medium" as 'low' | 'medium' | 'high'
+    intensity: "medium" as 'low' | 'medium' | 'high',
+    publishToFeed: false,
+    shareCaption: ""
   });
   const handleLocationSelect = (location: string) => {
     setNewWorkout({...newWorkout, location});
@@ -39,6 +46,8 @@ const Schedule = () => {
 
   const handleAddWorkout = () => {
     if (newWorkout.title && newWorkout.type && newWorkout.time && newWorkout.goal) {
+      const workoutId = Date.now().toString();
+      
       addWorkout({
         title: newWorkout.title,
         type: newWorkout.type,
@@ -51,6 +60,25 @@ const Schedule = () => {
         intensity: newWorkout.intensity as "low" | "medium" | "high"
       });
       
+      // If publishing to feed, share the workout
+      if (newWorkout.publishToFeed) {
+        shareWorkout({
+          workout_id: workoutId,
+          caption: newWorkout.shareCaption || `Scheduled ${newWorkout.type} workout for ${format(newWorkout.date, "PPP")} at ${newWorkout.time}`,
+          is_public: true,
+        });
+        
+        toast({
+          title: "Workout Scheduled & Shared! 🎉",
+          description: `${newWorkout.type} workout scheduled and shared to your feed!`,
+        });
+      } else {
+        toast({
+          title: "Workout Scheduled! 🎉",
+          description: `${newWorkout.type} workout scheduled for ${format(newWorkout.date, "PPP")}`,
+        });
+      }
+      
       setNewWorkout({
         title: "",
         type: "",
@@ -60,7 +88,9 @@ const Schedule = () => {
         location: "",
         notes: "",
         date: selectedDate,
-        intensity: "medium" as 'low' | 'medium' | 'high'
+        intensity: "medium" as 'low' | 'medium' | 'high',
+        publishToFeed: false,
+        shareCaption: ""
       });
       setIsDialogOpen(false);
     }
@@ -236,6 +266,39 @@ const Schedule = () => {
                       )}
                     </TabsContent>
                   </Tabs>
+                </div>
+
+                {/* Publish to Feed Section */}
+                <div className="space-y-4 p-4 border border-border rounded-lg bg-card">
+                  <div className="flex flex-row items-center justify-between space-y-0">
+                    <div className="space-y-0.5">
+                      <Label className="flex items-center gap-2">
+                        <Share2 className="w-4 h-4" />
+                        Publish to Feed
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Share this workout with your friends
+                      </p>
+                    </div>
+                    <Switch
+                      checked={newWorkout.publishToFeed}
+                      onCheckedChange={(checked) => setNewWorkout({...newWorkout, publishToFeed: checked})}
+                    />
+                  </div>
+
+                  {newWorkout.publishToFeed && (
+                    <div>
+                      <Label htmlFor="shareCaption">Caption (Optional)</Label>
+                      <Textarea
+                        id="shareCaption"
+                        placeholder="Add a caption for your workout post..."
+                        value={newWorkout.shareCaption}
+                        onChange={(e) => setNewWorkout({...newWorkout, shareCaption: e.target.value})}
+                        rows={2}
+                        className="resize-none mt-2"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <Button onClick={handleAddWorkout} className="w-full">
