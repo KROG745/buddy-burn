@@ -1,20 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { MapPin, Search, Loader2 } from "lucide-react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 
-// Fix for default marker icons in React-Leaflet
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
+// Lazy load the map component
+const GymFinderMap = lazy(() => import('./GymFinderMap'));
 
 interface FitnessLocation {
   id: string;
@@ -28,15 +20,6 @@ interface FitnessLocation {
 interface LocationFinderProps {
   onLocationSelect: (location: string) => void;
 }
-
-// Component to update map center when user location changes
-const MapUpdater = ({ center }: { center: [number, number] }) => {
-  const map = useMap();
-  useEffect(() => {
-    map.setView(center, 13);
-  }, [center, map]);
-  return null;
-};
 
 const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -189,30 +172,13 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
       </div>
 
       {/* Map Container */}
-      <div className="h-[200px] w-full rounded-lg border border-border overflow-hidden">
-        <MapContainer 
-          center={userLocation} 
-          zoom={13} 
-          style={{ height: '100%', width: '100%' }}
-          scrollWheelZoom={false}
-          key="gym-finder-map"
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <MapUpdater center={mapCenter} />
-          {locations.map((location) => (
-            <Marker key={location.id} position={[location.lat, location.lng]}>
-              <Popup>
-                <strong>{location.name}</strong>
-                <br />
-                {location.address}
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
-      </div>
+      <Suspense fallback={
+        <div className="h-[200px] w-full rounded-lg border border-border flex items-center justify-center bg-muted">
+          <Loader2 className="w-6 h-6 text-primary animate-spin" />
+        </div>
+      }>
+        <GymFinderMap center={mapCenter} locations={locations} />
+      </Suspense>
 
       {/* Loading State */}
       {isLoading && (
