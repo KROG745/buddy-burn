@@ -64,6 +64,30 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
     return R * c;
   };
 
+  // Reverse geocode to get address from coordinates
+  const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+      );
+      const data = await response.json();
+      
+      if (data.address) {
+        const parts = [
+          data.address.house_number,
+          data.address.road,
+          data.address.city || data.address.town || data.address.village,
+          data.address.state
+        ].filter(Boolean);
+        return parts.join(', ');
+      }
+      return 'Address not available';
+    } catch (error) {
+      console.error('Reverse geocoding error:', error);
+      return 'Address not available';
+    }
+  };
+
   // Search for nearby gyms using Overpass API (OpenStreetMap)
   const searchNearbyGyms = async (location: [number, number]) => {
     setIsLoading(true);
@@ -93,23 +117,26 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
       
       const data = await response.json();
       
-      const transformedResults: FitnessLocation[] = data.elements
+      const results = data.elements
         .filter((element: any) => element.tags?.name)
         .map((element: any) => {
           const elementLat = element.lat || element.center?.lat || 0;
           const elementLng = element.lon || element.center?.lon || 0;
-          const address = [
-            element.tags['addr:street'],
+          
+          // Try to get address from tags first
+          const tagAddress = [
             element.tags['addr:housenumber'],
-            element.tags['addr:city']
-          ].filter(Boolean).join(', ') || 'Address not available';
+            element.tags['addr:street'],
+            element.tags['addr:city'],
+            element.tags['addr:state']
+          ].filter(Boolean).join(', ');
           
           const distance = calculateDistance(lat, lng, elementLat, elementLng);
           
           return {
             id: element.id.toString(),
             name: element.tags.name,
-            address,
+            address: tagAddress || null,
             lat: elementLat,
             lng: elementLng,
             type: element.tags.leisure || element.tags.amenity || 'fitness',
@@ -117,6 +144,17 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
           };
         })
         .sort((a, b) => (a.distance || 0) - (b.distance || 0)); // Sort by distance
+      
+      // For locations without addresses, fetch via reverse geocoding
+      const transformedResults: FitnessLocation[] = await Promise.all(
+        results.map(async (location) => {
+          if (!location.address) {
+            const address = await reverseGeocode(location.lat, location.lng);
+            return { ...location, address };
+          }
+          return location;
+        })
+      );
       
       setLocations(transformedResults);
     } catch (error) {
