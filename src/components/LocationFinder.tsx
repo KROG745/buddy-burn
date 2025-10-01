@@ -245,10 +245,11 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
         {locations.map((location) => (
           <Card 
             key={location.id} 
-            className="p-3 hover:shadow-md transition-shadow border border-border/50"
+            className="p-3 hover:shadow-lg hover:border-primary/50 transition-all cursor-pointer border border-border/50"
+            onClick={() => handleLocationSelect(location)}
           >
             <div className="flex items-start justify-between">
-              <div className="flex-1" onClick={() => handleLocationSelect(location)} role="button" tabIndex={0}>
+              <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <h5 className="font-medium text-sm text-foreground">{location.name}</h5>
                   {location.distance !== undefined && (
@@ -274,20 +275,14 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => openInMaps(location)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openInMaps(location);
+                  }}
                   className="h-8 w-8 p-0"
                   title="Open in OpenStreetMap"
                 >
                   <Navigation className="w-4 h-4 text-primary" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleLocationSelect(location)}
-                  className="h-8 w-8 p-0"
-                  title="Select this location"
-                >
-                  <MapPin className="w-4 h-4 text-primary" />
                 </Button>
               </div>
             </div>
