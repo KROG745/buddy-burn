@@ -20,6 +20,7 @@ const Schedule = () => {
   const { workouts, addWorkout, updateWorkout, deleteWorkout, getWorkoutsForDate } = useWorkouts();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [locationTab, setLocationTab] = useState("manual");
   const [newWorkout, setNewWorkout] = useState({
     title: "",
     type: "",
@@ -214,7 +215,7 @@ const Schedule = () => {
 
                 <div>
                   <Label htmlFor="location">Location</Label>
-                  <Tabs defaultValue="manual" className="w-full">
+                  <Tabs value={locationTab} onValueChange={setLocationTab} className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
                       <TabsTrigger value="manual">Manual Entry</TabsTrigger>
                       <TabsTrigger value="search">Find Places</TabsTrigger>
@@ -230,7 +231,9 @@ const Schedule = () => {
                     </TabsContent>
                     
                     <TabsContent value="search" className="mt-4">
-                      <LocationFinder onLocationSelect={handleLocationSelect} />
+                      {locationTab === "search" && (
+                        <LocationFinder onLocationSelect={handleLocationSelect} />
+                      )}
                     </TabsContent>
                   </Tabs>
                 </div>

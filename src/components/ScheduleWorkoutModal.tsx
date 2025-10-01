@@ -91,6 +91,7 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
   const { toast } = useToast();
   const { addWorkout } = useWorkouts();
   const [isLoading, setIsLoading] = useState(false);
+  const [locationTab, setLocationTab] = useState("manual");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -279,7 +280,7 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                 <FormItem>
                   <FormLabel>Location (Optional)</FormLabel>
                   <FormControl>
-                    <Tabs defaultValue="manual" className="w-full">
+                    <Tabs value={locationTab} onValueChange={setLocationTab} className="w-full">
                       <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="manual">Manual Input</TabsTrigger>
                         <TabsTrigger value="finder">Find Gyms</TabsTrigger>
@@ -297,11 +298,13 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                       </TabsContent>
                       
                       <TabsContent value="finder" className="mt-4">
-                        <LocationFinder
-                          onLocationSelect={(location) => {
-                            field.onChange(location);
-                          }}
-                        />
+                        {locationTab === "finder" && (
+                          <LocationFinder
+                            onLocationSelect={(location) => {
+                              field.onChange(location);
+                            }}
+                          />
+                        )}
                       </TabsContent>
                     </Tabs>
                   </FormControl>
