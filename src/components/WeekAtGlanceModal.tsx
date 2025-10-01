@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -5,6 +6,7 @@ import { Clock, Target } from "lucide-react";
 import { useWorkouts } from "@/contexts/WorkoutContext";
 import { format, startOfWeek, addDays, isSameDay } from "date-fns";
 import { cn } from "@/lib/utils";
+import DayDetailModal from "./DayDetailModal";
 
 interface WeekAtGlanceModalProps {
   open: boolean;
@@ -13,6 +15,13 @@ interface WeekAtGlanceModalProps {
 
 const WeekAtGlanceModal = ({ open, onOpenChange }: WeekAtGlanceModalProps) => {
   const { getWorkoutsForDate } = useWorkouts();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [dayDetailOpen, setDayDetailOpen] = useState(false);
+
+  const handleDayClick = (day: Date) => {
+    setSelectedDate(day);
+    setDayDetailOpen(true);
+  };
 
   const getWeekDays = () => {
     const start = startOfWeek(new Date(), { weekStartsOn: 1 });
@@ -46,10 +55,11 @@ const WeekAtGlanceModal = ({ open, onOpenChange }: WeekAtGlanceModalProps) => {
                 <Card 
                   key={index}
                   className={cn(
-                    "p-3 min-h-[120px] transition-all duration-200",
+                    "p-3 min-h-[120px] transition-all duration-200 cursor-pointer hover:shadow-md",
                     isToday && "bg-primary/5 border-primary/30",
                     hasWorkouts && "ring-2 ring-blue-500/30 bg-blue-50/50"
                   )}
+                  onClick={() => handleDayClick(day)}
                 >
                   <div className="text-center mb-3">
                     <div className="text-xs text-muted-foreground mb-1">
@@ -113,6 +123,13 @@ const WeekAtGlanceModal = ({ open, onOpenChange }: WeekAtGlanceModalProps) => {
           </div>
         </div>
       </DialogContent>
+
+      <DayDetailModal
+        open={dayDetailOpen}
+        onOpenChange={setDayDetailOpen}
+        date={selectedDate}
+        workouts={selectedDate ? getWorkoutsForDate(selectedDate) : []}
+      />
     </Dialog>
   );
 };
