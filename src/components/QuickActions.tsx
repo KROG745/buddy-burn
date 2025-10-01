@@ -1,11 +1,38 @@
 import { Eye, Users, Target, Calendar, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import ScheduleWorkoutModal from "./ScheduleWorkoutModal";
 import WeekAtGlanceModal from "./WeekAtGlanceModal";
 import SetGoalsModal from "./SetGoalsModal";
 import ShareWorkoutModal from "./ShareWorkoutModal";
 import { useWorkouts } from "@/contexts/WorkoutContext";
+
+const actions = [
+  {
+    icon: Eye,
+    label: "Week at a Glance",
+    variant: "fitness" as const,
+    description: "View your weekly plan"
+  },
+  {
+    icon: Calendar,
+    label: "Schedule",
+    variant: "fitness-outline" as const,
+    description: "Plan your week"
+  },
+  {
+    icon: Share2,
+    label: "Share Workout",
+    variant: "fitness-outline" as const,
+    description: "Share with friends"
+  },
+  {
+    icon: Target,
+    label: "Set Goals",
+    variant: "fitness-outline" as const,
+    description: "Track progress"
+  },
+];
 
 const QuickActions = () => {
   const { workouts } = useWorkouts();
@@ -15,7 +42,7 @@ const QuickActions = () => {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState<any>(null);
 
-  const handleActionClick = (actionLabel: string) => {
+  const handleActionClick = useCallback((actionLabel: string) => {
     if (actionLabel === "Schedule") {
       setScheduleModalOpen(true);
     } else if (actionLabel === "Week at a Glance") {
@@ -30,34 +57,7 @@ const QuickActions = () => {
         setShareModalOpen(true);
       }
     }
-  };
-
-  const actions = [
-    {
-      icon: Eye,
-      label: "Week at a Glance",
-      variant: "fitness" as const,
-      description: "View your weekly plan"
-    },
-    {
-      icon: Calendar,
-      label: "Schedule",
-      variant: "fitness-outline" as const,
-      description: "Plan your week"
-    },
-    {
-      icon: Share2,
-      label: "Share Workout",
-      variant: "fitness-outline" as const,
-      description: "Share with friends"
-    },
-    {
-      icon: Target,
-      label: "Set Goals",
-      variant: "fitness-outline" as const,
-      description: "Track progress"
-    },
-  ];
+  }, [workouts]);
 
   return (
     <>
