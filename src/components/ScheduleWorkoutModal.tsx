@@ -41,7 +41,6 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useWorkouts } from "@/contexts/WorkoutContext";
 import LocationFinder from "./LocationFinder";
-import ApiKeyInput from "./ApiKeyInput";
 
 const formSchema = z.object({
   date: z.date({
@@ -92,15 +91,6 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
   const { toast } = useToast();
   const { addWorkout } = useWorkouts();
   const [isLoading, setIsLoading] = useState(false);
-  const [googleApiKey, setGoogleApiKey] = useState("");
-
-  // Check for stored API key on component mount
-  useState(() => {
-    const storedKey = localStorage.getItem('google_maps_api_key');
-    if (storedKey) {
-      setGoogleApiKey(storedKey);
-    }
-  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -307,16 +297,11 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                       </TabsContent>
                       
                       <TabsContent value="finder" className="mt-4">
-                        {!googleApiKey ? (
-                          <ApiKeyInput onApiKeySet={setGoogleApiKey} />
-                        ) : (
-                          <LocationFinder
-                            onLocationSelect={(location) => {
-                              field.onChange(location);
-                            }}
-                            apiKey={googleApiKey}
-                          />
-                        )}
+                        <LocationFinder
+                          onLocationSelect={(location) => {
+                            field.onChange(location);
+                          }}
+                        />
                       </TabsContent>
                     </Tabs>
                   </FormControl>

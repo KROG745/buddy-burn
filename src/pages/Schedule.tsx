@@ -11,7 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LocationFinder from "@/components/LocationFinder";
-import ApiKeyInput from "@/components/ApiKeyInput";
 import { useWorkouts } from "@/contexts/WorkoutContext";
 import { format, isSameDay, startOfWeek, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -32,16 +31,6 @@ const Schedule = () => {
     date: selectedDate,
     intensity: "medium" as 'low' | 'medium' | 'high'
   });
-  const [googleApiKey, setGoogleApiKey] = useState<string>("");
-
-  // Load Google API key from localStorage on component mount
-  useEffect(() => {
-    const savedApiKey = localStorage.getItem('googleMapsApiKey');
-    if (savedApiKey) {
-      setGoogleApiKey(savedApiKey);
-    }
-  }, []);
-
   const handleLocationSelect = (location: string) => {
     setNewWorkout({...newWorkout, location});
   };
@@ -241,16 +230,7 @@ const Schedule = () => {
                     </TabsContent>
                     
                     <TabsContent value="search" className="mt-4">
-                      {!googleApiKey ? (
-                        <div className="space-y-3">
-                          <p className="text-sm text-muted-foreground">
-                            To search for gyms and fitness centers, you need a Google Maps API key.
-                          </p>
-                          <ApiKeyInput onApiKeySet={setGoogleApiKey} />
-                        </div>
-                      ) : (
-                        <LocationFinder onLocationSelect={handleLocationSelect} apiKey={googleApiKey} />
-                      )}
+                      <LocationFinder onLocationSelect={handleLocationSelect} />
                     </TabsContent>
                   </Tabs>
                 </div>
