@@ -33,7 +33,7 @@ interface LocationFinderProps {
 const MapUpdater = ({ center }: { center: [number, number] }) => {
   const map = useMap();
   useEffect(() => {
-    map.setView(center);
+    map.setView(center, 13);
   }, [center, map]);
   return null;
 };
@@ -191,10 +191,11 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
       {/* Map Container */}
       <div className="h-[200px] w-full rounded-lg border border-border overflow-hidden">
         <MapContainer 
-          center={mapCenter} 
+          center={userLocation} 
           zoom={13} 
           style={{ height: '100%', width: '100%' }}
           scrollWheelZoom={false}
+          key="gym-finder-map"
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
