@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
 
 export interface Workout {
   id: string;
@@ -81,45 +81,45 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
     }
   ]);
 
-  const addWorkout = (workoutData: Omit<Workout, 'id'>) => {
+  const addWorkout = useCallback((workoutData: Omit<Workout, 'id'>) => {
     const newWorkout: Workout = {
       ...workoutData,
       id: Date.now().toString()
     };
     setWorkouts(prev => [...prev, newWorkout]);
-  };
+  }, []);
 
-  const updateWorkout = (id: string, updates: Partial<Workout>) => {
+  const updateWorkout = useCallback((id: string, updates: Partial<Workout>) => {
     setWorkouts(prev => 
       prev.map(workout => 
         workout.id === id ? { ...workout, ...updates } : workout
       )
     );
-  };
+  }, []);
 
-  const deleteWorkout = (id: string) => {
+  const deleteWorkout = useCallback((id: string) => {
     setWorkouts(prev => prev.filter(workout => workout.id !== id));
-  };
+  }, []);
 
-  const getWorkoutsForDate = (date: Date) => {
+  const getWorkoutsForDate = useCallback((date: Date) => {
     return workouts.filter(workout => {
       const workoutDate = new Date(workout.date);
       return workoutDate.toDateString() === date.toDateString();
     });
-  };
+  }, [workouts]);
 
-  const getTodaysWorkouts = () => {
+  const getTodaysWorkouts = useCallback(() => {
     return getWorkoutsForDate(new Date());
-  };
+  }, [getWorkoutsForDate]);
 
-  const getUpcomingWorkouts = () => {
+  const getUpcomingWorkouts = useCallback(() => {
     const now = new Date();
     return workouts.filter(workout => 
       new Date(workout.date) >= now && !workout.completed
     ).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  };
+  }, [workouts]);
 
-  const getRecentActivities = () => {
+  const getRecentActivities = useCallback(() => {
     return workouts
       .filter(workout => workout.completed)
       .sort((a, b) => {
@@ -128,9 +128,9 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
         return bTime - aTime;
       })
       .slice(0, 5);
-  };
+  }, [workouts]);
 
-  const value: WorkoutContextType = {
+  const value: WorkoutContextType = useMemo(() => ({
     workouts,
     addWorkout,
     updateWorkout,
@@ -139,7 +139,7 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
     getTodaysWorkouts,
     getUpcomingWorkouts,
     getRecentActivities
-  };
+  }), [workouts, addWorkout, updateWorkout, deleteWorkout, getWorkoutsForDate, getTodaysWorkouts, getUpcomingWorkouts, getRecentActivities]);
 
   return (
     <WorkoutContext.Provider value={value}>
