@@ -5,7 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { WorkoutProvider } from "@/contexts/WorkoutContext";
 import { ConversationProvider } from "@/contexts/ConversationContext";
-import Index from "./pages/Index";
+import Landing from "./pages/Landing";
+import Dashboard from "./pages/Dashboard";
 import Chat from "./pages/Chat";
 import ChatThread from "./pages/ChatThread";
 import Schedule from "./pages/Schedule";
@@ -23,7 +24,8 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<Landing />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/chat" element={<Chat />} />
               <Route path="/chat/:contactId" element={<ChatThread />} />
               <Route path="/schedule" element={<Schedule />} />

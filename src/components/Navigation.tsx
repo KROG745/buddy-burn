@@ -6,14 +6,14 @@ const Navigation = () => {
   const location = useLocation();
 
   const navItems = [
-    { id: "home", icon: Home, label: "Home", path: "/" },
+    { id: "home", icon: Home, label: "Home", path: "/dashboard" },
     { id: "schedule", icon: Calendar, label: "Schedule", path: "/schedule" },
     { id: "chat", icon: MessageCircle, label: "Chat", path: "/chat" },
     { id: "profile", icon: User, label: "Profile", path: "/profile" },
   ];
 
   const getActiveTab = () => {
-    if (location.pathname === "/") return "home";
+    if (location.pathname === "/dashboard") return "home";
     if (location.pathname.startsWith("/chat")) return "chat";
     if (location.pathname === "/schedule") return "schedule";
     if (location.pathname === "/profile") return "profile";
