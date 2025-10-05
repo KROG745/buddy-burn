@@ -7,18 +7,39 @@ import { useWorkoutShares } from "@/hooks/useWorkoutShares";
 import { useWorkouts } from "@/contexts/WorkoutContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const SocialFeed = () => {
   const { shares, isLoading } = useWorkoutShares();
   const { workouts } = useWorkouts();
+  
+  // Fetch scheduled workout details for each share
+  const { data: workoutDetails } = useQuery({
+    queryKey: ['workout-details-social', shares],
+    queryFn: async () => {
+      if (!shares || shares.length === 0) return [];
+      
+      const workoutIds = shares.map(share => share.workout_id);
+      const { data } = await supabase
+        .from('scheduled_workouts')
+        .select('*')
+        .in('id', workoutIds);
+      
+      return data || [];
+    },
+    enabled: shares.length > 0,
+  });
 
   const getActivityTypeColor = (type: string) => {
     switch (type.toLowerCase()) {
       case 'cardio':
         return 'bg-fitness-warning/10 text-fitness-warning';
       case 'strength':
+      case 'weight training':
         return 'bg-fitness-success/10 text-fitness-success';
       case 'flexibility':
+      case 'yoga':
         return 'bg-fitness-accent/10 text-fitness-accent';
       default:
         return 'bg-primary/10 text-primary';
@@ -50,7 +71,7 @@ const SocialFeed = () => {
     );
   }
 
-  // Combine local completed workouts with shared workouts
+  // Combine local completed workouts with scheduled shared workouts
   const localActivities = workouts
     .filter(w => w.completed)
     .map(activity => ({
@@ -58,23 +79,39 @@ const SocialFeed = () => {
       type: 'local',
       userName: 'Alex (You)',
       userAvatar: '',
-      workout: activity,
+      workoutData: {
+        type: activity.type,
+        title: activity.title,
+        duration: activity.duration,
+        location: activity.location,
+        intensity: activity.intensity,
+        time: undefined as string | undefined,
+      },
       caption: activity.goal,
       createdAt: activity.completedAt || new Date(),
     }));
 
   const sharedActivities = shares.map(share => {
-    const workout = workouts.find(w => w.id === share.workout_id);
+    const scheduledWorkout = workoutDetails?.find(w => w.id === share.workout_id);
+    if (!scheduledWorkout) return null;
+    
     return {
       id: share.id,
       type: 'shared',
       userName: share.profiles?.display_name || 'User',
       userAvatar: share.profiles?.avatar_url,
-      workout: workout,
+      workoutData: {
+        type: scheduledWorkout.workout_type,
+        title: `${scheduledWorkout.workout_type} Workout`,
+        duration: scheduledWorkout.duration,
+        location: scheduledWorkout.location,
+        intensity: scheduledWorkout.intensity,
+        time: scheduledWorkout.time,
+      },
       caption: share.caption,
       createdAt: new Date(share.created_at),
     };
-  }).filter(a => a.workout);
+  }).filter(Boolean);
 
   const allActivities = [...localActivities, ...sharedActivities]
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
@@ -92,7 +129,7 @@ const SocialFeed = () => {
   return (
     <div className="space-y-4">
       {allActivities.map((activity) => {
-        if (!activity.workout) return null;
+        if (!activity.workoutData) return null;
         
         return (
           <Card key={activity.id} className="p-4 hover:shadow-elevation transition-all duration-300 neon-hover border-border/50">
@@ -107,25 +144,28 @@ const SocialFeed = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="font-semibold text-foreground">{activity.userName}</span>
-                  <Badge variant="secondary" className={getActivityTypeColor(activity.workout.type)}>
-                    {activity.workout.type}
+                  <Badge variant="secondary" className={getActivityTypeColor(activity.workoutData.type)}>
+                    {activity.workoutData.type}
                   </Badge>
-                  <Badge variant="outline" className={getIntensityColor(activity.workout.intensity)}>
-                    {activity.workout.intensity}
+                  <Badge variant="outline" className={getIntensityColor(activity.workoutData.intensity)}>
+                    {activity.workoutData.intensity}
                   </Badge>
                 </div>
                 
-                <h3 className="font-medium text-foreground mb-2">{activity.workout.title}</h3>
+                <h3 className="font-medium text-foreground mb-2">{activity.workoutData.title}</h3>
                 
                 <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
-                    <span>{activity.workout.duration} min</span>
+                    <span>
+                      {activity.workoutData.time ? `${activity.workoutData.time} • ` : ''}
+                      {activity.workoutData.duration} min
+                    </span>
                   </div>
-                  {activity.workout.location && (
+                  {activity.workoutData.location && (
                     <div className="flex items-center gap-1">
                       <MapPin className="w-4 h-4" />
-                      <span className="truncate">{activity.workout.location}</span>
+                      <span className="truncate">{activity.workoutData.location}</span>
                     </div>
                   )}
                 </div>

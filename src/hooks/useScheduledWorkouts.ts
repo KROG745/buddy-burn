@@ -46,6 +46,48 @@ export const useScheduledWorkouts = () => {
 
       if (error) throw error;
 
+      // Auto-share workout based on user's privacy settings
+      const workoutId = data.id;
+      
+      // Get user's profile to check privacy settings
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_public')
+        .eq('id', user.id)
+        .single();
+
+      if (profile?.is_public) {
+        // If user is public, share to public feed
+        await supabase
+          .from('workout_shares')
+          .insert({
+            user_id: user.id,
+            workout_id: workoutId,
+            is_public: true,
+            caption: `Scheduled ${params.workout_type} workout at ${params.location}`,
+          });
+      } else {
+        // If user is private, share to friends only
+        const { data: friends } = await supabase
+          .from('friends')
+          .select('friend_id')
+          .eq('user_id', user.id);
+
+        if (friends && friends.length > 0) {
+          const friendShares = friends.map(friend => ({
+            user_id: user.id,
+            workout_id: workoutId,
+            is_public: false,
+            shared_with_id: friend.friend_id,
+            caption: `Scheduled ${params.workout_type} workout at ${params.location}`,
+          }));
+
+          await supabase
+            .from('workout_shares')
+            .insert(friendShares);
+        }
+      }
+
       return { data, error: null };
     } catch (error: any) {
       console.error('Error scheduling workout:', error);
