@@ -11,10 +11,13 @@ import SocialFeed from "@/components/SocialFeed";
 import AchievementsDisplay from "@/components/AchievementsDisplay";
 import Navigation from "@/components/Navigation";
 import ConversationsList from "@/components/ConversationsList";
+import AchievementNotification from "@/components/AchievementNotification";
+import { useAchievementSystem } from "@/hooks/useAchievementSystem";
 
 const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { newAchievements, clearAchievementNotification } = useAchievementSystem();
 
   useEffect(() => {
     // Check if user is logged in
@@ -100,6 +103,15 @@ const Index = () => {
 
       {/* Navigation */}
       <Navigation />
+      
+      {/* Achievement Notifications */}
+      {newAchievements.map((achievement) => (
+        <AchievementNotification
+          key={achievement.id}
+          achievement={achievement}
+          onClose={() => clearAchievementNotification(achievement.id)}
+        />
+      ))}
     </div>
   );
 };

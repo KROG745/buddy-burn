@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievement_definitions: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string
+          icon: string
+          id: string
+          points: number
+          rarity: string
+          requirement_type: string
+          requirement_value: number
+          title: string
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description: string
+          icon: string
+          id: string
+          points?: number
+          rarity?: string
+          requirement_type: string
+          requirement_value: number
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: string
+          points?: number
+          rarity?: string
+          requirement_type?: string
+          requirement_value?: number
+          title?: string
+        }
+        Relationships: []
+      }
       achievements: {
         Row: {
           description: string
@@ -252,6 +291,95 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           workout_type?: string
+        }
+        Relationships: []
+      }
+      user_achievement_progress: {
+        Row: {
+          achievement_id: string
+          completed_at: string | null
+          created_at: string | null
+          current_progress: number | null
+          id: string
+          is_completed: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          completed_at?: string | null
+          created_at?: string | null
+          current_progress?: number | null
+          id?: string
+          is_completed?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          completed_at?: string | null
+          created_at?: string | null
+          current_progress?: number | null
+          id?: string
+          is_completed?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievement_progress_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievement_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_stats: {
+        Row: {
+          created_at: string | null
+          current_streak: number | null
+          id: string
+          last_workout_date: string | null
+          level: number | null
+          longest_streak: number | null
+          total_friends: number | null
+          total_points: number | null
+          total_shares: number | null
+          total_workouts: number | null
+          updated_at: string | null
+          user_id: string
+          workout_types_completed: string[] | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_streak?: number | null
+          id?: string
+          last_workout_date?: string | null
+          level?: number | null
+          longest_streak?: number | null
+          total_friends?: number | null
+          total_points?: number | null
+          total_shares?: number | null
+          total_workouts?: number | null
+          updated_at?: string | null
+          user_id: string
+          workout_types_completed?: string[] | null
+        }
+        Update: {
+          created_at?: string | null
+          current_streak?: number | null
+          id?: string
+          last_workout_date?: string | null
+          level?: number | null
+          longest_streak?: number | null
+          total_friends?: number | null
+          total_points?: number | null
+          total_shares?: number | null
+          total_workouts?: number | null
+          updated_at?: string | null
+          user_id?: string
+          workout_types_completed?: string[] | null
         }
         Relationships: []
       }

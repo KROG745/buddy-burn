@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
+import { useAchievementSystem } from '@/hooks/useAchievementSystem';
 
 export interface Workout {
   id: string;
@@ -41,6 +42,8 @@ interface WorkoutProviderProps {
 }
 
 export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) => {
+  const { updateUserStats } = useAchievementSystem();
+  
   const [workouts, setWorkouts] = useState<Workout[]>([
     {
       id: '1',
@@ -90,12 +93,24 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
   }, []);
 
   const updateWorkout = useCallback((id: string, updates: Partial<Workout>) => {
+    const workout = workouts.find(w => w.id === id);
+    const wasCompleted = workout?.completed;
+    const nowCompleted = updates.completed;
+    
     setWorkouts(prev => 
       prev.map(workout => 
         workout.id === id ? { ...workout, ...updates } : workout
       )
     );
-  }, []);
+    
+    // Check if workout was just completed
+    if (!wasCompleted && nowCompleted && workout) {
+      updateUserStats({
+        workoutCompleted: true,
+        workoutType: workout.type,
+      });
+    }
+  }, [workouts, updateUserStats]);
 
   const deleteWorkout = useCallback((id: string) => {
     setWorkouts(prev => prev.filter(workout => workout.id !== id));
