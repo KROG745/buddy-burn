@@ -1,4 +1,4 @@
-import { Clock, MapPin, Calendar, Heart, MessageCircle } from "lucide-react";
+import { Clock, MapPin, Calendar, Heart, MessageCircle, UserPlus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,10 +9,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { useConversations } from "@/contexts/ConversationContext";
+import { useToast } from "@/hooks/use-toast";
 
 const SocialFeed = () => {
   const { shares, isLoading } = useWorkoutShares();
   const { workouts } = useWorkouts();
+  const navigate = useNavigate();
+  const { addConversation } = useConversations();
+  const { toast } = useToast();
   
   // Fetch scheduled workout details for each share
   const { data: workoutDetails } = useQuery({
@@ -30,6 +36,41 @@ const SocialFeed = () => {
     },
     enabled: shares.length > 0,
   });
+  
+  // Get current user
+  const { data: currentUser } = useQuery({
+    queryKey: ['current-user-social'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      return user;
+    },
+  });
+  
+  const handleStartConversation = (activity: any) => {
+    if (!activity.userName || !activity.workoutData) return;
+    
+    const workout = activity.workoutData;
+    const message = `Hi! I saw your ${workout.type} workout scheduled at ${workout.location}${workout.time ? ` on ${workout.time}` : ''}. Would it be okay if I joined you?`;
+    
+    // Add or update conversation
+    addConversation({
+      id: activity.userId || activity.id,
+      name: activity.userName,
+      avatar: activity.userAvatar || '',
+      lastMessage: message,
+      timestamp: 'Just now',
+      unreadCount: 0,
+      isOnline: true,
+    });
+    
+    // Navigate to chat with pre-filled message
+    navigate(`/chat/${activity.userId || activity.id}?iceBreaker=${encodeURIComponent(message)}`);
+    
+    toast({
+      title: "Starting conversation",
+      description: `Opening chat with ${activity.userName}`,
+    });
+  };
 
   const getActivityTypeColor = (type: string) => {
     switch (type.toLowerCase()) {
@@ -76,6 +117,7 @@ const SocialFeed = () => {
     .filter(w => w.completed)
     .map(activity => ({
       id: activity.id,
+      userId: undefined, // Local activity, no user ID
       type: 'local',
       userName: 'Alex (You)',
       userAvatar: '',
@@ -97,6 +139,7 @@ const SocialFeed = () => {
     
     return {
       id: share.id,
+      userId: share.user_id,
       type: 'shared',
       userName: share.profiles?.display_name || 'User',
       userAvatar: share.profiles?.avatar_url,
@@ -181,6 +224,20 @@ const SocialFeed = () => {
                   </div>
                   
                   <div className="flex items-center gap-2">
+                    {/* Show join button only if it's not the current user's workout */}
+                    {currentUser && activity.userId && activity.userId !== currentUser.id && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 gap-1 hover:bg-primary/10 hover:text-primary"
+                        onClick={() => handleStartConversation(activity)}
+                      >
+                        <UserPlus className="w-3 h-3" />
+                        <MessageCircle className="w-3 h-3" />
+                        <span className="text-xs">Join</span>
+                      </Button>
+                    )}
+                    
                     <Button variant="ghost" size="sm" className="h-8 gap-1 hover:text-fitness-accent">
                       <Heart className="w-4 h-4" />
                       <span className="text-xs">0</span>

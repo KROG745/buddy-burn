@@ -1,14 +1,21 @@
-import { Clock, MapPin, Calendar } from "lucide-react";
+import { Clock, MapPin, Calendar, MessageCircle, UserPlus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useWorkoutShares } from "@/hooks/useWorkoutShares";
 import { formatDistanceToNow } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { useConversations } from "@/contexts/ConversationContext";
+import { useToast } from "@/hooks/use-toast";
 
 const ActivityFeed = () => {
   const { shares, isLoading } = useWorkoutShares();
+  const navigate = useNavigate();
+  const { addConversation } = useConversations();
+  const { toast } = useToast();
   
   // Fetch scheduled workout details for each share
   const { data: workoutDetails } = useQuery({
@@ -27,17 +34,53 @@ const ActivityFeed = () => {
     enabled: shares.length > 0,
   });
   
+  // Get current user
+  const { data: currentUser } = useQuery({
+    queryKey: ['current-user'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      return user;
+    },
+  });
+  
   // Combine shares with workout details
   const recentActivities = shares.map(share => {
     const workout = workoutDetails?.find(w => w.id === share.workout_id);
     return {
       id: share.id,
+      userId: share.user_id,
       user: share.profiles,
       caption: share.caption,
       createdAt: share.created_at,
       workout,
     };
   }).filter(activity => activity.workout);
+  
+  const handleStartConversation = (activity: any) => {
+    if (!activity.user || !activity.workout) return;
+    
+    const workoutInfo = activity.workout;
+    const message = `Hi! I saw your ${workoutInfo.workout_type} workout scheduled at ${workoutInfo.location} on ${workoutInfo.date} at ${workoutInfo.time}. Would it be okay if I joined you?`;
+    
+    // Add or update conversation
+    addConversation({
+      id: activity.userId,
+      name: activity.user.display_name || 'User',
+      avatar: activity.user.avatar_url || '',
+      lastMessage: message,
+      timestamp: 'Just now',
+      unreadCount: 0,
+      isOnline: true,
+    });
+    
+    // Navigate to chat with pre-filled message
+    navigate(`/chat/${activity.userId}?iceBreaker=${encodeURIComponent(message)}`);
+    
+    toast({
+      title: "Starting conversation",
+      description: `Opening chat with ${activity.user.display_name}`,
+    });
+  };
 
   const getActivityTypeColor = (type: string) => {
     switch (type.toLowerCase()) {
@@ -134,11 +177,27 @@ const ActivityFeed = () => {
                   <p className="text-sm text-muted-foreground mb-2 italic">"{workout.notes}"</p>
                 )}
                 
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Calendar className="w-3 h-3" />
-                  <span>
-                    {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}
-                  </span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Calendar className="w-3 h-3" />
+                    <span>
+                      {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}
+                    </span>
+                  </div>
+                  
+                  {/* Show join button only if it's not the current user's workout */}
+                  {currentUser && activity.userId !== currentUser.id && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 gap-1 hover:bg-primary/10 hover:text-primary"
+                      onClick={() => handleStartConversation(activity)}
+                    >
+                      <UserPlus className="w-3 h-3" />
+                      <MessageCircle className="w-3 h-3" />
+                      <span className="text-xs">Request to Join</span>
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
