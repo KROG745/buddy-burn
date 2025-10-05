@@ -45,13 +45,50 @@ const Schedule = () => {
     shareCaption: ""
   });
 
-  const workoutTypeMap: Record<string, string[]> = {
-    "Cardio": ["running", "cycling", "swimming", "rowing", "elliptical", "stair-climbing"],
-    "Weight Training": ["chest", "shoulders", "legs", "back", "arms", "abs", "full-body"],
-    "Yoga": ["vinyasa", "hatha", "power-yoga", "yin-yoga", "restorative"],
-    "HIIT": ["tabata", "circuit-training", "interval-training", "hiit"],
-    "Pilates": ["mat-pilates", "reformer", "barre", "pilates"],
-    "Boxing": ["heavy-bag", "speed-bag", "mitt-work", "shadow-boxing", "boxing"]
+  const workoutSubTypes: Record<string, { value: string; label: string }[]> = {
+    "Cardio": [
+      { value: "running", label: "Running" },
+      { value: "cycling", label: "Cycling" },
+      { value: "swimming", label: "Swimming" },
+      { value: "rowing", label: "Rowing" },
+      { value: "elliptical", label: "Elliptical" },
+      { value: "stair-climbing", label: "Stair Climbing" },
+    ],
+    "Weight Training": [
+      { value: "chest", label: "Chest" },
+      { value: "shoulders", label: "Shoulders" },
+      { value: "legs", label: "Legs" },
+      { value: "back", label: "Back" },
+      { value: "arms", label: "Arms" },
+      { value: "abs", label: "Abs/Core" },
+      { value: "full-body", label: "Full Body" },
+    ],
+    "Yoga": [
+      { value: "vinyasa", label: "Vinyasa" },
+      { value: "hatha", label: "Hatha" },
+      { value: "power-yoga", label: "Power Yoga" },
+      { value: "yin-yoga", label: "Yin Yoga" },
+      { value: "restorative", label: "Restorative" },
+    ],
+    "HIIT": [
+      { value: "tabata", label: "Tabata" },
+      { value: "circuit-training", label: "Circuit Training" },
+      { value: "interval-training", label: "Interval Training" },
+      { value: "hiit", label: "General HIIT" },
+    ],
+    "Pilates": [
+      { value: "mat-pilates", label: "Mat Pilates" },
+      { value: "reformer", label: "Reformer" },
+      { value: "barre", label: "Barre" },
+      { value: "pilates", label: "General Pilates" },
+    ],
+    "Boxing": [
+      { value: "heavy-bag", label: "Heavy Bag" },
+      { value: "speed-bag", label: "Speed Bag" },
+      { value: "mitt-work", label: "Mitt Work" },
+      { value: "shadow-boxing", label: "Shadow Boxing" },
+      { value: "boxing", label: "General Boxing" },
+    ],
   };
   const handleLocationSelect = (location: string) => {
     setNewWorkout({...newWorkout, location});
@@ -230,7 +267,7 @@ const Schedule = () => {
                 </div>
 
                 {/* Sub-type selection */}
-                {newWorkout.type && workoutTypeMap[newWorkout.type] && (
+                {newWorkout.type && workoutSubTypes[newWorkout.type] && (
                   <div>
                     <Label htmlFor="subType">Workout Style</Label>
                     <Select value={newWorkout.subType} onValueChange={handleSubTypeChange}>
@@ -238,9 +275,9 @@ const Schedule = () => {
                         <SelectValue placeholder="Select workout style" />
                       </SelectTrigger>
                       <SelectContent>
-                        {workoutTypeMap[newWorkout.type].map((subType) => (
-                          <SelectItem key={subType} value={subType}>
-                            {subType.charAt(0).toUpperCase() + subType.slice(1)}
+                        {workoutSubTypes[newWorkout.type].map((subType) => (
+                          <SelectItem key={subType.value} value={subType.value}>
+                            {subType.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
