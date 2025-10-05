@@ -340,6 +340,16 @@ const Schedule = () => {
         </div>
 
 
+        {/* Calendar View */}
+        <Card className="p-4">
+          <CalendarComponent
+            mode="single"
+            selected={selectedDate}
+            onSelect={(date) => date && setSelectedDate(date)}
+            className={cn("rounded-md border-0 pointer-events-auto")}
+          />
+        </Card>
+
         {/* Enhanced Workout Log */}
         <div className="space-y-4">
           <h3 className="font-semibold text-foreground">
