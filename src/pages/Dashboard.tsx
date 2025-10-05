@@ -1,5 +1,9 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Bell, Settings } from "lucide-react";
+import { Bell, Settings, LogOut } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import FitnessLogo from "@/components/FitnessLogo";
 import StatsOverview from "@/components/StatsOverview";
 import QuickActions from "@/components/QuickActions";
@@ -9,6 +13,30 @@ import Navigation from "@/components/Navigation";
 import ConversationsList from "@/components/ConversationsList";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Check if user is logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        navigate("/auth");
+      }
+    });
+  }, [navigate]);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast({
+        title: "Error signing out",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      navigate("/auth");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -24,6 +52,9 @@ const Index = () => {
               </Button>
               <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-white/20 hover:shadow-glow">
                 <Settings className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={handleLogout} className="text-primary-foreground hover:bg-white/20 hover:shadow-glow">
+                <LogOut className="w-5 h-5" />
               </Button>
             </div>
           </div>

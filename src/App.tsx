@@ -7,6 +7,7 @@ import { WorkoutProvider } from "@/contexts/WorkoutContext";
 import { ConversationProvider } from "@/contexts/ConversationContext";
 import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
+import Auth from "./pages/Auth";
 import Chat from "./pages/Chat";
 import ChatThread from "./pages/ChatThread";
 import Schedule from "./pages/Schedule";
@@ -25,6 +26,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Landing />} />
+              <Route path="/auth" element={<Auth />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/chat" element={<Chat />} />
               <Route path="/chat/:contactId" element={<ChatThread />} />
