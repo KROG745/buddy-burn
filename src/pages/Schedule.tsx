@@ -26,6 +26,7 @@ const Schedule = () => {
   const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [locationTab, setLocationTab] = useState("manual");
   const [newWorkout, setNewWorkout] = useState({
     title: "",
@@ -136,7 +137,7 @@ const Schedule = () => {
                 {/* Date Selection */}
                 <div>
                   <Label htmlFor="workout-date">Select Workout Date</Label>
-                  <Popover>
+                  <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
@@ -164,7 +165,12 @@ const Schedule = () => {
                       <CalendarComponent
                         mode="single"
                         selected={newWorkout.date}
-                        onSelect={(date) => date && setNewWorkout({...newWorkout, date})}
+                        onSelect={(date) => {
+                          if (date) {
+                            setNewWorkout({...newWorkout, date});
+                            setIsDatePickerOpen(false);
+                          }
+                        }}
                         disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
                         initialFocus
                         className={cn("p-3 pointer-events-auto")}
