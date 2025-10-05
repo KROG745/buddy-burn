@@ -59,6 +59,7 @@ const formSchema = z.object({
   workoutType: z.string({
     required_error: "Please select a workout type.",
   }),
+  workoutSubType: z.string().optional(),
   duration: z.string({
     required_error: "Please specify the duration.",
   }),
@@ -73,16 +74,37 @@ interface ScheduleWorkoutModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const workoutTypes = [
-  { value: "running", label: "Running", icon: "🏃‍♂️" },
-  { value: "strength", label: "Strength Training", icon: "💪" },
-  { value: "yoga", label: "Yoga", icon: "🧘‍♀️" },
-  { value: "cycling", label: "Cycling", icon: "🚴‍♂️" },
-  { value: "swimming", label: "Swimming", icon: "🏊‍♂️" },
-  { value: "hiit", label: "HIIT", icon: "🔥" },
-  { value: "pilates", label: "Pilates", icon: "🤸‍♀️" },
-  { value: "boxing", label: "Boxing", icon: "🥊" },
+const workoutCategories = [
+  { value: "Cardio", label: "Cardio", icon: "🏃‍♂️" },
+  { value: "Weight Training", label: "Weight Training", icon: "💪" },
+  { value: "Yoga", label: "Yoga", icon: "🧘‍♀️" },
+  { value: "HIIT", label: "HIIT", icon: "🔥" },
+  { value: "Pilates", label: "Pilates", icon: "🤸‍♀️" },
+  { value: "Boxing", label: "Boxing", icon: "🥊" },
 ];
+
+const workoutSubTypes: Record<string, { value: string; label: string }[]> = {
+  "Cardio": [
+    { value: "running", label: "Running" },
+    { value: "cycling", label: "Cycling" },
+    { value: "swimming", label: "Swimming" },
+  ],
+  "Weight Training": [
+    { value: "strength", label: "Strength Training" },
+  ],
+  "Yoga": [
+    { value: "yoga", label: "Yoga" },
+  ],
+  "HIIT": [
+    { value: "hiit", label: "HIIT" },
+  ],
+  "Pilates": [
+    { value: "pilates", label: "Pilates" },
+  ],
+  "Boxing": [
+    { value: "boxing", label: "Boxing" },
+  ],
+};
 
 const timeSlots = [
   "6:00 AM", "6:30 AM", "7:00 AM", "7:30 AM", "8:00 AM", "8:30 AM", "9:00 AM", "9:30 AM",
@@ -124,14 +146,15 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
   const selectedLocation = form.watch("location");
   const selectedDate = form.watch("date");
   const selectedWorkoutType = form.watch("workoutType");
+  const selectedWorkoutSubType = form.watch("workoutSubType");
   const selectedTime = form.watch("time");
 
-  // Generate exercises when workout type changes
+  // Generate exercises when workout sub-type changes
   useEffect(() => {
-    if (selectedWorkoutType) {
-      generateExercises(selectedWorkoutType);
+    if (selectedWorkoutSubType) {
+      generateExercises(selectedWorkoutSubType);
     }
-  }, [selectedWorkoutType]);
+  }, [selectedWorkoutSubType]);
 
   // Show buddies when location and date are selected
   useEffect(() => {
@@ -349,26 +372,32 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
               />
             </div>
 
-            {/* Workout Type */}
+            {/* Workout Category */}
             <FormField
               control={form.control}
               name="workoutType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Workout Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormLabel>Workout Category</FormLabel>
+                  <Select 
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      form.setValue("workoutSubType", "");
+                    }} 
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <Dumbbell className="w-4 h-4 mr-2" />
-                        <SelectValue placeholder="Select workout type" />
+                        <SelectValue placeholder="Select workout category" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="z-50 bg-popover">
-                      {workoutTypes.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
+                      {workoutCategories.map((category) => (
+                        <SelectItem key={category.value} value={category.value}>
                           <span className="flex items-center gap-2">
-                            <span>{type.icon}</span>
-                            {type.label}
+                            <span>{category.icon}</span>
+                            {category.label}
                           </span>
                         </SelectItem>
                       ))}
@@ -378,6 +407,34 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                 </FormItem>
               )}
             />
+
+            {/* Workout Sub-Type */}
+            {selectedWorkoutType && workoutSubTypes[selectedWorkoutType] && (
+              <FormField
+                control={form.control}
+                name="workoutSubType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Workout Style</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select workout style" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="z-50 bg-popover">
+                        {workoutSubTypes[selectedWorkoutType].map((subType) => (
+                          <SelectItem key={subType.value} value={subType.value}>
+                            {subType.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             {/* Location with Tabs */}
             <FormField
@@ -440,7 +497,7 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
             />
 
             {/* Exercise Guide */}
-            {selectedWorkoutType && exercises.length > 0 && (
+            {selectedWorkoutSubType && exercises.length > 0 && (
               <>
                 <Separator />
                 <ExerciseGuide
