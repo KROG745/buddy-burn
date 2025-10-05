@@ -94,6 +94,119 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* Feature Showcase Section */}
+      <section className="bg-[#1a1a1a] py-32">
+        <div className="container mx-auto px-4">
+          {/* Feature 1: Friend Network */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-32">
+            <div className="relative order-2 lg:order-1">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#4169E1]/30 to-purple-600/30 rounded-[4rem] blur-3xl" />
+              <div className="relative mx-auto max-w-sm">
+                <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-[3rem] shadow-2xl border-8 border-gray-800 p-8">
+                  <div className="bg-[#1a1a1a] rounded-[2rem] p-6 space-y-4">
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-white text-xl font-bold">Friend Search</h3>
+                      <div className="w-8 h-8 rounded-full bg-[#4169E1]/20 flex items-center justify-center">
+                        <Users className="w-4 h-4 text-[#4169E1]" />
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                        <p className="text-sm text-gray-400 mb-1">Workout Type</p>
+                        <p className="text-white">Cardio</p>
+                      </div>
+                      <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                        <p className="text-sm text-gray-400 mb-1">Location</p>
+                        <p className="text-white">Within 5 miles</p>
+                      </div>
+                      <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                        <p className="text-sm text-gray-400 mb-1">Time</p>
+                        <p className="text-white">Morning sessions</p>
+                      </div>
+                    </div>
+                    <button className="w-full bg-gradient-to-r from-[#4169E1] to-purple-600 text-white rounded-xl py-3 font-semibold mt-4">
+                      Find Friends
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="order-1 lg:order-2">
+              <div className="bg-white rounded-3xl p-12 shadow-2xl">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#4169E1] to-purple-600 flex items-center justify-center mb-6">
+                  <Users className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                  Fitness Friend network and filter
+                </h2>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  Our user profiles are built by workout fanatics so you can find the perfect person to get your sweat on. 
+                  Filter by proximity, gym, work out style, fitness goals, and even availability.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Feature 2: Progress Tracking */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="bg-white rounded-3xl p-12 shadow-2xl">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center mb-6">
+                  <TrendingUp className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                  Track every milestone
+                </h2>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  Visualize your fitness journey with comprehensive analytics. Track workouts, monitor progress, 
+                  and celebrate achievements with your fitness community.
+                </p>
+              </div>
+            </div>
+            
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/30 to-teal-600/30 rounded-[4rem] blur-3xl" />
+              <div className="relative mx-auto max-w-sm">
+                <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-[3rem] shadow-2xl border-8 border-gray-800 p-8">
+                  <div className="bg-[#1a1a1a] rounded-[2rem] p-6 space-y-4">
+                    <h3 className="text-white text-xl font-bold mb-6">This Week</h3>
+                    <div className="space-y-4">
+                      <div className="bg-gradient-to-r from-emerald-500/20 to-teal-600/20 rounded-xl p-4 border border-emerald-500/30">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-gray-400 text-sm">Workouts</span>
+                          <span className="text-emerald-400 font-bold text-2xl">12</span>
+                        </div>
+                        <div className="w-full bg-gray-700 rounded-full h-2">
+                          <div className="bg-gradient-to-r from-emerald-500 to-teal-600 h-2 rounded-full" style={{ width: '75%' }}></div>
+                        </div>
+                      </div>
+                      <div className="bg-gradient-to-r from-[#4169E1]/20 to-purple-600/20 rounded-xl p-4 border border-[#4169E1]/30">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-gray-400 text-sm">Friends Active</span>
+                          <span className="text-[#4169E1] font-bold text-2xl">8</span>
+                        </div>
+                        <div className="flex -space-x-2 mt-2">
+                          {[1, 2, 3, 4].map((i) => (
+                            <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-[#4169E1] to-purple-600 border-2 border-gray-800"></div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400 text-sm">Streak</span>
+                          <span className="text-white font-bold text-2xl">🔥 5 days</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Grid */}
       <section className="container mx-auto px-4 py-20 bg-background">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
