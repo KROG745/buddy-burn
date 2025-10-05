@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Clock, Dumbbell, MapPin, Users, Search, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -36,6 +36,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -43,6 +44,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useWorkouts } from "@/contexts/WorkoutContext";
 import LocationFinder from "./LocationFinder";
 import { useWorkoutShares } from "@/hooks/useWorkoutShares";
+import { useScheduledWorkouts } from "@/hooks/useScheduledWorkouts";
+import WorkoutBuddies from "./WorkoutBuddies";
 
 const formSchema = z.object({
   date: z.date({
@@ -94,8 +97,10 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
   const { toast } = useToast();
   const { addWorkout } = useWorkouts();
   const { shareWorkout } = useWorkoutShares();
+  const { scheduleWorkout } = useScheduledWorkouts();
   const [isLoading, setIsLoading] = useState(false);
   const [locationTab, setLocationTab] = useState("manual");
+  const [showBuddies, setShowBuddies] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -106,6 +111,19 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
   });
 
   const publishToFeed = form.watch("publishToFeed");
+  const selectedLocation = form.watch("location");
+  const selectedDate = form.watch("date");
+  const selectedWorkoutType = form.watch("workoutType");
+  const selectedTime = form.watch("time");
+
+  // Show buddies when location and date are selected
+  useEffect(() => {
+    if (selectedLocation && selectedDate) {
+      setShowBuddies(true);
+    } else {
+      setShowBuddies(false);
+    }
+  }, [selectedLocation, selectedDate]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
@@ -117,7 +135,20 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
       // Generate workout ID
       const workoutId = Date.now().toString();
       
-      // Add workout to context
+      // Save to database if location is provided
+      if (values.location) {
+        await scheduleWorkout({
+          workout_type: values.workoutType,
+          date: values.date,
+          time: values.time,
+          duration: durationNumber,
+          location: values.location,
+          notes: values.notes,
+          intensity: 'medium'
+        });
+      }
+      
+      // Add workout to local context
       addWorkout({
         title: `${values.workoutType.charAt(0).toUpperCase() + values.workoutType.slice(1)} Workout`,
         type: values.workoutType,
@@ -148,6 +179,7 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
       
       onOpenChange(false);
       form.reset();
+      setShowBuddies(false);
     } catch (error) {
       toast({
         title: "Error",
@@ -361,6 +393,19 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                 </FormItem>
               )}
             />
+
+            {/* Workout Buddies Section */}
+            {showBuddies && selectedLocation && selectedDate && (
+              <>
+                <Separator />
+                <WorkoutBuddies
+                  location={selectedLocation}
+                  date={selectedDate}
+                  workoutType={selectedWorkoutType}
+                  time={selectedTime}
+                />
+              </>
+            )}
 
             {/* Publish to Feed Section */}
             <div className="space-y-4 p-4 border border-border rounded-lg bg-card">

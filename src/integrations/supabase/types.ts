@@ -210,6 +210,51 @@ export type Database = {
         }
         Relationships: []
       }
+      scheduled_workouts: {
+        Row: {
+          created_at: string | null
+          date: string
+          duration: string | null
+          id: string
+          intensity: string | null
+          location: string
+          location_normalized: string | null
+          notes: string | null
+          time: string
+          updated_at: string | null
+          user_id: string
+          workout_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          date: string
+          duration?: string | null
+          id?: string
+          intensity?: string | null
+          location: string
+          location_normalized?: string | null
+          notes?: string | null
+          time: string
+          updated_at?: string | null
+          user_id: string
+          workout_type: string
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          duration?: string | null
+          id?: string
+          intensity?: string | null
+          location?: string
+          location_normalized?: string | null
+          notes?: string | null
+          time?: string
+          updated_at?: string | null
+          user_id?: string
+          workout_type?: string
+        }
+        Relationships: []
+      }
       workout_shares: {
         Row: {
           caption: string | null
