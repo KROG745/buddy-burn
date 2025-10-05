@@ -458,14 +458,14 @@ const Schedule = () => {
         {/* Enhanced Workout Log */}
         <div className="space-y-4">
           <h3 className="font-semibold text-foreground">
-            Workout Log - {format(selectedDate, "EEEE, MMMM dd")}
+            All Workouts
           </h3>
           
-          {getWorkoutsForDate(selectedDate).length === 0 ? (
+          {workouts.length === 0 ? (
             <Card className="p-8 text-center">
               <div className="text-muted-foreground">
                 <CalendarIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No workouts scheduled for this day</p>
+                <p>No workouts scheduled yet</p>
                 <Button 
                   variant="outline" 
                   className="mt-4"
@@ -478,7 +478,7 @@ const Schedule = () => {
             </Card>
           ) : (
             <div className="space-y-4">
-              {getWorkoutsForDate(selectedDate).map((workout) => (
+              {workouts.map((workout) => (
                 <Card key={workout.id} className={cn(
                   "p-6 transition-all duration-200 hover:shadow-lg",
                   workout.completed && "bg-green-50/50 border-green-200"
