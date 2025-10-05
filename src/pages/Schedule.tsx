@@ -46,12 +46,12 @@ const Schedule = () => {
   });
 
   const workoutTypeMap: Record<string, string[]> = {
-    "Cardio": ["running", "cycling", "swimming"],
-    "Weight Training": ["strength"],
-    "Yoga": ["yoga"],
-    "HIIT": ["hiit"],
-    "Pilates": ["pilates"],
-    "Boxing": ["boxing"]
+    "Cardio": ["running", "cycling", "swimming", "rowing", "elliptical", "stair-climbing"],
+    "Weight Training": ["chest", "shoulders", "legs", "back", "arms", "abs", "full-body"],
+    "Yoga": ["vinyasa", "hatha", "power-yoga", "yin-yoga", "restorative"],
+    "HIIT": ["tabata", "circuit-training", "interval-training", "hiit"],
+    "Pilates": ["mat-pilates", "reformer", "barre", "pilates"],
+    "Boxing": ["heavy-bag", "speed-bag", "mitt-work", "shadow-boxing", "boxing"]
   };
   const handleLocationSelect = (location: string) => {
     setNewWorkout({...newWorkout, location});
