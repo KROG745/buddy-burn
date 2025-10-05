@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import FitnessLogo from "@/components/FitnessLogo";
 import { Dumbbell, Users, Calendar, TrendingUp, MessageCircle, Trophy } from "lucide-react";
 import { Link } from "react-router-dom";
+import heroDesign from "@/assets/hero-design.png";
 
 const Landing = () => {
   return (
@@ -43,45 +44,15 @@ const Landing = () => {
             </Button>
           </div>
 
-          {/* Right Phone Mockup */}
-          <div className="relative lg:block hidden">
-            <div className="relative mx-auto" style={{ width: '300px', height: '600px' }}>
-              {/* Phone frame */}
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 rounded-[3rem] shadow-2xl border-8 border-gray-800">
-                {/* Notch */}
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-gray-800 rounded-b-3xl"></div>
-                
-                {/* Screen content */}
-                <div className="absolute inset-2 bg-gradient-to-b from-gray-700 to-gray-900 rounded-[2.5rem] overflow-hidden">
-                  <div className="p-8 flex flex-col items-center justify-center h-full bg-[url('/lovable-uploads/deff32ce-7e44-4c1b-8c5f-3e5b49f3b7db.png')] bg-cover bg-center">
-                    <div className="absolute inset-0 bg-black/40"></div>
-                    <div className="relative z-10 text-center space-y-4">
-                      <FitnessLogo className="justify-center mb-8" />
-                      <div className="space-y-3 w-full max-w-[200px]">
-                        <input 
-                          type="text" 
-                          placeholder="Email" 
-                          className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white text-sm placeholder:text-gray-400"
-                          disabled
-                        />
-                        <input 
-                          type="password" 
-                          placeholder="Password" 
-                          className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white text-sm placeholder:text-gray-400"
-                          disabled
-                        />
-                        <button className="w-full bg-[#4169E1] text-white rounded-lg py-2 text-sm">
-                          Sign In
-                        </button>
-                        <p className="text-xs text-gray-400">
-                          Don't have an account?{" "}
-                          <span className="text-[#4169E1]">SIGN UP</span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          {/* Right Design Image */}
+          <div className="relative">
+            <div className="relative mx-auto max-w-2xl">
+              <div className="absolute inset-0 bg-gradient-to-r from-[#4169E1]/20 to-purple-600/20 rounded-3xl blur-3xl" />
+              <img
+                src={heroDesign}
+                alt="Fitness App Design"
+                className="relative rounded-3xl shadow-2xl w-full"
+              />
             </div>
           </div>
         </div>
