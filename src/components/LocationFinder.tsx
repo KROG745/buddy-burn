@@ -24,6 +24,7 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
   const [locations, setLocations] = useState<FitnessLocation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userLocation, setUserLocation] = useState<[number, number]>([40.7128, -74.0060]); // Default: NYC
+  const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
 
   // Get user's current location on mount
   useEffect(() => {
@@ -195,6 +196,7 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
   };
 
   const handleLocationSelect = (location: FitnessLocation) => {
+    setSelectedLocationId(location.id);
     onLocationSelect(`${location.name}, ${location.address}`);
   };
 
@@ -245,19 +247,32 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
         {locations.map((location) => (
           <Card 
             key={location.id} 
-            className="p-3 hover:shadow-lg hover:border-primary/50 transition-all cursor-pointer border border-border/50"
+            className={`p-3 hover:shadow-lg transition-all cursor-pointer border ${
+              selectedLocationId === location.id 
+                ? 'border-primary bg-primary/5 shadow-md ring-2 ring-primary/20' 
+                : 'border-border/50 hover:border-primary/50'
+            }`}
             onClick={() => handleLocationSelect(location)}
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <h5 className="font-medium text-sm text-foreground">{location.name}</h5>
+                  <h5 className={`font-medium text-sm ${
+                    selectedLocationId === location.id ? 'text-primary' : 'text-foreground'
+                  }`}>
+                    {location.name}
+                  </h5>
                   {location.distance !== undefined && (
                     <Badge variant="secondary" className="text-xs">
                       {location.distance < 1 
                         ? `${(location.distance * 1000).toFixed(0)}m away`
                         : `${location.distance.toFixed(1)}km away`
                       }
+                    </Badge>
+                  )}
+                  {selectedLocationId === location.id && (
+                    <Badge className="text-xs bg-primary text-primary-foreground">
+                      Selected
                     </Badge>
                   )}
                 </div>
