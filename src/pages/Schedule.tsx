@@ -30,6 +30,7 @@ const Schedule = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [locationTab, setLocationTab] = useState("manual");
+  const [editingWorkoutId, setEditingWorkoutId] = useState<string | null>(null);
   const [newWorkout, setNewWorkout] = useState({
     title: "",
     type: "",
@@ -104,39 +105,79 @@ const Schedule = () => {
   };
 
 
+  const handleEditWorkout = (workout: any) => {
+    setEditingWorkoutId(workout.id);
+    setNewWorkout({
+      title: workout.title,
+      type: workout.type,
+      subType: "",
+      time: workout.time,
+      duration: workout.duration,
+      goal: workout.goal,
+      location: workout.location || "",
+      notes: workout.notes || "",
+      date: workout.date,
+      intensity: workout.intensity,
+      publishToFeed: false,
+      shareCaption: ""
+    });
+    setIsDialogOpen(true);
+  };
+
   const handleAddWorkout = () => {
     if (newWorkout.title && newWorkout.type && newWorkout.time && newWorkout.goal) {
-      const workoutId = Date.now().toString();
-      
-      addWorkout({
-        title: newWorkout.title,
-        type: newWorkout.type,
-        date: newWorkout.date,
-        time: newWorkout.time,
-        duration: newWorkout.duration,
-        goal: newWorkout.goal,
-        location: newWorkout.location,
-        notes: newWorkout.notes,
-        intensity: newWorkout.intensity as "low" | "medium" | "high"
-      });
-      
-      // If publishing to feed, share the workout
-      if (newWorkout.publishToFeed) {
-        shareWorkout({
-          workout_id: workoutId,
-          caption: newWorkout.shareCaption || `Scheduled ${newWorkout.type} workout for ${format(newWorkout.date, "PPP")} at ${newWorkout.time}`,
-          is_public: true,
+      if (editingWorkoutId) {
+        // Update existing workout
+        updateWorkout(editingWorkoutId, {
+          title: newWorkout.title,
+          type: newWorkout.type,
+          date: newWorkout.date,
+          time: newWorkout.time,
+          duration: newWorkout.duration,
+          goal: newWorkout.goal,
+          location: newWorkout.location,
+          notes: newWorkout.notes,
+          intensity: newWorkout.intensity as "low" | "medium" | "high"
         });
         
         toast({
-          title: "Workout Scheduled & Shared! 🎉",
-          description: `${newWorkout.type} workout scheduled and shared to your feed!`,
+          title: "Workout Updated! ✏️",
+          description: `${newWorkout.type} workout has been updated successfully.`,
         });
       } else {
-        toast({
-          title: "Workout Scheduled! 🎉",
-          description: `${newWorkout.type} workout scheduled for ${format(newWorkout.date, "PPP")}`,
+        // Add new workout
+        const workoutId = Date.now().toString();
+        
+        addWorkout({
+          title: newWorkout.title,
+          type: newWorkout.type,
+          date: newWorkout.date,
+          time: newWorkout.time,
+          duration: newWorkout.duration,
+          goal: newWorkout.goal,
+          location: newWorkout.location,
+          notes: newWorkout.notes,
+          intensity: newWorkout.intensity as "low" | "medium" | "high"
         });
+        
+        // If publishing to feed, share the workout
+        if (newWorkout.publishToFeed) {
+          shareWorkout({
+            workout_id: workoutId,
+            caption: newWorkout.shareCaption || `Scheduled ${newWorkout.type} workout for ${format(newWorkout.date, "PPP")} at ${newWorkout.time}`,
+            is_public: true,
+          });
+          
+          toast({
+            title: "Workout Scheduled & Shared! 🎉",
+            description: `${newWorkout.type} workout scheduled and shared to your feed!`,
+          });
+        } else {
+          toast({
+            title: "Workout Scheduled! 🎉",
+            description: `${newWorkout.type} workout scheduled for ${format(newWorkout.date, "PPP")}`,
+          });
+        }
       }
       
       setNewWorkout({
@@ -153,6 +194,7 @@ const Schedule = () => {
         publishToFeed: false,
         shareCaption: ""
       });
+      setEditingWorkoutId(null);
       setIsDialogOpen(false);
     }
   };
@@ -190,7 +232,7 @@ const Schedule = () => {
             </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Schedule New Workout</DialogTitle>
+                <DialogTitle>{editingWorkoutId ? 'Edit Workout' : 'Schedule New Workout'}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 {/* Date Selection */}
@@ -569,7 +611,11 @@ const Schedule = () => {
                       )}
                       
                       <div className="flex space-x-1">
-                        <Button variant="ghost" size="sm">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleEditWorkout(workout)}
+                        >
                           <Edit className="w-4 h-4" />
                         </Button>
                         <Button 
