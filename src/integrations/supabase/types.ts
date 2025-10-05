@@ -180,6 +180,7 @@ export type Database = {
           experience_level: string | null
           fitness_goal: string | null
           id: string
+          is_public: boolean | null
           updated_at: string
           username: string | null
         }
@@ -191,6 +192,7 @@ export type Database = {
           experience_level?: string | null
           fitness_goal?: string | null
           id: string
+          is_public?: boolean | null
           updated_at?: string
           username?: string | null
         }
@@ -202,6 +204,7 @@ export type Database = {
           experience_level?: string | null
           fitness_goal?: string | null
           id?: string
+          is_public?: boolean | null
           updated_at?: string
           username?: string | null
         }

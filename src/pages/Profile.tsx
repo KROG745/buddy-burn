@@ -23,6 +23,7 @@ interface UserProfile {
   goals: string[];
   interests: string[];
   isTrainer: boolean;
+  isPublic: boolean;
   trainerInfo?: {
     specialties: string[];
     experience: string;
@@ -45,6 +46,7 @@ const Profile = () => {
     goals: ["Weight Loss", "Muscle Building", "Endurance"],
     interests: ["Running", "Weightlifting", "Yoga", "Hiking", "Nutrition"],
     isTrainer: false,
+    isPublic: true,
     trainerInfo: {
       specialties: [],
       experience: "",
@@ -192,6 +194,34 @@ const Profile = () => {
             <Badge variant="secondary" className="bg-gradient-primary text-primary-foreground">
               {currentProfile.fitnessLevel}
             </Badge>
+          </div>
+        </Card>
+
+        {/* Privacy Settings */}
+        <Card className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold">Profile Privacy</h3>
+              <p className="text-sm text-muted-foreground">
+                {currentProfile.isPublic 
+                  ? "Your profile is visible to everyone" 
+                  : "Your profile is only visible to your friends"}
+              </p>
+            </div>
+            {isEditing && (
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="privacy-toggle" className="text-sm">
+                  {editedProfile.isPublic ? "Public" : "Private"}
+                </Label>
+                <Switch
+                  id="privacy-toggle"
+                  checked={editedProfile.isPublic}
+                  onCheckedChange={(checked) => 
+                    setEditedProfile({ ...editedProfile, isPublic: checked })
+                  }
+                />
+              </div>
+            )}
           </div>
         </Card>
 
