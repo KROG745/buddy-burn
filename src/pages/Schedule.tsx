@@ -15,6 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import LocationFinder from "@/components/LocationFinder";
 import { useWorkouts } from "@/contexts/WorkoutContext";
 import { useWorkoutShares } from "@/hooks/useWorkoutShares";
+import { useExerciseGenerator, Exercise } from "@/hooks/useExerciseGenerator";
 import { format, isSameDay, startOfWeek, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import Navigation from "@/components/Navigation";
@@ -23,6 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 const Schedule = () => {
   const { workouts, addWorkout, updateWorkout, deleteWorkout, getWorkoutsForDate } = useWorkouts();
   const { shareWorkout } = useWorkoutShares();
+  const { exercises, generateExercises } = useExerciseGenerator();
   const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -31,6 +33,7 @@ const Schedule = () => {
   const [newWorkout, setNewWorkout] = useState({
     title: "",
     type: "",
+    subType: "",
     time: "",
     duration: "",
     goal: "",
@@ -41,8 +44,26 @@ const Schedule = () => {
     publishToFeed: false,
     shareCaption: ""
   });
+
+  const workoutTypeMap: Record<string, string[]> = {
+    "Cardio": ["running", "cycling", "swimming"],
+    "Weight Training": ["strength"],
+    "Yoga": ["yoga"],
+    "HIIT": ["hiit"],
+    "Pilates": ["pilates"],
+    "Boxing": ["boxing"]
+  };
   const handleLocationSelect = (location: string) => {
     setNewWorkout({...newWorkout, location});
+  };
+
+  const handleTypeChange = (type: string) => {
+    setNewWorkout({...newWorkout, type, subType: ""});
+  };
+
+  const handleSubTypeChange = (subType: string) => {
+    setNewWorkout({...newWorkout, subType});
+    generateExercises(subType);
   };
 
 
@@ -84,6 +105,7 @@ const Schedule = () => {
       setNewWorkout({
         title: "",
         type: "",
+        subType: "",
         time: "",
         duration: "",
         goal: "",
@@ -191,7 +213,7 @@ const Schedule = () => {
                   </div>
                   <div>
                     <Label htmlFor="type">Type</Label>
-                    <Select onValueChange={(value) => setNewWorkout({...newWorkout, type: value})}>
+                    <Select value={newWorkout.type} onValueChange={handleTypeChange}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
@@ -200,12 +222,51 @@ const Schedule = () => {
                         <SelectItem value="Weight Training">Weight Training</SelectItem>
                         <SelectItem value="Yoga">Yoga</SelectItem>
                         <SelectItem value="HIIT">HIIT</SelectItem>
-                        <SelectItem value="Swimming">Swimming</SelectItem>
-                        <SelectItem value="Cycling">Cycling</SelectItem>
+                        <SelectItem value="Pilates">Pilates</SelectItem>
+                        <SelectItem value="Boxing">Boxing</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
+
+                {/* Sub-type selection */}
+                {newWorkout.type && workoutTypeMap[newWorkout.type] && (
+                  <div>
+                    <Label htmlFor="subType">Workout Style</Label>
+                    <Select value={newWorkout.subType} onValueChange={handleSubTypeChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select workout style" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {workoutTypeMap[newWorkout.type].map((subType) => (
+                          <SelectItem key={subType} value={subType}>
+                            {subType.charAt(0).toUpperCase() + subType.slice(1)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* Exercise Guide */}
+                {exercises.length > 0 && (
+                  <div className="space-y-3">
+                    <Label>Exercise Guide</Label>
+                    <div className="border border-border rounded-lg p-4 space-y-3 max-h-64 overflow-y-auto bg-muted/30">
+                      {exercises.map((exercise) => (
+                        <div key={exercise.id} className="p-3 bg-card border border-border rounded-md">
+                          <h4 className="font-semibold text-sm mb-2">{exercise.name}</h4>
+                          <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                            {exercise.sets && <Badge variant="outline">Sets: {exercise.sets}</Badge>}
+                            {exercise.reps && <Badge variant="outline">Reps: {exercise.reps}</Badge>}
+                            {exercise.duration && <Badge variant="outline">Duration: {exercise.duration}</Badge>}
+                            {exercise.rest && <Badge variant="outline">Rest: {exercise.rest}</Badge>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
