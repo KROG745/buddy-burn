@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import FitnessLogo from "@/components/FitnessLogo";
-import { Dumbbell, Users, Calendar, TrendingUp, MessageCircle, Trophy } from "lucide-react";
+import { Dumbbell, Users, Calendar, TrendingUp, MessageCircle, Trophy, HelpCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroDesign from "@/assets/hero-design.png";
 
@@ -423,6 +424,106 @@ const Landing = () => {
                 Unlock badges and milestones as you reach your fitness goals.
               </p>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="bg-gradient-to-b from-white to-blue-50 py-20">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-[#4169E1] to-[#5179F1] mb-6 shadow-lg">
+              <HelpCircle className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#4169E1] to-[#5179F1] bg-clip-text text-transparent">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-lg text-gray-600">
+              Got questions? We've got answers about Fitness Friends
+            </p>
+          </div>
+          
+          <Card className="bg-white border-blue-100 shadow-xl">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1" className="border-blue-100">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
+                  <span className="text-lg font-semibold text-gray-900">What is Fitness Friends?</span>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-600">
+                  Fitness Friends is a mobile app designed to help you find workout buddies and stay motivated on your fitness journey. Connect with like-minded individuals, schedule workouts together, and track your progress as a community.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-2" className="border-blue-100">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
+                  <span className="text-lg font-semibold text-gray-900">How do I find workout partners?</span>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-600">
+                  Our smart matching system connects you with fitness enthusiasts based on your location, fitness level, workout preferences, and goals. Browse profiles, send messages, and schedule workouts together through the app.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-3" className="border-blue-100">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
+                  <span className="text-lg font-semibold text-gray-900">Is Fitness Friends free to use?</span>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-600">
+                  We're currently in closed beta and offering free access to all features. Sign up now to secure your spot and be among the first to experience the full Fitness Friends platform!
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-4" className="border-blue-100">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
+                  <span className="text-lg font-semibold text-gray-900">Can I track my workouts in the app?</span>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-600">
+                  Absolutely! Fitness Friends includes comprehensive workout tracking features. Log your exercises, monitor progress, set goals, and view detailed analytics about your fitness journey. You can also share your achievements with friends.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-5" className="border-blue-100">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
+                  <span className="text-lg font-semibold text-gray-900">How does the messaging system work?</span>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-600">
+                  Connect with your fitness friends through our built-in messaging system. Chat in real-time, coordinate workout schedules, share tips and motivation, and build a supportive community. We also provide ice breaker prompts to help start conversations.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-6" className="border-blue-100">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
+                  <span className="text-lg font-semibold text-gray-900">Is my data secure and private?</span>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-600">
+                  Your privacy and security are our top priorities. We use industry-standard encryption to protect your data, and you have full control over what information you share with others. Your workout data and messages are private and secure.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-7" className="border-blue-100">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
+                  <span className="text-lg font-semibold text-gray-900">What platforms is Fitness Friends available on?</span>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-600">
+                  Fitness Friends is available as a web app and will soon be available on iOS and Android. You can access your account from any device and your data syncs seamlessly across all platforms.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-8" className="border-b-0">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
+                  <span className="text-lg font-semibold text-gray-900">How do I join the beta program?</span>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6 text-gray-600">
+                  Simply click the "Join Beta" or "Get Started" button and create your account. You'll get immediate access to all features and be part of shaping the future of Fitness Friends with your feedback.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </Card>
+
+          <div className="text-center mt-8">
+            <p className="text-gray-600 mb-4">Still have questions?</p>
+            <Button variant="outline" className="border-[#4169E1] text-[#4169E1] hover:bg-blue-50" asChild>
+              <Link to="/faq">View Full FAQ</Link>
+            </Button>
           </div>
         </div>
       </section>
