@@ -135,18 +135,29 @@ const Schedule = () => {
               <div className="space-y-4">
                 {/* Date Selection */}
                 <div>
-                  <Label htmlFor="workout-date">Workout Date</Label>
+                  <Label htmlFor="workout-date">Select Workout Date</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-full justify-start text-left font-normal",
+                          "w-full justify-between text-left font-normal h-auto py-3",
                           !newWorkout.date && "text-muted-foreground"
                         )}
                       >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {newWorkout.date ? format(newWorkout.date, "PPP") : <span>Pick a date</span>}
+                        <div className="flex items-center gap-2">
+                          <CalendarIcon className="h-5 w-5" />
+                          <div>
+                            <div className="font-semibold">
+                              {newWorkout.date ? format(newWorkout.date, "EEEE, MMMM dd, yyyy") : "Choose a date"}
+                            </div>
+                            {newWorkout.date && (
+                              <div className="text-xs text-muted-foreground">
+                                Click to change date
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0 z-50" align="start">
