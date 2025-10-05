@@ -43,8 +43,75 @@ const ActivityFeed = () => {
     },
   });
   
-  // Combine shares with workout details
-  const recentActivities = shares.map(share => {
+  // Demo data for showcase
+  const demoActivities = [
+    {
+      id: 'demo-1',
+      userId: 'demo-user-1',
+      user: {
+        display_name: 'Sarah Runner',
+        avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
+        username: 'sarah_runner'
+      },
+      caption: 'Who wants to join me for a morning run? Perfect weather tomorrow! 🌤️',
+      createdAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+      workout: {
+        id: 'demo-workout-1',
+        workout_type: 'Cardio',
+        date: '2025-10-06',
+        time: '7:00 AM',
+        duration: '45',
+        location: 'Central Park - Main Loop',
+        intensity: 'medium',
+        notes: 'Morning run, all levels welcome!'
+      }
+    },
+    {
+      id: 'demo-2',
+      userId: 'demo-user-2',
+      user: {
+        display_name: 'Mike Strong',
+        avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike',
+        username: 'mike_strong'
+      },
+      caption: 'Chest and triceps at Gold\'s tonight! Looking for a workout partner 💪',
+      createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+      workout: {
+        id: 'demo-workout-2',
+        workout_type: 'Weight Training',
+        date: '2025-10-06',
+        time: '6:00 PM',
+        duration: '60',
+        location: 'Gold\'s Gym Downtown',
+        intensity: 'high',
+        notes: 'Chest and triceps day - spotters needed'
+      }
+    },
+    {
+      id: 'demo-3',
+      userId: 'demo-user-3',
+      user: {
+        display_name: 'Emma Yoga',
+        avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma',
+        username: 'emma_yoga'
+      },
+      caption: 'Sunrise yoga on the beach tomorrow! All levels welcome 🧘‍♀️',
+      createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+      workout: {
+        id: 'demo-workout-3',
+        workout_type: 'Yoga',
+        date: '2025-10-07',
+        time: '8:00 AM',
+        duration: '60',
+        location: 'Sunset Beach',
+        intensity: 'low',
+        notes: 'Beach yoga session - bring your mat!'
+      }
+    }
+  ];
+  
+  // Combine real shares with demo data
+  const realActivities = shares.map(share => {
     const workout = workoutDetails?.find(w => w.id === share.workout_id);
     return {
       id: share.id,
@@ -55,6 +122,8 @@ const ActivityFeed = () => {
       workout,
     };
   }).filter(activity => activity.workout);
+  
+  const recentActivities = [...realActivities, ...demoActivities];
   
   const handleStartConversation = (activity: any) => {
     if (!activity.user || !activity.workout) return;

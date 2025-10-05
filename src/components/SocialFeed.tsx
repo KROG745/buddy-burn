@@ -112,6 +112,61 @@ const SocialFeed = () => {
     );
   }
 
+  // Demo data for showcase
+  const demoSharedActivities = [
+    {
+      id: 'demo-1',
+      userId: 'demo-user-1',
+      type: 'shared',
+      userName: 'Sarah Runner',
+      userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
+      workoutData: {
+        type: 'Cardio',
+        title: 'Cardio Workout',
+        duration: '45',
+        location: 'Central Park - Main Loop',
+        intensity: 'medium',
+        time: '7:00 AM',
+      },
+      caption: 'Who wants to join me for a morning run? Perfect weather tomorrow! 🌤️',
+      createdAt: new Date(Date.now() - 5 * 60 * 1000),
+    },
+    {
+      id: 'demo-2',
+      userId: 'demo-user-2',
+      type: 'shared',
+      userName: 'Mike Strong',
+      userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike',
+      workoutData: {
+        type: 'Weight Training',
+        title: 'Weight Training Workout',
+        duration: '60',
+        location: 'Gold\'s Gym Downtown',
+        intensity: 'high',
+        time: '6:00 PM',
+      },
+      caption: 'Chest and triceps at Gold\'s tonight! Looking for a workout partner 💪',
+      createdAt: new Date(Date.now() - 15 * 60 * 1000),
+    },
+    {
+      id: 'demo-3',
+      userId: 'demo-user-3',
+      type: 'shared',
+      userName: 'Emma Yoga',
+      userAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma',
+      workoutData: {
+        type: 'Yoga',
+        title: 'Yoga Workout',
+        duration: '60',
+        location: 'Sunset Beach',
+        intensity: 'low',
+        time: '8:00 AM',
+      },
+      caption: 'Sunrise yoga on the beach tomorrow! All levels welcome 🧘‍♀️',
+      createdAt: new Date(Date.now() - 30 * 60 * 1000),
+    }
+  ];
+
   // Combine local completed workouts with scheduled shared workouts
   const localActivities = workouts
     .filter(w => w.completed)
@@ -156,7 +211,7 @@ const SocialFeed = () => {
     };
   }).filter(Boolean);
 
-  const allActivities = [...localActivities, ...sharedActivities]
+  const allActivities = [...localActivities, ...sharedActivities, ...demoSharedActivities]
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
     .slice(0, 10);
 
