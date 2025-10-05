@@ -46,6 +46,8 @@ import LocationFinder from "./LocationFinder";
 import { useWorkoutShares } from "@/hooks/useWorkoutShares";
 import { useScheduledWorkouts } from "@/hooks/useScheduledWorkouts";
 import WorkoutBuddies from "./WorkoutBuddies";
+import ExerciseGuide from "./ExerciseGuide";
+import { useExerciseGenerator } from "@/hooks/useExerciseGenerator";
 
 const formSchema = z.object({
   date: z.date({
@@ -101,6 +103,13 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
   const [isLoading, setIsLoading] = useState(false);
   const [locationTab, setLocationTab] = useState("manual");
   const [showBuddies, setShowBuddies] = useState(false);
+  const { 
+    exercises, 
+    generateExercises, 
+    addExercise, 
+    removeExercise, 
+    updateExercise 
+  } = useExerciseGenerator();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -115,6 +124,13 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
   const selectedDate = form.watch("date");
   const selectedWorkoutType = form.watch("workoutType");
   const selectedTime = form.watch("time");
+
+  // Generate exercises when workout type changes
+  useEffect(() => {
+    if (selectedWorkoutType) {
+      generateExercises(selectedWorkoutType);
+    }
+  }, [selectedWorkoutType]);
 
   // Show buddies when location and date are selected
   useEffect(() => {
@@ -393,6 +409,19 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                 </FormItem>
               )}
             />
+
+            {/* Exercise Guide */}
+            {selectedWorkoutType && exercises.length > 0 && (
+              <>
+                <Separator />
+                <ExerciseGuide
+                  exercises={exercises}
+                  onAddExercise={addExercise}
+                  onRemoveExercise={removeExercise}
+                  onUpdateExercise={updateExercise}
+                />
+              </>
+            )}
 
             {/* Workout Buddies Section */}
             {showBuddies && selectedLocation && selectedDate && (
