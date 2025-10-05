@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Calendar, Clock, Target, Plus, Edit, Trash2, MapPin, Check, Share2 } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Target, Plus, Edit, Trash2, MapPin, Check, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -112,7 +113,7 @@ const Schedule = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-primary/10 rounded-full">
-              <Calendar className="w-6 h-6 text-primary" />
+              <CalendarIcon className="w-6 h-6 text-primary" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-foreground">Workout Schedule</h1>
@@ -132,6 +133,35 @@ const Schedule = () => {
                 <DialogTitle>Schedule New Workout</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
+                {/* Date Selection */}
+                <div>
+                  <Label htmlFor="workout-date">Workout Date</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !newWorkout.date && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {newWorkout.date ? format(newWorkout.date, "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 z-50" align="start">
+                      <CalendarComponent
+                        mode="single"
+                        selected={newWorkout.date}
+                        onSelect={(date) => date && setNewWorkout({...newWorkout, date})}
+                        disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="title">Workout Title</Label>
@@ -319,7 +349,7 @@ const Schedule = () => {
           {getWorkoutsForDate(selectedDate).length === 0 ? (
             <Card className="p-8 text-center">
               <div className="text-muted-foreground">
-                <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <CalendarIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>No workouts scheduled for this day</p>
                 <Button 
                   variant="outline" 
