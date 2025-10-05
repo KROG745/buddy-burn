@@ -103,6 +103,7 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
   const [isLoading, setIsLoading] = useState(false);
   const [locationTab, setLocationTab] = useState("manual");
   const [showBuddies, setShowBuddies] = useState(false);
+  const [scheduleView, setScheduleView] = useState<"form" | "calendar">("form");
   const { 
     exercises, 
     generateExercises, 
@@ -220,10 +221,38 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
           </DialogDescription>
         </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Date Selection */}
-            <FormField
+        {/* View Toggle */}
+        <Tabs value={scheduleView} onValueChange={(v) => setScheduleView(v as "form" | "calendar")} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="form">Quick Schedule</TabsTrigger>
+            <TabsTrigger value="calendar">Calendar View</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="calendar" className="mt-4">
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Select a date from the calendar below to schedule your workout
+              </p>
+              <Calendar
+                mode="single"
+                selected={form.watch("date")}
+                onSelect={(date) => {
+                  if (date) {
+                    form.setValue("date", date);
+                    setScheduleView("form");
+                  }
+                }}
+                disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                className={cn("rounded-md border pointer-events-auto mx-auto")}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="form" className="mt-4">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                {/* Date Selection */}
+                <FormField
               control={form.control}
               name="date"
               render={({ field }) => (
@@ -509,9 +538,11 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                   </>
                 )}
               </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+                </DialogFooter>
+              </form>
+            </Form>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );
