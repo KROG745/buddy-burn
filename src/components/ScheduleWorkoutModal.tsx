@@ -125,6 +125,7 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
   const [isLoading, setIsLoading] = useState(false);
   const [locationTab, setLocationTab] = useState("manual");
   const [showBuddies, setShowBuddies] = useState(false);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const { 
     exercises, 
     generateExercises, 
@@ -245,14 +246,14 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Date Selection */}
-                <FormField
+            {/* Date Selection */}
+            <FormField
               control={form.control}
               name="date"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Date</FormLabel>
-                  <Popover>
+                  <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -275,7 +276,12 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={(date) => {
+                          field.onChange(date);
+                          if (date) {
+                            setIsDatePickerOpen(false);
+                          }
+                        }}
                         disabled={(date) =>
                           date < new Date() || date < new Date("1900-01-01")
                         }
