@@ -1,4 +1,4 @@
-const FitnessLogo = ({ className = "" }: { className?: string }) => {
+const FitnessLogo = ({ className = "", textColor = "text-foreground" }: { className?: string; textColor?: string }) => {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       <img 
@@ -6,7 +6,7 @@ const FitnessLogo = ({ className = "" }: { className?: string }) => {
         alt="Fitness Friends Logo" 
         className="w-10 h-10"
       />
-      <span className="text-xl font-bold text-foreground">Fitness Friends</span>
+      <span className={`text-xl font-bold ${textColor}`}>Fitness Friends</span>
     </div>
   );
 };

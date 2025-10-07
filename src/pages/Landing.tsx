@@ -12,7 +12,7 @@ const Landing = () => {
       {/* Navigation */}
       <nav className="bg-white/80 backdrop-blur-md border-b border-blue-100 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <FitnessLogo />
+          <FitnessLogo textColor="text-black" />
           <div className="flex gap-4">
             <Button variant="ghost" className="text-gray-700 hover:text-[#4169E1] hover:bg-blue-50" asChild>
               <Link to="/auth">Log In</Link>
