@@ -108,7 +108,7 @@ const Schedule = () => {
   const handleEditWorkout = (workout: any) => {
     setEditingWorkoutId(workout.id);
     setNewWorkout({
-      title: workout.title,
+      title: "",
       type: workout.type,
       subType: "",
       time: workout.time,
@@ -125,11 +125,13 @@ const Schedule = () => {
   };
 
   const handleAddWorkout = () => {
-    if (newWorkout.title && newWorkout.type && newWorkout.time && newWorkout.goal) {
+    if (newWorkout.type && newWorkout.time && newWorkout.goal) {
+      const generatedTitle = `${newWorkout.type} Workout`;
+      
       if (editingWorkoutId) {
         // Update existing workout
         updateWorkout(editingWorkoutId, {
-          title: newWorkout.title,
+          title: generatedTitle,
           type: newWorkout.type,
           date: newWorkout.date,
           time: newWorkout.time,
@@ -149,7 +151,7 @@ const Schedule = () => {
         const workoutId = Date.now().toString();
         
         addWorkout({
-          title: newWorkout.title,
+          title: generatedTitle,
           type: newWorkout.type,
           date: newWorkout.date,
           time: newWorkout.time,
@@ -280,32 +282,21 @@ const Schedule = () => {
                   </Popover>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="title">Workout Title</Label>
-                    <Input
-                      id="title"
-                      placeholder="Morning Run"
-                      value={newWorkout.title || ""}
-                      onChange={(e) => setNewWorkout({...newWorkout, title: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="type">Type</Label>
-                    <Select value={newWorkout.type} onValueChange={handleTypeChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Cardio">Cardio</SelectItem>
-                        <SelectItem value="Weight Training">Weight Training</SelectItem>
-                        <SelectItem value="Yoga">Yoga</SelectItem>
-                        <SelectItem value="HIIT">HIIT</SelectItem>
-                        <SelectItem value="Pilates">Pilates</SelectItem>
-                        <SelectItem value="Boxing">Boxing</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div>
+                  <Label htmlFor="type">Workout Type</Label>
+                  <Select value={newWorkout.type} onValueChange={handleTypeChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Cardio">Cardio</SelectItem>
+                      <SelectItem value="Weight Training">Weight Training</SelectItem>
+                      <SelectItem value="Yoga">Yoga</SelectItem>
+                      <SelectItem value="HIIT">HIIT</SelectItem>
+                      <SelectItem value="Pilates">Pilates</SelectItem>
+                      <SelectItem value="Boxing">Boxing</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Sub-type selection */}
