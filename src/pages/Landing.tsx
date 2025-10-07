@@ -8,13 +8,13 @@ import heroDesign from "@/assets/hero-design.png";
 
 const Landing = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+    <div className="min-h-screen bg-black">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md border-b border-blue-100 sticky top-0 z-50">
+      <nav className="bg-black/80 backdrop-blur-md border-b border-blue-500/20 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <FitnessLogo />
           <div className="flex gap-4">
-            <Button variant="ghost" className="text-gray-700 hover:text-[#4169E1] hover:bg-blue-50" asChild>
+            <Button variant="ghost" className="text-white hover:text-[#4169E1] hover:bg-blue-500/10" asChild>
               <Link to="/auth">Log In</Link>
             </Button>
             <Button className="bg-gradient-to-r from-[#4169E1] to-[#5179F1] hover:from-[#3159D1] hover:to-[#4169E1] text-white shadow-lg shadow-blue-500/30" asChild>
@@ -32,7 +32,7 @@ const Landing = () => {
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-[#4169E1] via-[#5179F1] to-[#4169E1] bg-clip-text text-transparent leading-tight">
               An easy way to find friends and get fit
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 max-w-xl">
+            <p className="text-lg md:text-xl text-white/80 max-w-xl">
               Meet "Fitness Friends", the next generation mobile app that makes finding a workout buddy an easy task. Are you ready to make the leap? Sign up to take part in our closed Beta!
             </p>
             <Button size="lg" className="bg-gradient-to-r from-[#4169E1] to-[#5179F1] hover:from-[#3159D1] hover:to-[#4169E1] text-white gap-2 shadow-lg shadow-blue-500/30" asChild>
@@ -79,12 +79,12 @@ const Landing = () => {
       </section>
 
       {/* Feature Showcase Section */}
-      <section className="bg-white py-32">
+      <section className="bg-black py-32">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-[#4169E1] to-[#5179F1] bg-clip-text text-transparent">
             Powerful features to supercharge your workout
           </h2>
-          <p className="text-center text-gray-600 text-lg mb-20 max-w-2xl mx-auto">
+          <p className="text-center text-white/70 text-lg mb-20 max-w-2xl mx-auto">
             Everything you need to find friends, track progress, and achieve your fitness goals
           </p>
 
@@ -129,18 +129,18 @@ const Landing = () => {
             </div>
             
             <div className="order-1 lg:order-2">
-              <div className="bg-gradient-to-br from-blue-50 to-white rounded-3xl p-12 shadow-xl border border-blue-100">
+              <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-12 shadow-xl border border-blue-500/20">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#4169E1] to-[#5179F1] flex items-center justify-center mb-6 shadow-lg">
                   <Calendar className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                <h2 className="text-4xl font-bold text-white mb-6">
                   Smart workout scheduling
                 </h2>
-                <p className="text-lg text-gray-600 leading-relaxed mb-4">
+                <p className="text-lg text-white/70 leading-relaxed mb-4">
                   Plan your workouts in advance and track completion in real-time. Set goals, specify locations, and maintain consistency with our intelligent scheduling system.
                 </p>
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-3 text-gray-700">
+                  <li className="flex items-center gap-3 text-white/80">
                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
                       <svg className="w-4 h-4 text-[#4169E1]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
@@ -148,15 +148,15 @@ const Landing = () => {
                     </div>
                     Track workout completion
                   </li>
-                  <li className="flex items-center gap-3 text-gray-700">
-                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                  <li className="flex items-center gap-3 text-white/80">
+                    <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center">
                       <svg className="w-4 h-4 text-[#4169E1]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                       </svg>
                     </div>
                     Set intensity levels and goals
                   </li>
-                  <li className="flex items-center gap-3 text-gray-700">
+                  <li className="flex items-center gap-3 text-white/80">
                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
                       <svg className="w-4 h-4 text-[#4169E1]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
@@ -172,18 +172,18 @@ const Landing = () => {
           {/* Feature 2: Messaging */}
           <div className="grid lg:grid-cols-2 gap-16 items-center mb-32">
             <div>
-              <div className="bg-gradient-to-br from-blue-50 to-white rounded-3xl p-12 shadow-xl border border-blue-100">
+              <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-12 shadow-xl border border-blue-500/20">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#4169E1] to-[#5179F1] flex items-center justify-center mb-6 shadow-lg">
                   <MessageCircle className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                <h2 className="text-4xl font-bold text-white mb-6">
                   Stay connected with friends
                 </h2>
-                <p className="text-lg text-gray-600 leading-relaxed mb-4">
+                <p className="text-lg text-white/70 leading-relaxed mb-4">
                   Chat with your fitness buddies, share workout tips, and motivate each other. Our messaging system keeps your fitness community connected and engaged.
                 </p>
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-3 text-gray-700">
+                  <li className="flex items-center gap-3 text-white/80">
                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
                       <svg className="w-4 h-4 text-[#4169E1]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
@@ -191,15 +191,15 @@ const Landing = () => {
                     </div>
                     Real-time messaging
                   </li>
-                  <li className="flex items-center gap-3 text-gray-700">
-                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                  <li className="flex items-center gap-3 text-white/80">
+                    <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center">
                       <svg className="w-4 h-4 text-[#4169E1]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                       </svg>
                     </div>
                     Workout coordination
                   </li>
-                  <li className="flex items-center gap-3 text-gray-700">
+                  <li className="flex items-center gap-3 text-white/80">
                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
                       <svg className="w-4 h-4 text-[#4169E1]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
@@ -316,18 +316,18 @@ const Landing = () => {
             </div>
             
             <div className="order-1 lg:order-2">
-              <div className="bg-gradient-to-br from-blue-50 to-white rounded-3xl p-12 shadow-xl border border-blue-100">
+              <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-12 shadow-xl border border-blue-500/20">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#4169E1] to-[#5179F1] flex items-center justify-center mb-6 shadow-lg">
                   <Users className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                <h2 className="text-4xl font-bold text-white mb-6">
                   Personalized fitness profiles
                 </h2>
-                <p className="text-lg text-gray-600 leading-relaxed mb-4">
+                <p className="text-lg text-white/70 leading-relaxed mb-4">
                   Create your fitness identity with comprehensive profiles. Share your fitness level, goals, and connect with like-minded workout enthusiasts.
                 </p>
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-3 text-gray-700">
+                  <li className="flex items-center gap-3 text-white/80">
                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
                       <svg className="w-4 h-4 text-[#4169E1]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
@@ -335,15 +335,15 @@ const Landing = () => {
                     </div>
                     Detailed fitness profiles
                   </li>
-                  <li className="flex items-center gap-3 text-gray-700">
-                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                  <li className="flex items-center gap-3 text-white/80">
+                    <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center">
                       <svg className="w-4 h-4 text-[#4169E1]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                       </svg>
                     </div>
                     Skill level tracking
                   </li>
-                  <li className="flex items-center gap-3 text-gray-700">
+                  <li className="flex items-center gap-3 text-white/80">
                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
                       <svg className="w-4 h-4 text-[#4169E1]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
@@ -359,68 +359,68 @@ const Landing = () => {
       </section>
 
       {/* Features Grid */}
-      <section className="bg-gradient-to-b from-blue-50 to-white py-20">
+      <section className="bg-black py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-white">
             Everything You Need to Stay Motivated
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card className="p-6 bg-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-blue-100">
+            <Card className="p-6 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 border border-blue-500/20">
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#4169E1] to-[#5179F1] flex items-center justify-center mb-4 shadow-lg">
                 <Dumbbell className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Track Workouts</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-2 text-white">Track Workouts</h3>
+              <p className="text-white/70">
                 Log your exercises, sets, and reps. Monitor your progress over time with detailed analytics.
               </p>
             </Card>
 
-            <Card className="p-6 bg-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-blue-100">
+            <Card className="p-6 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 border border-blue-500/20">
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#4169E1] to-[#5179F1] flex items-center justify-center mb-4 shadow-lg">
                 <Users className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Social Fitness</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-2 text-white">Social Fitness</h3>
+              <p className="text-white/70">
                 Share workouts with friends, celebrate achievements, and motivate each other.
               </p>
             </Card>
 
-            <Card className="p-6 bg-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-blue-100">
+            <Card className="p-6 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 border border-blue-500/20">
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#4169E1] to-[#5179F1] flex items-center justify-center mb-4 shadow-lg">
                 <Calendar className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Smart Scheduling</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-2 text-white">Smart Scheduling</h3>
+              <p className="text-white/70">
                 Plan your workouts in advance and stay consistent with personalized schedules.
               </p>
             </Card>
 
-            <Card className="p-6 bg-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-blue-100">
+            <Card className="p-6 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 border border-blue-500/20">
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#4169E1] to-[#5179F1] flex items-center justify-center mb-4 shadow-lg">
                 <TrendingUp className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Progress Analytics</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-2 text-white">Progress Analytics</h3>
+              <p className="text-white/70">
                 Visualize your fitness journey with comprehensive stats and insights.
               </p>
             </Card>
 
-            <Card className="p-6 bg-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-blue-100">
+            <Card className="p-6 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 border border-blue-500/20">
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#4169E1] to-[#5179F1] flex items-center justify-center mb-4 shadow-lg">
                 <MessageCircle className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Stay Connected</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-2 text-white">Stay Connected</h3>
+              <p className="text-white/70">
                 Chat with your fitness friends and get instant feedback on your workouts.
               </p>
             </Card>
 
-            <Card className="p-6 bg-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-blue-100">
+            <Card className="p-6 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 border border-blue-500/20">
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#4169E1] to-[#5179F1] flex items-center justify-center mb-4 shadow-lg">
                 <Trophy className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Earn Achievements</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-2 text-white">Earn Achievements</h3>
+              <p className="text-white/70">
                 Unlock badges and milestones as you reach your fitness goals.
               </p>
             </Card>
@@ -429,7 +429,7 @@ const Landing = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="bg-gradient-to-b from-white to-blue-50 py-20">
+      <section className="bg-black py-20">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-[#4169E1] to-[#5179F1] mb-6 shadow-lg">
@@ -438,81 +438,81 @@ const Landing = () => {
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#4169E1] to-[#5179F1] bg-clip-text text-transparent">
               Frequently Asked Questions
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-white/70">
               Got questions? We've got answers about Fitness Friends
             </p>
           </div>
           
-          <Card className="bg-white border-blue-100 shadow-xl">
+          <Card className="bg-white/5 backdrop-blur-sm border-blue-500/20 shadow-xl">
             <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1" className="border-blue-100">
-                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
-                  <span className="text-lg font-semibold text-gray-900">What is Fitness Friends?</span>
+              <AccordionItem value="item-1" className="border-blue-500/20">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-white/5 text-left">
+                  <span className="text-lg font-semibold text-white">What is Fitness Friends?</span>
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-600">
+                <AccordionContent className="px-6 pb-6 text-white/70">
                   Fitness Friends is a mobile app designed to help you find workout buddies and stay motivated on your fitness journey. Connect with like-minded individuals, schedule workouts together, and track your progress as a community.
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="item-2" className="border-blue-100">
-                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
-                  <span className="text-lg font-semibold text-gray-900">How do I find workout partners?</span>
+              <AccordionItem value="item-2" className="border-blue-500/20">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-white/5 text-left">
+                  <span className="text-lg font-semibold text-white">How do I find workout partners?</span>
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-600">
+                <AccordionContent className="px-6 pb-6 text-white/70">
                   Our smart matching system connects you with fitness enthusiasts based on your location, fitness level, workout preferences, and goals. Browse profiles, send messages, and schedule workouts together through the app.
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="item-3" className="border-blue-100">
-                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
-                  <span className="text-lg font-semibold text-gray-900">Is Fitness Friends free to use?</span>
+              <AccordionItem value="item-3" className="border-blue-500/20">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-white/5 text-left">
+                  <span className="text-lg font-semibold text-white">Is Fitness Friends free to use?</span>
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-600">
+                <AccordionContent className="px-6 pb-6 text-white/70">
                   We're currently in closed beta and offering free access to all features. Sign up now to secure your spot and be among the first to experience the full Fitness Friends platform!
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="item-4" className="border-blue-100">
-                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
-                  <span className="text-lg font-semibold text-gray-900">Can I track my workouts in the app?</span>
+              <AccordionItem value="item-4" className="border-blue-500/20">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-white/5 text-left">
+                  <span className="text-lg font-semibold text-white">Can I track my workouts in the app?</span>
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-600">
+                <AccordionContent className="px-6 pb-6 text-white/70">
                   Absolutely! Fitness Friends includes comprehensive workout tracking features. Log your exercises, monitor progress, set goals, and view detailed analytics about your fitness journey. You can also share your achievements with friends.
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="item-5" className="border-blue-100">
-                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
-                  <span className="text-lg font-semibold text-gray-900">How does the messaging system work?</span>
+              <AccordionItem value="item-5" className="border-blue-500/20">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-white/5 text-left">
+                  <span className="text-lg font-semibold text-white">How does the messaging system work?</span>
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-600">
+                <AccordionContent className="px-6 pb-6 text-white/70">
                   Connect with your fitness friends through our built-in messaging system. Chat in real-time, coordinate workout schedules, share tips and motivation, and build a supportive community. We also provide ice breaker prompts to help start conversations.
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="item-6" className="border-blue-100">
-                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
-                  <span className="text-lg font-semibold text-gray-900">Is my data secure and private?</span>
+              <AccordionItem value="item-6" className="border-blue-500/20">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-white/5 text-left">
+                  <span className="text-lg font-semibold text-white">Is my data secure and private?</span>
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-600">
+                <AccordionContent className="px-6 pb-6 text-white/70">
                   Your privacy and security are our top priorities. We use industry-standard encryption to protect your data, and you have full control over what information you share with others. Your workout data and messages are private and secure.
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="item-7" className="border-blue-100">
-                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
-                  <span className="text-lg font-semibold text-gray-900">What platforms is Fitness Friends available on?</span>
+              <AccordionItem value="item-7" className="border-blue-500/20">
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-white/5 text-left">
+                  <span className="text-lg font-semibold text-white">What platforms is Fitness Friends available on?</span>
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-600">
+                <AccordionContent className="px-6 pb-6 text-white/70">
                   Fitness Friends is available as a web app and will soon be available on iOS and Android. You can access your account from any device and your data syncs seamlessly across all platforms.
                 </AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="item-8" className="border-b-0">
-                <AccordionTrigger className="px-6 hover:no-underline hover:bg-blue-50 text-left">
-                  <span className="text-lg font-semibold text-gray-900">How do I join the beta program?</span>
+                <AccordionTrigger className="px-6 hover:no-underline hover:bg-white/5 text-left">
+                  <span className="text-lg font-semibold text-white">How do I join the beta program?</span>
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6 text-gray-600">
+                <AccordionContent className="px-6 pb-6 text-white/70">
                   Simply click the "Join Beta" or "Get Started" button and create your account. You'll get immediate access to all features and be part of shaping the future of Fitness Friends with your feedback.
                 </AccordionContent>
               </AccordionItem>
@@ -520,8 +520,8 @@ const Landing = () => {
           </Card>
 
           <div className="text-center mt-8">
-            <p className="text-gray-600 mb-4">Still have questions?</p>
-            <Button variant="outline" className="border-[#4169E1] text-[#4169E1] hover:bg-blue-50" asChild>
+            <p className="text-white/70 mb-4">Still have questions?</p>
+            <Button variant="outline" className="border-[#4169E1] text-[#4169E1] hover:bg-blue-500/10" asChild>
               <Link to="/faq">View Full FAQ</Link>
             </Button>
           </div>
@@ -529,7 +529,7 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-white py-20">
+      <section className="bg-black py-20">
         <div className="container mx-auto px-4">
           <div className="bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-3xl p-12 text-center shadow-2xl">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
@@ -546,8 +546,8 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-blue-100 py-8 bg-white">
-        <div className="container mx-auto px-4 text-center text-gray-600">
+      <footer className="border-t border-blue-500/20 py-8 bg-black">
+        <div className="container mx-auto px-4 text-center text-white/60">
           <p>&copy; 2025 Fitness Friends. All rights reserved.</p>
         </div>
       </footer>
