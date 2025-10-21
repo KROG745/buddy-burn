@@ -6,6 +6,12 @@ import { Users, MapPin, Calendar, Dumbbell, MessageCircle, Activity, Rocket } fr
 import { Link } from "react-router-dom";
 import appIcon from "@/assets/app-icon.png";
 import heroPhone from "@/assets/hero-phone.png";
+import featureFriendMatching from "@/assets/feature-friend-matching.png";
+import featureGymMap from "@/assets/feature-gym-map.png";
+import featureSchedule from "@/assets/feature-schedule.png";
+import featureWorkouts from "@/assets/feature-workouts.png";
+import featureMessaging from "@/assets/feature-messaging.png";
+import featureActivity from "@/assets/feature-activity.png";
 
 const Landing = () => {
   return (
@@ -161,6 +167,234 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* Feature Showcases */}
+      <section className="bg-gray-50 py-20">
+        <div className="container mx-auto px-4">
+          {/* Friend Matching */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto mb-32">
+            <div className="order-2 lg:order-1">
+              <img 
+                src={featureFriendMatching} 
+                alt="Friend Matching Feature" 
+                className="rounded-2xl shadow-2xl w-full"
+              />
+            </div>
+            <div className="order-1 lg:order-2 space-y-4">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-xl flex items-center justify-center">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900">Friend Matching</h3>
+              </div>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Our intelligent matching algorithm connects you with workout partners who share your fitness goals, 
+                schedule, and preferred gym locations. Get personalized match recommendations based on your workout 
+                preferences, experience level, and availability.
+              </p>
+              <ul className="space-y-3 text-gray-600">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Smart matching based on fitness goals and schedules</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>View detailed profiles and compatibility scores</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Connect instantly with potential workout buddies</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Gym Map */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto mb-32">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-xl flex items-center justify-center">
+                  <MapPin className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900">Gym Map</h3>
+              </div>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Discover gyms and fitness centers near you with our interactive map feature. See which facilities 
+                your matches prefer, check gym amenities, and find the perfect location to meet up for your workouts.
+              </p>
+              <ul className="space-y-3 text-gray-600">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Interactive map of gyms in your area</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Filter by amenities and equipment</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>See where your friends work out</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <img 
+                src={featureGymMap} 
+                alt="Gym Map Feature" 
+                className="rounded-2xl shadow-2xl w-full"
+              />
+            </div>
+          </div>
+
+          {/* Fitness Schedule */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto mb-32">
+            <div className="order-2 lg:order-1">
+              <img 
+                src={featureSchedule} 
+                alt="Fitness Schedule Feature" 
+                className="rounded-2xl shadow-2xl w-full"
+              />
+            </div>
+            <div className="order-1 lg:order-2 space-y-4">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-xl flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900">Fitness Schedule</h3>
+              </div>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Plan your workouts in advance with our intuitive scheduling system. Set recurring sessions, get 
+                reminders, and coordinate workout times with your fitness friends to maintain consistency.
+              </p>
+              <ul className="space-y-3 text-gray-600">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Weekly calendar view of all your workouts</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Smart notifications and reminders</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Coordinate schedules with workout partners</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Customizable Workouts */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto mb-32">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-xl flex items-center justify-center">
+                  <Dumbbell className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900">Customizable Workouts</h3>
+              </div>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Create personalized workout routines tailored to your fitness goals. Choose from a comprehensive 
+                exercise library, set your reps and sets, and save your favorite workouts for easy access.
+              </p>
+              <ul className="space-y-3 text-gray-600">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Build custom workout routines from scratch</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Extensive exercise library with instructions</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Save and reuse your favorite workouts</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <img 
+                src={featureWorkouts} 
+                alt="Customizable Workouts Feature" 
+                className="rounded-2xl shadow-2xl w-full"
+              />
+            </div>
+          </div>
+
+          {/* In-App Messaging */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto mb-32">
+            <div className="order-2 lg:order-1">
+              <img 
+                src={featureMessaging} 
+                alt="In-App Messaging Feature" 
+                className="rounded-2xl shadow-2xl w-full"
+              />
+            </div>
+            <div className="order-1 lg:order-2 space-y-4">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-xl flex items-center justify-center">
+                  <MessageCircle className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900">In-App Messaging</h3>
+              </div>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Stay connected with your workout community through our secure messaging system. Chat with your 
+                fitness friends, coordinate meetups, and share progress without leaving the app.
+              </p>
+              <ul className="space-y-3 text-gray-600">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Private messaging with your connections</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Share workout plans and achievements</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Keep your personal contact info private</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Activity History */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-xl flex items-center justify-center">
+                  <Activity className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900">Activity History</h3>
+              </div>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Track your fitness journey with detailed activity logs. Monitor your progress over time, celebrate 
+                milestones, and stay motivated by seeing how far you've come.
+              </p>
+              <ul className="space-y-3 text-gray-600">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Complete workout history and statistics</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Visual progress charts and analytics</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#4169E1] mt-1">✓</span>
+                  <span>Track consistency and achieve goals</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <img 
+                src={featureActivity} 
+                alt="Activity History Feature" 
+                className="rounded-2xl shadow-2xl w-full"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <section id="faq" className="bg-gray-50 py-20">
         <div className="container mx-auto px-4 max-w-4xl">
@@ -177,37 +411,84 @@ const Landing = () => {
           <Accordion type="single" collapsible className="space-y-4">
             <AccordionItem value="item-1" className="bg-white rounded-lg border border-gray-200 px-6">
               <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
-                Can I request a new feature for Apps?
+                What is Fitness Friends?
               </AccordionTrigger>
               <AccordionContent className="text-gray-600">
-                Yes! We welcome feature requests from our beta users. Your feedback helps us build a better app. You can submit feature requests through the app or contact us directly.
+                Fitness Friends is a mobile app designed to help you find workout partners who share your fitness goals, 
+                schedule, and gym preferences. We make it easy to connect with like-minded fitness enthusiasts in your area.
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="item-2" className="bg-white rounded-lg border border-gray-200 px-6">
               <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
-                Can I download Apps data into Excel or CSV?
+                How does the matching system work?
               </AccordionTrigger>
               <AccordionContent className="text-gray-600">
-                Data export functionality is planned for a future release. We understand the importance of data portability and will include this feature as we develop the app.
+                Our smart matching algorithm considers your fitness goals, workout schedule, preferred gym locations, 
+                experience level, and workout preferences to connect you with compatible workout partners. You'll receive 
+                personalized match recommendations based on these factors.
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="item-3" className="bg-white rounded-lg border border-gray-200 px-6">
               <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
-                Does Apps team offer 1-on-1 support?
+                Is the app free to use?
               </AccordionTrigger>
               <AccordionContent className="text-gray-600">
-                During the beta phase, we provide support through our community channels and email. As we grow, we'll introduce more personalized support options.
+                During the beta testing phase, Fitness Friends is completely free to use. We want to gather feedback 
+                and improve the app based on real user experiences. Future pricing will be announced before the official launch.
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="item-4" className="bg-white rounded-lg border border-gray-200 px-6">
               <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
-                Can I invite my teammates to Apps?
+                When will the mobile apps be available?
               </AccordionTrigger>
               <AccordionContent className="text-gray-600">
-                Absolutely! Fitness Friends is all about building a community. You can invite friends and workout buddies to join you on the platform.
+                We're currently in development for both iOS and Android versions. Beta testers will get early access 
+                to the mobile apps before the official launch. Join our beta program to be among the first to try it out!
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-5" className="bg-white rounded-lg border border-gray-200 px-6">
+              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
+                How do I join the beta test?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600">
+                Simply click the "Join Beta" button on this page to create your account. You'll get immediate access 
+                to the web version and will be notified when the mobile apps are ready for beta testing.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-6" className="bg-white rounded-lg border border-gray-200 px-6">
+              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
+                Is my personal information safe?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600">
+                Yes! We take privacy and security seriously. Your personal information is encrypted and secure. 
+                You have full control over what information you share with other users, and you never need to give 
+                out your phone number or personal contact information.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-7" className="bg-white rounded-lg border border-gray-200 px-6">
+              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
+                Can I request new features?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600">
+                Absolutely! We welcome feature requests from our beta users. Your feedback is invaluable in helping 
+                us build the best possible fitness app. You can submit feature requests through the app or contact us directly.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-8" className="bg-white rounded-lg border border-gray-200 px-6">
+              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
+                What if I can't find a workout buddy in my area?
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600">
+                As our community grows, you'll have more potential matches. In the meantime, you can still use the app 
+                to plan your workouts, track your progress, and build custom workout routines. We're constantly working 
+                to expand our user base in all areas.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
