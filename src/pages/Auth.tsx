@@ -8,6 +8,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import FitnessLogo from "@/components/FitnessLogo";
+import { z } from "zod";
+
+const authSchema = z.object({
+  email: z.string().email("Invalid email address").max(255, "Email too long"),
+  password: z.string().min(8, "Password must be at least 8 characters").max(128, "Password too long"),
+});
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -38,53 +44,71 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      // Validate inputs
+      const validation = authSchema.safeParse({ email, password });
+      if (!validation.success) {
+        const errors = validation.error.errors.map(err => err.message).join(", ");
+        throw new Error(errors);
+      }
 
-    if (error) {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: validation.data.email,
+        password: validation.data.password,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Signed in successfully",
+      });
+    } catch (error: any) {
       toast({
         title: "Error signing in",
         description: error.message,
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Success",
-        description: "Signed in successfully",
-      });
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
-      },
-    });
+    try {
+      // Validate inputs
+      const validation = authSchema.safeParse({ email, password });
+      if (!validation.success) {
+        const errors = validation.error.errors.map(err => err.message).join(", ");
+        throw new Error(errors);
+      }
 
-    if (error) {
+      const { error } = await supabase.auth.signUp({
+        email: validation.data.email,
+        password: validation.data.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Check your email to confirm your account",
+      });
+    } catch (error: any) {
       toast({
         title: "Error signing up",
         description: error.message,
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Success",
-        description: "Check your email to confirm your account",
-      });
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
