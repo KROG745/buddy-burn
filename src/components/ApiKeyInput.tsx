@@ -4,6 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
+
+const apiKeySchema = z.string()
+  .trim()
+  .min(30, "API key too short")
+  .max(100, "API key too long")
+  .regex(/^AIza[0-9A-Za-z-_]{35}$/, "Invalid Google Maps API key format");
 
 interface ApiKeyInputProps {
   onApiKeySet: (apiKey: string) => void;
@@ -12,13 +20,29 @@ interface ApiKeyInputProps {
 const ApiKeyInput = ({ onApiKeySet }: ApiKeyInputProps) => {
   const [apiKey, setApiKey] = useState("");
   const [isStored, setIsStored] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = () => {
     if (apiKey.trim()) {
+      // Validate API key format
+      const validation = apiKeySchema.safeParse(apiKey);
+      if (!validation.success) {
+        toast({
+          title: "Invalid API Key",
+          description: validation.error.errors[0].message,
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Store in localStorage for this session
-      localStorage.setItem('google_maps_api_key', apiKey);
-      onApiKeySet(apiKey);
+      localStorage.setItem('google_maps_api_key', validation.data);
+      onApiKeySet(validation.data);
       setIsStored(true);
+      toast({
+        title: "Success",
+        description: "Google Maps API key saved successfully",
+      });
     }
   };
 
