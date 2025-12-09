@@ -1,5 +1,6 @@
-import { Eye, Target, Calendar, Share2 } from "lucide-react";
-import { useState, useCallback } from "react";
+import { Eye, Users, Target, Calendar, Share2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useState, useCallback, useMemo } from "react";
 import ScheduleWorkoutModal from "./ScheduleWorkoutModal";
 import WeekAtGlanceModal from "./WeekAtGlanceModal";
 import SetGoalsModal from "./SetGoalsModal";
@@ -10,26 +11,26 @@ const actions = [
   {
     icon: Eye,
     label: "Week at a Glance",
-    description: "View your weekly plan",
-    color: "bg-primary text-primary-foreground"
+    variant: "fitness" as const,
+    description: "View your weekly plan"
   },
   {
     icon: Calendar,
     label: "Schedule",
-    description: "Plan your week",
-    color: "bg-fitness-accent text-white"
+    variant: "fitness-outline" as const,
+    description: "Plan your week"
   },
   {
     icon: Share2,
     label: "Share Workout",
-    description: "Share with friends",
-    color: "bg-[hsl(280_60%_55%)] text-white"
+    variant: "fitness-outline" as const,
+    description: "Share with friends"
   },
   {
     icon: Target,
     label: "Set Goals",
-    description: "Track progress",
-    color: "bg-[hsl(38_92%_50%)] text-white"
+    variant: "fitness-outline" as const,
+    description: "Track progress"
   },
 ];
 
@@ -49,6 +50,7 @@ const QuickActions = () => {
     } else if (actionLabel === "Set Goals") {
       setSetGoalsModalOpen(true);
     } else if (actionLabel === "Share Workout") {
+      // Get the last completed workout
       const lastCompleted = workouts.find(w => w.completed);
       if (lastCompleted) {
         setSelectedWorkout(lastCompleted);
@@ -59,21 +61,22 @@ const QuickActions = () => {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4 mb-6">
         {actions.map((action, index) => {
           const Icon = action.icon;
           return (
-            <button
+            <Button
               key={index}
+              variant={action.variant}
+              className="h-20 flex-col gap-2 text-center"
               onClick={() => handleActionClick(action.label)}
-              className={`${action.color} rounded-xl p-4 text-left ios-tap-highlight active:scale-[0.98] transition-transform duration-150`}
             >
-              <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center mb-3">
-                <Icon className="w-5 h-5" />
+              <Icon className="w-6 h-6" />
+              <div>
+                <div className="font-semibold text-sm">{action.label}</div>
+                <div className="text-xs opacity-80">{action.description}</div>
               </div>
-              <div className="font-semibold text-[15px] mb-0.5">{action.label}</div>
-              <div className="text-[12px] opacity-80">{action.description}</div>
-            </button>
+            </Button>
           );
         })}
       </div>
