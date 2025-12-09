@@ -24,6 +24,7 @@ interface UserProfile {
   interests: string[];
   isTrainer: boolean;
   isPublic: boolean;
+  hideLocationFromFriends: boolean;
   trainerInfo?: {
     specialties: string[];
     experience: string;
@@ -47,6 +48,7 @@ const Profile = () => {
     interests: ["Running", "Weightlifting", "Yoga", "Hiking", "Nutrition"],
     isTrainer: false,
     isPublic: true,
+    hideLocationFromFriends: false,
     trainerInfo: {
       specialties: [],
       experience: "",
@@ -198,7 +200,7 @@ const Profile = () => {
         </Card>
 
         {/* Privacy Settings */}
-        <Card className="p-6">
+        <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <h3 className="text-lg font-semibold">Profile Privacy</h3>
@@ -218,6 +220,36 @@ const Profile = () => {
                   checked={editedProfile.isPublic}
                   onCheckedChange={(checked) => 
                     setEditedProfile({ ...editedProfile, isPublic: checked })
+                  }
+                />
+              </div>
+            )}
+          </div>
+          
+          <Separator />
+          
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                Location Privacy
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {currentProfile.hideLocationFromFriends 
+                  ? "Friends see workout type/time but not your location" 
+                  : "Friends can see your workout locations"}
+              </p>
+            </div>
+            {isEditing && (
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="location-privacy-toggle" className="text-sm">
+                  {editedProfile.hideLocationFromFriends ? "Hidden" : "Visible"}
+                </Label>
+                <Switch
+                  id="location-privacy-toggle"
+                  checked={editedProfile.hideLocationFromFriends}
+                  onCheckedChange={(checked) => 
+                    setEditedProfile({ ...editedProfile, hideLocationFromFriends: checked })
                   }
                 />
               </div>

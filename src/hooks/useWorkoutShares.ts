@@ -13,6 +13,7 @@ export interface WorkoutShare {
     display_name: string;
     avatar_url?: string;
     username?: string;
+    hide_location_from_friends?: boolean;
   };
 }
 
@@ -35,7 +36,8 @@ export const useWorkoutShares = () => {
           profiles!workout_shares_user_id_fkey (
             display_name,
             avatar_url,
-            username
+            username,
+            hide_location_from_friends
           )
         `)
         .order('created_at', { ascending: false })
