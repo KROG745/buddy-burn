@@ -7,8 +7,8 @@ const StatsOverview = () => {
       label: "Streak",
       value: "7",
       unit: "days",
-      color: "text-fitness-warning",
-      bgColor: "bg-fitness-warning/10"
+      color: "text-[hsl(38_92%_50%)]",
+      bgColor: "bg-[hsl(38_92%_50%/0.12)]"
     },
     {
       icon: TrendingUp,
@@ -37,26 +37,26 @@ const StatsOverview = () => {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4 mb-6">
+    <div className="grid grid-cols-2 gap-3">
       {stats.map((stat, index) => {
         const Icon = stat.icon;
         return (
           <div
             key={index}
-            className="bg-gradient-card rounded-lg p-4 shadow-card border border-border/50 hover:shadow-elevation transition-all duration-300"
+            className="bg-card rounded-xl p-4 shadow-[0_1px_3px_hsl(0_0%_0%/0.04)] ios-tap-highlight active:scale-[0.98] transition-transform duration-150"
           >
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${stat.bgColor}`}>
+              <div className={`p-2.5 rounded-full ${stat.bgColor}`}>
                 <Icon className={`w-5 h-5 ${stat.color}`} />
               </div>
               <div>
-                <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-[24px] font-semibold text-foreground tracking-tight">{stat.value}</div>
+                <div className="text-[11px] text-muted-foreground uppercase tracking-wide">
                   {stat.unit}
                 </div>
               </div>
             </div>
-            <div className="text-sm font-medium text-muted-foreground mt-2">
+            <div className="text-[13px] font-medium text-muted-foreground mt-2">
               {stat.label}
             </div>
           </div>

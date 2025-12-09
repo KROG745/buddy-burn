@@ -21,8 +21,8 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-elevation z-50">
-      <div className="flex justify-around items-center h-16 px-4">
+    <nav className="fixed bottom-0 left-0 right-0 ios-tab-bar z-50 pb-[env(safe-area-inset-bottom)]">
+      <div className="flex justify-around items-center h-[49px] px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = getActiveTab() === item.id;
@@ -31,21 +31,24 @@ const Navigation = () => {
             <button
               key={item.id}
               onClick={() => navigate(item.path)}
-              className={`flex flex-col items-center justify-center space-y-1 transition-all duration-300 ${
-                isActive 
-                  ? "text-primary scale-110" 
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className="flex flex-col items-center justify-center flex-1 py-1 ios-tap-highlight transition-opacity duration-150"
             >
               <Icon 
-                className={`w-6 h-6 transition-all duration-300 ${
-                  isActive ? "fill-current" : ""
-                }`} 
+                className={`w-[22px] h-[22px] mb-0.5 transition-colors duration-150 ${
+                  isActive 
+                    ? "text-primary" 
+                    : "text-muted-foreground"
+                }`}
+                strokeWidth={isActive ? 2.5 : 1.5}
+                fill={isActive ? "currentColor" : "none"}
               />
-              <span className="text-xs font-medium">{item.label}</span>
-              {isActive && (
-                <div className="w-1 h-1 bg-primary rounded-full absolute -top-1"></div>
-              )}
+              <span 
+                className={`text-[10px] font-medium transition-colors duration-150 ${
+                  isActive ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                {item.label}
+              </span>
             </button>
           );
         })}
