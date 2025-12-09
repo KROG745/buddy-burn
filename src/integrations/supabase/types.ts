@@ -218,6 +218,7 @@ export type Database = {
           display_name: string | null
           experience_level: string | null
           fitness_goal: string | null
+          hide_location_from_friends: boolean
           id: string
           is_public: boolean | null
           updated_at: string
@@ -230,6 +231,7 @@ export type Database = {
           display_name?: string | null
           experience_level?: string | null
           fitness_goal?: string | null
+          hide_location_from_friends?: boolean
           id: string
           is_public?: boolean | null
           updated_at?: string
@@ -242,6 +244,7 @@ export type Database = {
           display_name?: string | null
           experience_level?: string | null
           fitness_goal?: string | null
+          hide_location_from_friends?: boolean
           id?: string
           is_public?: boolean | null
           updated_at?: string

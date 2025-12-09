@@ -192,6 +192,8 @@ const SocialFeed = () => {
     const scheduledWorkout = workoutDetails?.find(w => w.id === share.workout_id);
     if (!scheduledWorkout) return null;
     
+    const hideLocation = share.profiles?.hide_location_from_friends || false;
+    
     return {
       id: share.id,
       userId: share.user_id,
@@ -202,12 +204,13 @@ const SocialFeed = () => {
         type: scheduledWorkout.workout_type,
         title: `${scheduledWorkout.workout_type} Workout`,
         duration: scheduledWorkout.duration,
-        location: scheduledWorkout.location,
+        location: hideLocation ? 'Location hidden' : scheduledWorkout.location,
         intensity: scheduledWorkout.intensity,
         time: scheduledWorkout.time,
       },
       caption: share.caption,
       createdAt: new Date(share.created_at),
+      hideLocation,
     };
   }).filter(Boolean);
 

@@ -113,13 +113,18 @@ const ActivityFeed = () => {
   // Combine real shares with demo data
   const realActivities = shares.map(share => {
     const workout = workoutDetails?.find(w => w.id === share.workout_id);
+    const hideLocation = share.profiles?.hide_location_from_friends || false;
     return {
       id: share.id,
       userId: share.user_id,
       user: share.profiles,
       caption: share.caption,
       createdAt: share.created_at,
-      workout,
+      workout: workout ? {
+        ...workout,
+        location: hideLocation ? 'Location hidden' : workout.location,
+      } : undefined,
+      hideLocation,
     };
   }).filter(activity => activity.workout);
   
