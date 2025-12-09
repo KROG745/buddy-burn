@@ -212,27 +212,27 @@ const Schedule = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle pb-20">
-      <div className="p-4 space-y-6">
+      <div className="p-3 sm:p-4 space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-primary/10 rounded-full">
-              <CalendarIcon className="w-6 h-6 text-primary" />
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+            <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full shrink-0">
+              <CalendarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Workout Schedule</h1>
-              <p className="text-sm text-muted-foreground">Plan and track your fitness journey</p>
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-2xl font-bold text-foreground truncate">Workout Schedule</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">Plan your fitness journey</p>
             </div>
           </div>
           
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Workout
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-10 shrink-0">
+                <Plus className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Add Workout</span>
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto w-[95vw] sm:w-full p-4 sm:p-6">
               <DialogHeader>
                 <DialogTitle>{editingWorkoutId ? 'Edit Workout' : 'Schedule New Workout'}</DialogTitle>
               </DialogHeader>
@@ -512,113 +512,114 @@ const Schedule = () => {
           ) : (
             <div className="space-y-4">
               {workouts.map((workout) => (
-                <Card key={workout.id} className={cn(
-                  "p-6 transition-all duration-200 hover:shadow-lg",
+              <Card key={workout.id} className={cn(
+                  "p-3 sm:p-4 transition-all duration-200 hover:shadow-lg",
                   workout.completed && "bg-green-50/50 border-green-200"
                 )}>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-3">
-                        <div className="flex items-center space-x-2">
-                          {workout.completed && (
-                            <div className="flex items-center justify-center w-6 h-6 bg-green-500 text-white rounded-full">
-                              <Check className="w-4 h-4" />
-                            </div>
-                          )}
-                          <h4 className={cn(
-                            "text-lg font-semibold",
-                            workout.completed ? "text-green-700" : "text-foreground"
-                          )}>
-                            {workout.title}
-                          </h4>
-                        </div>
-                        <Badge variant="outline" className={getIntensityColor(workout.intensity)}>
-                          {workout.intensity}
-                        </Badge>
-                        <Badge variant="secondary">{workout.type}</Badge>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                          <Clock className="w-4 h-4" />
-                          <span>{workout.time} ({workout.duration} min)</span>
-                        </div>
-                        
-                        {workout.location && (
-                          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                            <MapPin className="w-4 h-4" />
-                            <span>{workout.location}</span>
+                  <div className="flex flex-col gap-3">
+                    {/* Header Row */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0 flex-wrap">
+                        {workout.completed && (
+                          <div className="flex items-center justify-center w-5 h-5 bg-green-500 text-white rounded-full shrink-0">
+                            <Check className="w-3 h-3" />
                           </div>
                         )}
+                        <h4 className={cn(
+                          "text-sm sm:text-base font-semibold truncate",
+                          workout.completed ? "text-green-700" : "text-foreground"
+                        )}>
+                          {workout.title}
+                        </h4>
                       </div>
-                      
-                      <div className="flex items-start space-x-2 mb-3">
-                        <Target className="w-4 h-4 text-primary mt-0.5" />
-                        <div>
-                          <p className="text-sm font-medium text-foreground">Goal:</p>
-                          <p className="text-sm text-muted-foreground">{workout.goal}</p>
-                        </div>
+                      <div className="flex gap-1 shrink-0">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="h-7 w-7 p-0"
+                          onClick={() => handleEditWorkout(workout)}
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+                          onClick={() => deleteWorkout(workout.id)}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
                       </div>
-                      
-                      {workout.notes && (
-                        <div className="text-sm text-muted-foreground bg-muted p-3 rounded-md mb-3">
-                          <strong>Notes:</strong> {workout.notes}
-                        </div>
-                      )}
+                    </div>
 
-                      {workout.completed && workout.completedAt && (
-                        <div className="text-xs text-green-600 bg-green-100 p-2 rounded-md">
-                          Completed at {format(workout.completedAt, "h:mm a")}
+                    {/* Badges */}
+                    <div className="flex flex-wrap gap-1.5">
+                      <Badge variant="outline" className={cn("text-xs", getIntensityColor(workout.intensity))}>
+                        {workout.intensity}
+                      </Badge>
+                      <Badge variant="secondary" className="text-xs">{workout.type}</Badge>
+                    </div>
+                    
+                    {/* Details */}
+                    <div className="grid grid-cols-1 gap-1.5 text-xs sm:text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 shrink-0" />
+                        <span>{workout.time} ({workout.duration} min)</span>
+                      </div>
+                      
+                      {workout.location && (
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 shrink-0" />
+                          <span className="truncate">{workout.location}</span>
                         </div>
                       )}
                     </div>
                     
-                    <div className="flex flex-col space-y-2 ml-4">
-                      {!workout.completed ? (
-                        <Button 
-                          onClick={() => updateWorkout(workout.id, { 
-                            completed: true, 
-                            completedAt: new Date() 
-                          })}
-                          className="bg-green-600 hover:bg-green-700 text-white shadow-sm"
-                          size="default"
-                        >
-                          <Check className="w-4 h-4 mr-2" />
-                          Mark Complete
-                        </Button>
-                      ) : (
-                        <Button 
-                          onClick={() => updateWorkout(workout.id, { 
-                            completed: false, 
-                            completedAt: undefined 
-                          })}
-                          variant="outline"
-                          size="default"
-                          className="border-green-500 text-green-600 hover:bg-green-50"
-                        >
-                          <Check className="w-4 h-4 mr-2" />
-                          Completed
-                        </Button>
-                      )}
-                      
-                      <div className="flex space-x-1">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => handleEditWorkout(workout)}
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => deleteWorkout(workout.id)}
-                          className="text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
+                    {/* Goal */}
+                    <div className="flex items-start gap-1.5">
+                      <Target className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
+                      <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{workout.goal}</p>
                     </div>
+                    
+                    {workout.notes && (
+                      <div className="text-xs text-muted-foreground bg-muted p-2 rounded-md">
+                        <strong>Notes:</strong> {workout.notes}
+                      </div>
+                    )}
+
+                    {workout.completed && workout.completedAt && (
+                      <div className="text-xs text-green-600 bg-green-100 p-2 rounded-md">
+                        Completed at {format(workout.completedAt, "h:mm a")}
+                      </div>
+                    )}
+                    
+                    {/* Action Button */}
+                    {!workout.completed ? (
+                      <Button 
+                        onClick={() => updateWorkout(workout.id, { 
+                          completed: true, 
+                          completedAt: new Date() 
+                        })}
+                        className="bg-green-600 hover:bg-green-700 text-white shadow-sm w-full h-9 text-xs sm:text-sm"
+                        size="sm"
+                      >
+                        <Check className="w-3.5 h-3.5 mr-1.5" />
+                        Mark Complete
+                      </Button>
+                    ) : (
+                      <Button 
+                        onClick={() => updateWorkout(workout.id, { 
+                          completed: false, 
+                          completedAt: undefined 
+                        })}
+                        variant="outline"
+                        size="sm"
+                        className="border-green-500 text-green-600 hover:bg-green-50 w-full h-9 text-xs sm:text-sm"
+                      >
+                        <Check className="w-3.5 h-3.5 mr-1.5" />
+                        Completed
+                      </Button>
+                    )}
                   </div>
                 </Card>
               ))}
