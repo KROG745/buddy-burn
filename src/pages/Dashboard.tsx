@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Bell, Settings, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import FitnessLogo from "@/components/FitnessLogo";
 import StatsOverview from "@/components/StatsOverview";
 import QuickActions from "@/components/QuickActions";
 import SocialFeed from "@/components/SocialFeed";
@@ -20,7 +19,6 @@ const Index = () => {
   const { newAchievements, clearAchievementNotification } = useAchievementSystem();
 
   useEffect(() => {
-    // Check if user is logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         navigate("/auth");
@@ -42,61 +40,73 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <header className="bg-gradient-hero text-primary-foreground p-6 shadow-elevation animated-gradient relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
-        <div className="relative z-10">
-          <div className="flex items-center justify-between mb-4">
-            <FitnessLogo className="text-primary-foreground drop-shadow-lg" />
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-white/20 hover:shadow-glow">
-                <Bell className="w-5 h-5" />
+    <div className="min-h-screen bg-background pb-[83px]">
+      {/* iOS Status Bar Space */}
+      <div className="h-[env(safe-area-inset-top)] bg-primary" />
+      
+      {/* iOS Navigation Header */}
+      <header className="bg-primary text-primary-foreground sticky top-0 z-40">
+        <div className="px-4 pt-3 pb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h1 className="text-[28px] font-bold tracking-tight">Fitness</h1>
+            <div className="flex items-center gap-1">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-primary-foreground/90 hover:text-primary-foreground hover:bg-white/10 rounded-full w-9 h-9 ios-tap-highlight"
+              >
+                <Bell className="w-[22px] h-[22px]" />
               </Button>
-              <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-white/20 hover:shadow-glow">
-                <Settings className="w-5 h-5" />
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-primary-foreground/90 hover:text-primary-foreground hover:bg-white/10 rounded-full w-9 h-9 ios-tap-highlight"
+              >
+                <Settings className="w-[22px] h-[22px]" />
               </Button>
-              <Button variant="ghost" size="sm" onClick={handleLogout} className="text-primary-foreground hover:bg-white/20 hover:shadow-glow">
-                <LogOut className="w-5 h-5" />
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={handleLogout} 
+                className="text-primary-foreground/90 hover:text-primary-foreground hover:bg-white/10 rounded-full w-9 h-9 ios-tap-highlight"
+              >
+                <LogOut className="w-[22px] h-[22px]" />
               </Button>
             </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold mb-1 drop-shadow-md">Welcome back, Alex!</h1>
-            <p className="text-primary-foreground/90 drop-shadow-sm">Ready for today's workout?</p>
-          </div>
+          <p className="text-primary-foreground/80 text-[15px]">Ready for today's workout?</p>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="p-6 space-y-6">
+      <main className="px-4 pt-4 space-y-6">
         {/* Stats Overview */}
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-4">Your Progress</h2>
+          <h2 className="text-[22px] font-semibold text-foreground mb-3">Your Progress</h2>
           <StatsOverview />
         </section>
 
         {/* Quick Actions */}
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h2>
+          <h2 className="text-[22px] font-semibold text-foreground mb-3">Quick Actions</h2>
           <QuickActions />
         </section>
 
         {/* Achievements */}
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-4">Recent Achievements</h2>
+          <h2 className="text-[22px] font-semibold text-foreground mb-3">Recent Achievements</h2>
           <AchievementsDisplay />
         </section>
 
         {/* Social Feed */}
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-4">Activity Feed</h2>
+          <h2 className="text-[22px] font-semibold text-foreground mb-3">Activity Feed</h2>
           <SocialFeed />
         </section>
 
         {/* Recent Conversations */}
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-4">Recent Conversations</h2>
+          <h2 className="text-[22px] font-semibold text-foreground mb-3">Recent Conversations</h2>
           <ConversationsList showSearch={false} maxItems={4} />
         </section>
       </main>
