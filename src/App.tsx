@@ -13,6 +13,7 @@ import ChatThread from "./pages/ChatThread";
 import Schedule from "./pages/Schedule";
 import Profile from "./pages/Profile";
 import FAQ from "./pages/FAQ";
+import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 import AchievementDemo from "./pages/AchievementDemo";
 
@@ -35,6 +36,7 @@ const App = () => (
               <Route path="/schedule" element={<Schedule />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/faq" element={<FAQ />} />
+              <Route path="/support" element={<Support />} />
               <Route path="/achievement-demo" element={<AchievementDemo />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

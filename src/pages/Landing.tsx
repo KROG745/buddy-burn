@@ -20,9 +20,12 @@ const Landing = () => {
       <nav className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <FitnessLogo textColor="text-white" />
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-2 md:gap-4 items-center">
             <Button variant="ghost" className="text-white hover:text-white hover:bg-white/10" asChild>
               <a href="#faq">FAQ</a>
+            </Button>
+            <Button variant="ghost" className="text-white hover:text-white hover:bg-white/10" asChild>
+              <Link to="/support">Support</Link>
             </Button>
             <Button className="bg-[#4169E1] hover:bg-[#3159D1] text-white gap-2" asChild>
               <Link to="/auth">
@@ -546,6 +549,17 @@ const Landing = () => {
           <p className="text-gray-400 mb-6">
             The next generation mobile app that makes finding a workout buddy an easy task.
           </p>
+          <div className="flex justify-center gap-6 mb-6 text-sm">
+            <Link to="/support" className="text-gray-400 hover:text-white transition-colors">
+              Support
+            </Link>
+            <a href="#faq" className="text-gray-400 hover:text-white transition-colors">
+              FAQ
+            </a>
+            <a href="mailto:support@fitnessfriends.app" className="text-gray-400 hover:text-white transition-colors">
+              Contact
+            </a>
+          </div>
           <Button size="lg" className="bg-[#4169E1] hover:bg-[#3159D1] text-white gap-2" asChild>
             <Link to="/auth">
               <Rocket className="w-5 h-5" />
