@@ -1,16 +1,32 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+// Allowed origins for CORS
+const allowedOrigins = [
+  'https://buddy-burn.lovable.app',
+  'https://fitnessfriends.app',
+  'http://localhost:5173',
+  'http://localhost:8080',
+];
+
+function getCorsHeaders(origin: string | null) {
+  const allowedOrigin = allowedOrigins.includes(origin || '') ? origin : allowedOrigins[0];
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin!,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Credentials': 'true',
+  };
+}
 
 Deno.serve(async (req) => {
+  const origin = req.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Client for user authentication validation
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
@@ -21,7 +37,13 @@ Deno.serve(async (req) => {
       }
     );
 
-    // Get the user
+    // Admin client for privileged operations (bypasses RLS)
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Get the user - validates authentication
     const {
       data: { user },
     } = await supabaseClient.auth.getUser();
@@ -32,7 +54,7 @@ Deno.serve(async (req) => {
 
     console.log('Checking achievements for user:', user.id);
 
-    // Get user stats
+    // Get user stats using client (respects RLS - user can only see their own)
     const { data: userStats } = await supabaseClient
       .from('user_stats')
       .select('*')
@@ -49,7 +71,7 @@ Deno.serve(async (req) => {
 
     console.log('User stats:', userStats);
 
-    // Get all achievement definitions
+    // Get all achievement definitions (public data)
     const { data: achievements } = await supabaseClient
       .from('achievement_definitions')
       .select('*');
@@ -110,8 +132,8 @@ Deno.serve(async (req) => {
           break;
       }
 
-      // Update or insert progress
-      const { error: progressError } = await supabaseClient
+      // Update or insert progress using admin client (RLS blocks upserts for this table)
+      const { error: progressError } = await supabaseAdmin
         .from('user_achievement_progress')
         .upsert({
           user_id: user.id,
@@ -125,11 +147,11 @@ Deno.serve(async (req) => {
         console.error('Error updating progress:', progressError);
       }
 
-      // If newly earned, add to achievements table and return it
+      // If newly earned, add to achievements table using admin client (bypasses RLS)
       if (isEarned) {
         console.log('New achievement earned:', achievement.title);
         
-        const { error: achievementError } = await supabaseClient
+        const { error: achievementError } = await supabaseAdmin
           .from('achievements')
           .insert({
             user_id: user.id,
@@ -143,11 +165,11 @@ Deno.serve(async (req) => {
           console.error('Error inserting achievement:', achievementError);
         }
 
-        // Update user points and level
+        // Update user points and level using admin client
         const newPoints = userStats.total_points + achievement.points;
         const newLevel = Math.floor(newPoints / 100) + 1;
 
-        await supabaseClient
+        await supabaseAdmin
           .from('user_stats')
           .update({
             total_points: newPoints,
@@ -173,7 +195,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ error: error.message }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...getCorsHeaders(req.headers.get('origin')), 'Content-Type': 'application/json' },
         status: 400,
       }
     );
