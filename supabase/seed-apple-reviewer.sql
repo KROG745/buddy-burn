@@ -54,14 +54,14 @@ BEGIN
     workout_types_completed = ARRAY['running', 'weightlifting', 'yoga', 'cycling', 'hiit'],
     last_workout_date = CURRENT_DATE - INTERVAL '1 day';
 
-  -- Insert sample achievements for the reviewer
+  -- Insert sample achievements for the reviewer (using valid type values from check constraint)
   INSERT INTO public.achievements (user_id, title, description, type, icon)
   VALUES
-    (reviewer_id, 'First Workout', 'Completed your first workout!', 'milestone', 'trophy'),
-    (reviewer_id, 'Week Warrior', 'Worked out 7 days in a row', 'streak', 'flame'),
-    (reviewer_id, '10 Workouts Strong', 'Completed 10 total workouts', 'milestone', 'medal'),
-    (reviewer_id, 'Social Butterfly', 'Made your first friend', 'goal', 'users'),
-    (reviewer_id, 'Variety Pack', 'Tried 3 different workout types', 'milestone', 'star');
+    (reviewer_id, 'First Workout', 'Completed your first workout!', 'first_workout', 'trophy'),
+    (reviewer_id, 'Week Warrior', 'Worked out 7 days in a row', 'week_streak', 'flame'),
+    (reviewer_id, '10 Workouts Strong', 'Completed 10 total workouts', 'workout_count_10', 'medal'),
+    (reviewer_id, 'Social Butterfly', 'Made 5 friends', 'friend_count_5', 'users'),
+    (reviewer_id, '50 Workouts Strong', 'Completed 50 total workouts', 'workout_count_50', 'star');
 
   -- Insert sample scheduled workouts (past, today, and upcoming)
   INSERT INTO public.scheduled_workouts (user_id, workout_type, date, time, duration, location, intensity, notes)
