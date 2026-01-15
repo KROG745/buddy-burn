@@ -41,21 +41,46 @@ const WorkoutBuddies = ({ location, date, workoutType, time }: WorkoutBuddiesPro
     }
   }, [location, date, workoutType, time]);
 
+  // Sanitize location input for ILIKE queries - removes special characters
+  const sanitizeLocationInput = (loc: string): string | null => {
+    // Remove ILIKE special characters to prevent pattern injection
+    const sanitized = loc.replace(/[%_\\]/g, '').toLowerCase().trim();
+    
+    // Enforce minimum length to prevent broad pattern matching
+    if (sanitized.length < 3) {
+      return null;
+    }
+    
+    // Enforce maximum length
+    if (sanitized.length > 100) {
+      return sanitized.substring(0, 100);
+    }
+    
+    return sanitized;
+  };
+
   const fetchWorkoutBuddies = async () => {
     try {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Normalize location for better matching
-      const normalizedLocation = location.toLowerCase().trim();
+      // Sanitize and validate location input
+      const sanitizedLocation = sanitizeLocationInput(location);
+      
+      // Skip query if location is too short
+      if (!sanitizedLocation) {
+        setBuddies([]);
+        setLoading(false);
+        return;
+      }
 
-      // Query for similar workouts
+      // Query for similar workouts with sanitized input
       const { data: workouts, error } = await supabase
         .from('scheduled_workouts')
         .select('id, user_id, workout_type, time, duration')
         .eq('date', format(date, 'yyyy-MM-dd'))
-        .ilike('location_normalized', `%${normalizedLocation}%`)
+        .ilike('location_normalized', `%${sanitizedLocation}%`)
         .neq('user_id', user.id);
 
       if (error) throw error;

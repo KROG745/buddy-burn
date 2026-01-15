@@ -35,8 +35,9 @@ const ApiKeyInput = ({ onApiKeySet }: ApiKeyInputProps) => {
         return;
       }
 
-      // Store in localStorage for this session
-      localStorage.setItem('google_maps_api_key', validation.data);
+      // Store in sessionStorage for this session only (more secure than localStorage)
+      // Note: sessionStorage clears when browser tab/window is closed
+      sessionStorage.setItem('google_maps_api_key', validation.data);
       onApiKeySet(validation.data);
       setIsStored(true);
       toast({
@@ -47,15 +48,15 @@ const ApiKeyInput = ({ onApiKeySet }: ApiKeyInputProps) => {
   };
 
   const handleClearKey = () => {
-    localStorage.removeItem('google_maps_api_key');
+    sessionStorage.removeItem('google_maps_api_key');
     setApiKey("");
     setIsStored(false);
     onApiKeySet("");
   };
 
-  // Check if key exists in localStorage on component mount
+  // Check if key exists in sessionStorage on component mount
   useState(() => {
-    const storedKey = localStorage.getItem('google_maps_api_key');
+    const storedKey = sessionStorage.getItem('google_maps_api_key');
     if (storedKey) {
       setApiKey(storedKey);
       onApiKeySet(storedKey);
@@ -110,7 +111,8 @@ const ApiKeyInput = ({ onApiKeySet }: ApiKeyInputProps) => {
               Google Maps API Key
             </label>
             <p className="text-xs text-muted-foreground">
-              Your API key will be stored locally in your browser for this session only.
+              Your API key is stored in session storage and will be cleared when you close this tab.
+              For better security, restrict your API key in Google Cloud Console.
             </p>
           </div>
           
