@@ -11,7 +11,7 @@
 -- Set the reviewer's user ID here (get this from Auth dashboard after creating the user)
 DO $$
 DECLARE
-  reviewer_id UUID := 'APPLE_REVIEWER_USER_ID'; -- Replace with actual UUID
+  reviewer_id UUID := '4317ecfa-6f3d-433a-80e8-d8a377752313'; -- Apple reviewer UUID
   demo_friend_1 UUID := gen_random_uuid();
   demo_friend_2 UUID := gen_random_uuid();
   demo_friend_3 UUID := gen_random_uuid();
