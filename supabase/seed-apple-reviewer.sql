@@ -79,17 +79,17 @@ BEGIN
     (reviewer_id, 'Yoga', CURRENT_DATE + INTERVAL '2 days', '19:00', '45 min', 'Yoga Studio Downtown', 'low', 'Evening relaxation'),
     (reviewer_id, 'Swimming', CURRENT_DATE + INTERVAL '3 days', '12:00', '45 min', 'Community Pool', 'medium', 'Lunch break swim');
 
-  -- Insert achievement progress
+  -- Insert achievement progress (using valid IDs from achievement_definitions table)
   INSERT INTO public.user_achievement_progress (user_id, achievement_id, current_progress, is_completed, completed_at)
   VALUES
     (reviewer_id, 'first_workout', 1, true, NOW() - INTERVAL '3 weeks'),
-    (reviewer_id, 'workout_streak_7', 7, true, NOW() - INTERVAL '2 weeks'),
-    (reviewer_id, 'total_workouts_10', 10, true, NOW() - INTERVAL '1 week'),
+    (reviewer_id, 'streak_7', 7, true, NOW() - INTERVAL '2 weeks'),
+    (reviewer_id, '10_workouts', 10, true, NOW() - INTERVAL '1 week'),
     (reviewer_id, 'first_friend', 1, true, NOW() - INTERVAL '2 weeks'),
-    (reviewer_id, 'variety_3', 3, true, NOW() - INTERVAL '1 week'),
-    (reviewer_id, 'total_workouts_25', 25, true, NOW() - INTERVAL '2 days'),
-    (reviewer_id, 'total_workouts_50', 28, false, NULL),
-    (reviewer_id, 'workout_streak_30', 5, false, NULL);
+    (reviewer_id, 'try_cardio', 1, true, NOW() - INTERVAL '1 week'),
+    (reviewer_id, '25_workouts', 25, true, NOW() - INTERVAL '2 days'),
+    (reviewer_id, '50_workouts', 28, false, NULL),
+    (reviewer_id, 'streak_30', 5, false, NULL);
 
   RAISE NOTICE 'Successfully seeded data for Apple reviewer account!';
   RAISE NOTICE 'User ID: %', reviewer_id;
