@@ -466,6 +466,7 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                           <LocationFinder
                             onLocationSelect={(location) => {
                               field.onChange(location);
+                              setLocationTab("manual");
                             }}
                           />
                         )}
