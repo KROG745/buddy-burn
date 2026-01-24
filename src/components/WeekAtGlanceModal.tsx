@@ -39,13 +39,13 @@ const WeekAtGlanceModal = ({ open, onOpenChange }: WeekAtGlanceModalProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[95vw] md:w-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Week at a Glance</DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-6">
-          <div className="grid grid-cols-7 gap-3">
+        <div className="space-y-4 md:space-y-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 md:gap-3">
             {getWeekDays().map((day, index) => {
               const dayWorkouts = getWorkoutsForDate(day);
               const isToday = isSameDay(day, new Date());
@@ -55,7 +55,8 @@ const WeekAtGlanceModal = ({ open, onOpenChange }: WeekAtGlanceModalProps) => {
                 <Card 
                   key={index}
                   className={cn(
-                    "p-3 min-h-[120px] transition-all duration-200 cursor-pointer hover:shadow-md",
+                    "p-2 md:p-3 min-h-[100px] md:min-h-[120px] transition-all duration-200 cursor-pointer hover:shadow-md",
+                    
                     isToday && "bg-primary/5 border-primary/30",
                     hasWorkouts && "ring-2 ring-blue-500/30 bg-blue-50/50"
                   )}
@@ -112,12 +113,12 @@ const WeekAtGlanceModal = ({ open, onOpenChange }: WeekAtGlanceModalProps) => {
             })}
           </div>
           
-          <div className="bg-blue-50/50 p-4 rounded-lg border border-blue-200/50">
+          <div className="bg-primary/5 p-3 md:p-4 rounded-lg border border-primary/20">
             <div className="flex items-center space-x-2 mb-2">
-              <Target className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-blue-800">Week Summary</span>
+              <Target className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-primary">Week Summary</span>
             </div>
-            <div className="text-sm text-blue-700">
+            <div className="text-sm text-muted-foreground">
               {getWeekDays().reduce((total, day) => total + getWorkoutsForDate(day).length, 0)} total workouts scheduled this week
             </div>
           </div>
