@@ -1,5 +1,12 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Target, Plus, Calendar, TrendingUp, Award, Save, CalendarIcon } from "lucide-react";
+
+// Helper to dismiss keyboard on iOS when tapping other elements
+const dismissKeyboard = () => {
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+};
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -216,9 +223,12 @@ const SetGoalsModal = ({ isOpen, onClose }: SetGoalsModalProps) => {
                     <Label htmlFor="goal-type">Goal Type</Label>
                     <Select 
                       value={newGoal.type} 
-                      onValueChange={(value: Goal['type']) => setNewGoal({...newGoal, type: value})}
+                      onValueChange={(value: Goal['type']) => {
+                        dismissKeyboard();
+                        setNewGoal({...newGoal, type: value});
+                      }}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger onTouchStart={dismissKeyboard}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -246,9 +256,12 @@ const SetGoalsModal = ({ isOpen, onClose }: SetGoalsModalProps) => {
                     <Label htmlFor="goal-timeframe">Timeframe</Label>
                     <Select 
                       value={newGoal.timeframe} 
-                      onValueChange={(value) => setNewGoal({...newGoal, timeframe: value})}
+                      onValueChange={(value) => {
+                        dismissKeyboard();
+                        setNewGoal({...newGoal, timeframe: value});
+                      }}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger onTouchStart={dismissKeyboard}>
                         <SelectValue placeholder="Select timeframe" />
                       </SelectTrigger>
                       <SelectContent>
@@ -268,6 +281,7 @@ const SetGoalsModal = ({ isOpen, onClose }: SetGoalsModalProps) => {
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
+                        onTouchStart={dismissKeyboard}
                         className={cn(
                           "w-full justify-start text-left font-normal",
                           !newGoal.targetDate && "text-muted-foreground"
@@ -281,7 +295,10 @@ const SetGoalsModal = ({ isOpen, onClose }: SetGoalsModalProps) => {
                       <CalendarComponent
                         mode="single"
                         selected={newGoal.targetDate}
-                        onSelect={(date) => setNewGoal({...newGoal, targetDate: date})}
+                        onSelect={(date) => {
+                          dismissKeyboard();
+                          setNewGoal({...newGoal, targetDate: date});
+                        }}
                         disabled={(date) => date < new Date()}
                         initialFocus
                         className="p-3 pointer-events-auto"
@@ -302,13 +319,19 @@ const SetGoalsModal = ({ isOpen, onClose }: SetGoalsModalProps) => {
                 </div>
 
                 <div className="flex space-x-3">
-                  <Button onClick={handleAddGoal} className="flex-1">
+                  <Button onClick={() => {
+                    dismissKeyboard();
+                    handleAddGoal();
+                  }} className="flex-1">
                     <Save className="w-4 h-4 mr-2" />
                     Save Goal
                   </Button>
                   <Button 
                     variant="outline" 
-                    onClick={() => setShowAddForm(false)}
+                    onClick={() => {
+                      dismissKeyboard();
+                      setShowAddForm(false);
+                    }}
                     className="flex-1"
                   >
                     Cancel

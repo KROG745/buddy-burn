@@ -1,5 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
+
+// Helper to dismiss keyboard on iOS when tapping other elements
+const dismissKeyboard = () => {
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+};
 import { Calendar as CalendarIcon, Clock, Dumbbell, MapPin, Users, Search, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -326,9 +333,12 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Time</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={(value) => {
+                      dismissKeyboard();
+                      field.onChange(value);
+                    }} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger onTouchStart={dismissKeyboard}>
                           <Clock className="w-4 h-4 mr-2" />
                           <SelectValue placeholder="Select time" />
                         </SelectTrigger>
@@ -352,9 +362,12 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Duration</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={(value) => {
+                      dismissKeyboard();
+                      field.onChange(value);
+                    }} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger onTouchStart={dismissKeyboard}>
                           <SelectValue placeholder="Duration" />
                         </SelectTrigger>
                       </FormControl>
@@ -381,13 +394,14 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                   <FormLabel>Workout Category</FormLabel>
                   <Select 
                     onValueChange={(value) => {
+                      dismissKeyboard();
                       field.onChange(value);
                       form.setValue("workoutSubType", "");
                     }} 
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger onTouchStart={dismissKeyboard}>
                         <Dumbbell className="w-4 h-4 mr-2" />
                         <SelectValue placeholder="Select workout category" />
                       </SelectTrigger>
@@ -416,9 +430,12 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Workout Style</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={(value) => {
+                      dismissKeyboard();
+                      field.onChange(value);
+                    }} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger onTouchStart={dismissKeyboard}>
                           <SelectValue placeholder="Select workout style" />
                         </SelectTrigger>
                       </FormControl>
@@ -444,10 +461,13 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                 <FormItem>
                   <FormLabel>Location (Optional)</FormLabel>
                   <FormControl>
-                    <Tabs value={locationTab} onValueChange={setLocationTab} className="w-full">
+                    <Tabs value={locationTab} onValueChange={(value) => {
+                      dismissKeyboard();
+                      setLocationTab(value);
+                    }} className="w-full">
                       <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="manual">Manual Input</TabsTrigger>
-                        <TabsTrigger value="finder">Find Gyms</TabsTrigger>
+                        <TabsTrigger value="manual" onTouchStart={dismissKeyboard}>Manual Input</TabsTrigger>
+                        <TabsTrigger value="finder" onTouchStart={dismissKeyboard}>Find Gyms</TabsTrigger>
                       </TabsList>
                       
                       <TabsContent value="manual" className="mt-4">
@@ -542,7 +562,10 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
                     <FormControl>
                       <Switch
                         checked={field.value}
-                        onCheckedChange={field.onChange}
+                        onCheckedChange={(checked) => {
+                          dismissKeyboard();
+                          field.onChange(checked);
+                        }}
                       />
                     </FormControl>
                   </FormItem>
