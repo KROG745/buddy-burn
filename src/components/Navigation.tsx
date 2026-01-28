@@ -21,8 +21,8 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-elevation z-50">
-      <div className="flex justify-around items-center h-16 px-4">
+    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-elevation z-[9999] pb-safe">
+      <div className="flex justify-around items-center h-16 px-4 pb-[env(safe-area-inset-bottom)]">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = getActiveTab() === item.id;
