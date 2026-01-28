@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,6 +8,13 @@ import { useWorkoutShares } from "@/hooks/useWorkoutShares";
 import { useToast } from "@/hooks/use-toast";
 import { Workout } from "@/contexts/WorkoutContext";
 import { Share2 } from "lucide-react";
+
+// Helper to dismiss keyboard on iOS when tapping other elements
+const dismissKeyboard = () => {
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+};
 
 interface ShareWorkoutModalProps {
   workout: Workout | null;
@@ -68,7 +75,11 @@ const ShareWorkoutModal = ({ workout, open, onOpenChange }: ShareWorkoutModalPro
             />
           </div>
 
-          <div className="flex items-center justify-between">
+          <div 
+            className="flex items-center justify-between"
+            onTouchStart={dismissKeyboard}
+            onClick={dismissKeyboard}
+          >
             <div className="space-y-0.5">
               <Label htmlFor="public">Share Publicly</Label>
               <p className="text-sm text-muted-foreground">
@@ -78,16 +89,32 @@ const ShareWorkoutModal = ({ workout, open, onOpenChange }: ShareWorkoutModalPro
             <Switch
               id="public"
               checked={isPublic}
-              onCheckedChange={setIsPublic}
+              onCheckedChange={(checked) => {
+                dismissKeyboard();
+                setIsPublic(checked);
+              }}
             />
           </div>
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              dismissKeyboard();
+              onOpenChange(false);
+            }} 
+            className="flex-1"
+          >
             Cancel
           </Button>
-          <Button onClick={handleShare} className="flex-1">
+          <Button 
+            onClick={() => {
+              dismissKeyboard();
+              handleShare();
+            }} 
+            className="flex-1"
+          >
             Share Workout
           </Button>
         </div>
