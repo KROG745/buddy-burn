@@ -10,14 +10,21 @@ import { useToast } from "@/hooks/use-toast";
 import FitnessLogo from "@/components/FitnessLogo";
 import { z } from "zod";
 
-const authSchema = z.object({
+const signInSchema = z.object({
   email: z.string().email("Invalid email address").max(255, "Email too long"),
   password: z.string().min(8, "Password must be at least 8 characters").max(128, "Password too long"),
+});
+
+const signUpSchema = z.object({
+  email: z.string().email("Invalid email address").max(255, "Email too long"),
+  password: z.string().min(8, "Password must be at least 8 characters").max(128, "Password too long"),
+  displayName: z.string().min(2, "Name must be at least 2 characters").max(50, "Name too long"),
 });
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -46,7 +53,7 @@ const Auth = () => {
 
     try {
       // Validate inputs
-      const validation = authSchema.safeParse({ email, password });
+      const validation = signInSchema.safeParse({ email, password });
       if (!validation.success) {
         const errors = validation.error.errors.map(err => err.message).join(", ");
         throw new Error(errors);
@@ -80,7 +87,7 @@ const Auth = () => {
 
     try {
       // Validate inputs
-      const validation = authSchema.safeParse({ email, password });
+      const validation = signUpSchema.safeParse({ email, password, displayName });
       if (!validation.success) {
         const errors = validation.error.errors.map(err => err.message).join(", ");
         throw new Error(errors);
@@ -91,6 +98,9 @@ const Auth = () => {
         password: validation.data.password,
         options: {
           emailRedirectTo: `${window.location.origin}/dashboard`,
+          data: {
+            display_name: validation.data.displayName,
+          },
         },
       });
 
@@ -170,6 +180,19 @@ const Auth = () => {
               <CardContent>
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
+                    <Label htmlFor="signup-name">Your Name</Label>
+                    <Input
+                      id="signup-name"
+                      type="text"
+                      placeholder="Alex Johnson"
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      required
+                      minLength={2}
+                      maxLength={50}
+                    />
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
                     <Input
                       id="signup-email"
@@ -188,7 +211,7 @@ const Auth = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      minLength={6}
+                      minLength={8}
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
