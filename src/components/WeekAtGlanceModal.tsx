@@ -45,7 +45,7 @@ const WeekAtGlanceModal = ({ open, onOpenChange }: WeekAtGlanceModalProps) => {
         </DialogHeader>
         
         <div className="space-y-4 md:space-y-6">
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 md:gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 md:gap-3">
             {getWeekDays().map((day, index) => {
               const dayWorkouts = getWorkoutsForDate(day);
               const isToday = isSameDay(day, new Date());
@@ -55,56 +55,55 @@ const WeekAtGlanceModal = ({ open, onOpenChange }: WeekAtGlanceModalProps) => {
                 <Card 
                   key={index}
                   className={cn(
-                    "p-2 md:p-3 min-h-[100px] md:min-h-[120px] transition-all duration-200 cursor-pointer hover:shadow-md",
-                    
+                    "p-2 md:p-3 lg:p-4 min-h-[100px] md:min-h-[140px] lg:min-h-[160px] transition-all duration-200 cursor-pointer hover:shadow-md flex flex-col",
                     isToday && "bg-primary/5 border-primary/30",
-                    hasWorkouts && "ring-2 ring-blue-500/30 bg-blue-50/50"
+                    hasWorkouts && "ring-2 ring-blue-500/30 bg-blue-50/50 dark:bg-blue-950/20"
                   )}
                   onClick={() => handleDayClick(day)}
                 >
-                  <div className="text-center mb-3">
-                    <div className="text-xs text-muted-foreground mb-1">
+                  <div className="text-center mb-2 lg:mb-3 flex-shrink-0">
+                    <div className="text-xs lg:text-sm text-muted-foreground mb-1">
                       {format(day, "EEE")}
                     </div>
                     <div className={cn(
-                      "text-lg font-semibold",
+                      "text-lg lg:text-xl font-semibold",
                       isToday && "text-primary",
-                      hasWorkouts && "text-blue-600"
+                      hasWorkouts && "text-blue-600 dark:text-blue-400"
                     )}>
                       {format(day, "dd")}
                     </div>
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-1.5 lg:space-y-2 flex-1 overflow-hidden">
                     {dayWorkouts.length === 0 ? (
-                      <div className="text-xs text-muted-foreground text-center py-2">
+                      <div className="text-xs lg:text-sm text-muted-foreground text-center py-2">
                         No workouts
                       </div>
                     ) : (
-                      dayWorkouts.slice(0, 3).map((workout) => (
+                      dayWorkouts.slice(0, 2).map((workout) => (
                         <div
                           key={workout.id}
-                          className="text-xs space-y-1"
+                          className="text-xs lg:text-sm space-y-0.5 lg:space-y-1 p-1.5 lg:p-2 bg-background/60 rounded-md border border-border/50"
                         >
                           <div className="font-medium text-foreground truncate">
                             {workout.title}
                           </div>
-                          <div className="flex items-center space-x-1 text-muted-foreground">
-                            <Clock className="w-3 h-3" />
-                            <span>{workout.time}</span>
+                          <div className="flex items-center gap-1 text-muted-foreground">
+                            <Clock className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{workout.time}</span>
                           </div>
                           <Badge 
                             variant="outline" 
-                            className={cn("text-xs px-1 py-0", getIntensityColor(workout.intensity))}
+                            className={cn("text-[10px] lg:text-xs px-1.5 py-0", getIntensityColor(workout.intensity))}
                           >
                             {workout.intensity}
                           </Badge>
                         </div>
                       ))
                     )}
-                    {dayWorkouts.length > 3 && (
-                      <div className="text-xs text-muted-foreground text-center">
-                        +{dayWorkouts.length - 3} more
+                    {dayWorkouts.length > 2 && (
+                      <div className="text-xs text-muted-foreground text-center pt-1">
+                        +{dayWorkouts.length - 2} more
                       </div>
                     )}
                   </div>
