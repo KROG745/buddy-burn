@@ -354,15 +354,15 @@ const ActivityFeed = () => {
                   </p>
                 )}
                 
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground mb-2">
-                  <div className="flex items-center gap-1 shrink-0">
+                <div className="flex flex-col gap-1 text-sm text-muted-foreground mb-2">
+                  <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4 shrink-0" />
-                    <span className="whitespace-nowrap">{workout.time} • {workout.duration} min</span>
+                    <span>{workout.time} • {workout.duration} min</span>
                   </div>
                   {workout.location && (
-                    <div className="flex items-center gap-1 min-w-0 max-w-full">
-                      <MapPin className="w-4 h-4 shrink-0" />
-                      <span className="truncate">{workout.location}</span>
+                    <div className="flex items-start gap-1">
+                      <MapPin className="w-4 h-4 shrink-0 mt-0.5" />
+                      <span className="break-words">{workout.location}</span>
                     </div>
                   )}
                 </div>
