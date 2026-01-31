@@ -1,19 +1,46 @@
 import { useState } from "react";
-import { Clock, MapPin, Calendar, MessageCircle, UserPlus, ChevronDown, ChevronUp } from "lucide-react";
+import { Clock, MapPin, Calendar, MessageCircle, UserPlus, ChevronDown, ChevronUp, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useWorkoutShares } from "@/hooks/useWorkoutShares";
 import { formatDistanceToNow } from "date-fns";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useConversations } from "@/contexts/ConversationContext";
 import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const ActivityFeed = () => {
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  const [editingShare, setEditingShare] = useState<{ id: string; caption: string } | null>(null);
+  const [deleteShareId, setDeleteShareId] = useState<string | null>(null);
+  const [editCaption, setEditCaption] = useState("");
   
   const toggleExpanded = (id: string) => {
     setExpandedCards(prev => {
@@ -26,10 +53,59 @@ const ActivityFeed = () => {
       return newSet;
     });
   };
-  const { shares, isLoading } = useWorkoutShares();
+  
+  const { shares, isLoading, deleteShare } = useWorkoutShares();
   const navigate = useNavigate();
   const { addConversation } = useConversations();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  // Mutation for updating caption
+  const updateCaption = useMutation({
+    mutationFn: async ({ shareId, caption }: { shareId: string; caption: string }) => {
+      const { error } = await supabase
+        .from('workout_shares')
+        .update({ caption })
+        .eq('id', shareId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workout-shares'] });
+      toast({
+        title: "Updated",
+        description: "Your shared workout has been updated.",
+      });
+      setEditingShare(null);
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update the shared workout.",
+        variant: "destructive",
+      });
+    },
+  });
+  
+  const handleDeleteShare = (shareId: string) => {
+    deleteShare(shareId);
+    setDeleteShareId(null);
+    toast({
+      title: "Deleted",
+      description: "Your shared workout has been removed from the feed.",
+    });
+  };
+  
+  const handleEditClick = (shareId: string, currentCaption: string) => {
+    setEditingShare({ id: shareId, caption: currentCaption });
+    setEditCaption(currentCaption || "");
+  };
+  
+  const handleSaveEdit = () => {
+    if (editingShare) {
+      updateCaption.mutate({ shareId: editingShare.id, caption: editCaption });
+    }
+  };
   
   // Fetch scheduled workout details for each share
   const { data: workoutDetails } = useQuery({
@@ -216,10 +292,13 @@ const ActivityFeed = () => {
   }
 
   return (
+    <>
     <div className="space-y-4">
       {recentActivities.map((activity) => {
         const workout = activity.workout;
         if (!workout) return null;
+        
+        const isOwner = currentUser && activity.userId === currentUser.id && !activity.id.startsWith('demo-');
         
         return (
           <Card key={activity.id} className="p-4 hover:shadow-elevation transition-all duration-300">
@@ -232,16 +311,41 @@ const ActivityFeed = () => {
               </Avatar>
               
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="font-semibold text-foreground">
-                    {activity.user?.display_name || 'User'}
-                  </span>
-                  <Badge variant="secondary" className={getActivityTypeColor(workout.workout_type)}>
-                    {workout.workout_type}
-                  </Badge>
-                  <Badge variant="outline" className={getIntensityColor(workout.intensity || 'medium')}>
-                    {workout.intensity || 'medium'}
-                  </Badge>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-semibold text-foreground">
+                      {activity.user?.display_name || 'User'}
+                    </span>
+                    <Badge variant="secondary" className={getActivityTypeColor(workout.workout_type)}>
+                      {workout.workout_type}
+                    </Badge>
+                    <Badge variant="outline" className={getIntensityColor(workout.intensity || 'medium')}>
+                      {workout.intensity || 'medium'}
+                    </Badge>
+                  </div>
+                  
+                  {isOwner && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handleEditClick(activity.id, activity.caption || "")}>
+                          <Pencil className="w-4 h-4 mr-2" />
+                          Edit caption
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={() => setDeleteShareId(activity.id)}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Remove from feed
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </div>
                 
                 {activity.caption && (
@@ -319,6 +423,51 @@ const ActivityFeed = () => {
         );
       })}
     </div>
+    
+    {/* Edit Caption Dialog */}
+    <Dialog open={!!editingShare} onOpenChange={() => setEditingShare(null)}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit Caption</DialogTitle>
+        </DialogHeader>
+        <Textarea
+          value={editCaption}
+          onChange={(e) => setEditCaption(e.target.value)}
+          placeholder="Update your caption..."
+          className="min-h-[100px]"
+        />
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setEditingShare(null)}>
+            Cancel
+          </Button>
+          <Button onClick={handleSaveEdit} disabled={updateCaption.isPending}>
+            {updateCaption.isPending ? "Saving..." : "Save"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    
+    {/* Delete Confirmation Dialog */}
+    <AlertDialog open={!!deleteShareId} onOpenChange={() => setDeleteShareId(null)}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Remove from feed?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This will remove your workout from the activity feed. The scheduled workout itself will not be deleted.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => deleteShareId && handleDeleteShare(deleteShareId)}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            Remove
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  </>
   );
 };
 
