@@ -1,4 +1,5 @@
-import { Clock, MapPin, Calendar, MessageCircle, UserPlus } from "lucide-react";
+import { useState } from "react";
+import { Clock, MapPin, Calendar, MessageCircle, UserPlus, ChevronDown, ChevronUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,19 @@ import { useConversations } from "@/contexts/ConversationContext";
 import { useToast } from "@/hooks/use-toast";
 
 const ActivityFeed = () => {
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  
+  const toggleExpanded = (id: string) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
   const { shares, isLoading } = useWorkoutShares();
   const navigate = useNavigate();
   const { addConversation } = useConversations();
@@ -231,7 +245,9 @@ const ActivityFeed = () => {
                 </div>
                 
                 {activity.caption && (
-                  <p className="text-sm text-foreground mb-2 line-clamp-2">{activity.caption}</p>
+                  <p className={`text-sm text-foreground mb-2 ${expandedCards.has(activity.id) ? '' : 'line-clamp-2'}`}>
+                    {activity.caption}
+                  </p>
                 )}
                 
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground mb-2">
@@ -248,7 +264,31 @@ const ActivityFeed = () => {
                 </div>
                 
                 {workout.notes && (
-                  <p className="text-sm text-muted-foreground mb-2 italic line-clamp-2">"{workout.notes}"</p>
+                  <p className={`text-sm text-muted-foreground mb-2 italic ${expandedCards.has(activity.id) ? '' : 'line-clamp-2'}`}>
+                    "{workout.notes}"
+                  </p>
+                )}
+                
+                {/* Show more/less button when content might be truncated */}
+                {((activity.caption && activity.caption.length > 100) || (workout.notes && workout.notes.length > 80)) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 px-2 text-xs text-muted-foreground hover:text-primary -ml-2 mb-1"
+                    onClick={() => toggleExpanded(activity.id)}
+                  >
+                    {expandedCards.has(activity.id) ? (
+                      <>
+                        <ChevronUp className="w-3 h-3 mr-1" />
+                        Show less
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-3 h-3 mr-1" />
+                        Show more
+                      </>
+                    )}
+                  </Button>
                 )}
                 
                 <div className="flex items-center justify-between">
