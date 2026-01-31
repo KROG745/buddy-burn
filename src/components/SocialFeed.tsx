@@ -228,45 +228,45 @@ const SocialFeed = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 overflow-hidden">
       {allActivities.map((activity) => {
         if (!activity.workoutData) return null;
         
         return (
-          <Card key={activity.id} className="p-4 hover:shadow-elevation transition-all duration-300 neon-hover border-border/50">
-            <div className="flex items-start gap-3">
-              <Avatar className="w-10 h-10 ring-2 ring-primary/20">
+          <Card key={activity.id} className="p-4 hover:shadow-elevation transition-all duration-300 neon-hover border-border/50 overflow-hidden">
+            <div className="flex items-start gap-3 w-full">
+              <Avatar className="w-10 h-10 ring-2 ring-primary/20 shrink-0">
                 <AvatarImage src={activity.userAvatar} alt={activity.userName} />
                 <AvatarFallback className="bg-gradient-primary text-primary-foreground font-semibold">
                   {activity.userName.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="font-semibold text-foreground">{activity.userName}</span>
-                  <Badge variant="secondary" className={getActivityTypeColor(activity.workoutData.type)}>
+              <div className="flex-1 min-w-0 overflow-hidden">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <span className="font-semibold text-foreground truncate">{activity.userName}</span>
+                  <Badge variant="secondary" className={`${getActivityTypeColor(activity.workoutData.type)} shrink-0`}>
                     {activity.workoutData.type}
                   </Badge>
-                  <Badge variant="outline" className={getIntensityColor(activity.workoutData.intensity)}>
+                  <Badge variant="outline" className={`${getIntensityColor(activity.workoutData.intensity)} shrink-0`}>
                     {activity.workoutData.intensity}
                   </Badge>
                 </div>
                 
-                <h3 className="font-medium text-foreground mb-2">{activity.workoutData.title}</h3>
+                <h3 className="font-medium text-foreground mb-2 break-words">{activity.workoutData.title}</h3>
                 
-                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
+                <div className="flex flex-col gap-1 text-sm text-muted-foreground mb-2">
                   <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
+                    <Clock className="w-4 h-4 shrink-0" />
                     <span>
                       {activity.workoutData.time ? `${activity.workoutData.time} • ` : ''}
                       {activity.workoutData.duration} min
                     </span>
                   </div>
                   {activity.workoutData.location && (
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      <span className="truncate">{activity.workoutData.location}</span>
+                    <div className="flex items-start gap-1">
+                      <MapPin className="w-4 h-4 shrink-0 mt-0.5" />
+                      <span className="break-words">{activity.workoutData.location}</span>
                     </div>
                   )}
                 </div>

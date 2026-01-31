@@ -69,7 +69,7 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="p-6 space-y-6">
+      <main className="p-6 space-y-6 overflow-hidden">
         {/* Stats Overview */}
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-4">Your Progress</h2>
