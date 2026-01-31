@@ -231,24 +231,24 @@ const ActivityFeed = () => {
                 </div>
                 
                 {activity.caption && (
-                  <p className="text-sm text-foreground mb-2">{activity.caption}</p>
+                  <p className="text-sm text-foreground mb-2 line-clamp-2">{activity.caption}</p>
                 )}
                 
-                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    <span>{workout.time} • {workout.duration} min</span>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground mb-2">
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Clock className="w-4 h-4 shrink-0" />
+                    <span className="whitespace-nowrap">{workout.time} • {workout.duration} min</span>
                   </div>
                   {workout.location && (
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
+                    <div className="flex items-center gap-1 min-w-0 max-w-full">
+                      <MapPin className="w-4 h-4 shrink-0" />
                       <span className="truncate">{workout.location}</span>
                     </div>
                   )}
                 </div>
                 
                 {workout.notes && (
-                  <p className="text-sm text-muted-foreground mb-2 italic">"{workout.notes}"</p>
+                  <p className="text-sm text-muted-foreground mb-2 italic line-clamp-2">"{workout.notes}"</p>
                 )}
                 
                 <div className="flex items-center justify-between">
