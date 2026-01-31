@@ -293,7 +293,7 @@ const ActivityFeed = () => {
 
   return (
     <>
-    <div className="space-y-4">
+    <div className="space-y-4 overflow-hidden">
       {recentActivities.map((activity) => {
         const workout = activity.workout;
         if (!workout) return null;
@@ -301,25 +301,25 @@ const ActivityFeed = () => {
         const isOwner = currentUser && activity.userId === currentUser.id && !activity.id.startsWith('demo-');
         
         return (
-          <Card key={activity.id} className="p-4 hover:shadow-elevation transition-all duration-300">
-            <div className="flex items-start gap-3">
-              <Avatar className="w-10 h-10">
+          <Card key={activity.id} className="p-4 hover:shadow-elevation transition-all duration-300 overflow-hidden">
+            <div className="flex items-start gap-3 w-full">
+              <Avatar className="w-10 h-10 shrink-0">
                 <AvatarImage src={activity.user?.avatar_url || ""} alt={activity.user?.display_name || "User"} />
                 <AvatarFallback className="bg-gradient-primary text-primary-foreground font-semibold">
                   {activity.user?.display_name?.charAt(0).toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
               
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-semibold text-foreground">
+              <div className="flex-1 min-w-0 overflow-hidden">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2 flex-wrap min-w-0">
+                    <span className="font-semibold text-foreground truncate">
                       {activity.user?.display_name || 'User'}
                     </span>
-                    <Badge variant="secondary" className={getActivityTypeColor(workout.workout_type)}>
+                    <Badge variant="secondary" className={`${getActivityTypeColor(workout.workout_type)} shrink-0`}>
                       {workout.workout_type}
                     </Badge>
-                    <Badge variant="outline" className={getIntensityColor(workout.intensity || 'medium')}>
+                    <Badge variant="outline" className={`${getIntensityColor(workout.intensity || 'medium')} shrink-0`}>
                       {workout.intensity || 'medium'}
                     </Badge>
                   </div>
@@ -327,7 +327,7 @@ const ActivityFeed = () => {
                   {isOwner && (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 shrink-0">
                           <MoreHorizontal className="w-4 h-4" />
                         </Button>
                       </DropdownMenuTrigger>
@@ -349,7 +349,7 @@ const ActivityFeed = () => {
                 </div>
                 
                 {activity.caption && (
-                  <p className={`text-sm text-foreground mb-2 ${expandedCards.has(activity.id) ? '' : 'line-clamp-2'}`}>
+                  <p className={`text-sm text-foreground mb-2 break-words ${expandedCards.has(activity.id) ? '' : 'line-clamp-2'}`}>
                     {activity.caption}
                   </p>
                 )}
@@ -357,7 +357,7 @@ const ActivityFeed = () => {
                 <div className="flex flex-col gap-1 text-sm text-muted-foreground mb-2">
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4 shrink-0" />
-                    <span>{workout.time} • {workout.duration} min</span>
+                    <span className="break-words">{workout.time} • {workout.duration} min</span>
                   </div>
                   {workout.location && (
                     <div className="flex items-start gap-1">
@@ -368,7 +368,7 @@ const ActivityFeed = () => {
                 </div>
                 
                 {workout.notes && (
-                  <p className={`text-sm text-muted-foreground mb-2 italic ${expandedCards.has(activity.id) ? '' : 'line-clamp-2'}`}>
+                  <p className={`text-sm text-muted-foreground mb-2 italic break-words ${expandedCards.has(activity.id) ? '' : 'line-clamp-2'}`}>
                     "{workout.notes}"
                   </p>
                 )}
@@ -395,9 +395,9 @@ const ActivityFeed = () => {
                   </Button>
                 )}
                 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2 flex-wrap">
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Calendar className="w-3 h-3" />
+                    <Calendar className="w-3 h-3 shrink-0" />
                     <span>
                       {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}
                     </span>
@@ -408,7 +408,7 @@ const ActivityFeed = () => {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="h-8 gap-1 hover:bg-primary/10 hover:text-primary"
+                      className="h-8 gap-1 hover:bg-primary/10 hover:text-primary shrink-0"
                       onClick={() => handleStartConversation(activity)}
                     >
                       <UserPlus className="w-3 h-3" />
