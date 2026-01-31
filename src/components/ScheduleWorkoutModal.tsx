@@ -202,12 +202,11 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
       // Convert duration from "X min" format to just the number
       const durationNumber = values.duration.replace(' min', '');
       
-      // Generate workout ID
-      const workoutId = Date.now().toString();
+      let scheduledWorkoutId: string | null = null;
       
       // Save to database if location is provided
       if (values.location) {
-        await scheduleWorkout({
+        const result = await scheduleWorkout({
           workout_type: values.workoutType,
           date: values.date,
           time: values.time,
@@ -216,6 +215,10 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
           notes: values.notes,
           intensity: 'medium'
         });
+        
+        if (result.data) {
+          scheduledWorkoutId = result.data.id;
+        }
       }
       
       // Add workout to local context
@@ -231,10 +234,10 @@ const ScheduleWorkoutModal = ({ open, onOpenChange }: ScheduleWorkoutModalProps)
         intensity: 'medium'
       });
       
-      // If publishing to feed, share the workout
-      if (values.publishToFeed) {
+      // If publishing to feed and we have a valid workout ID, share the workout
+      if (values.publishToFeed && scheduledWorkoutId) {
         shareWorkout({
-          workout_id: workoutId,
+          workout_id: scheduledWorkoutId,
           caption: values.shareCaption || `Scheduled ${values.workoutType} workout for ${format(values.date, "PPP")} at ${values.time}`,
           is_public: true,
         });
