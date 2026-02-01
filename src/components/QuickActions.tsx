@@ -16,7 +16,7 @@ const actions = [
   },
   {
     icon: Calendar,
-    label: "Schedule",
+    label: "Schedule Workout",
     variant: "fitness-outline" as const,
     description: "Plan your week"
   },
@@ -43,7 +43,7 @@ const QuickActions = () => {
   const [selectedWorkout, setSelectedWorkout] = useState<any>(null);
 
   const handleActionClick = useCallback((actionLabel: string) => {
-    if (actionLabel === "Schedule") {
+    if (actionLabel === "Schedule Workout") {
       setScheduleModalOpen(true);
     } else if (actionLabel === "Week at a Glance") {
       setWeekGlanceModalOpen(true);
