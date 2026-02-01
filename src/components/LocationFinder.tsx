@@ -25,6 +25,8 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [userLocation, setUserLocation] = useState<[number, number]>([40.7128, -74.0060]); // Default: NYC
   const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<FitnessLocation | null>(null);
+  const [showResults, setShowResults] = useState(true);
 
   // Get user's current location on mount
   useEffect(() => {
@@ -197,7 +199,15 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
 
   const handleLocationSelect = (location: FitnessLocation) => {
     setSelectedLocationId(location.id);
+    setSelectedLocation(location);
+    setShowResults(false);
     onLocationSelect(`${location.name}, ${location.address}`);
+  };
+
+  const handleClearSelection = () => {
+    setSelectedLocationId(null);
+    setSelectedLocation(null);
+    setShowResults(true);
   };
 
   const openInMaps = (location: FitnessLocation) => {
@@ -207,109 +217,138 @@ const LocationFinder = ({ onLocationSelect }: LocationFinderProps) => {
 
   return (
     <div className="space-y-4">
-      {/* Search Input */}
-      <div className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search by area or city..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-            onKeyPress={(e) => e.key === 'Enter' && searchByText()}
-          />
-        </div>
-        <Button 
-          onClick={searchByText} 
-          variant="outline" 
-          size="sm"
-          disabled={!searchQuery || isLoading}
-        >
-          {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Search"}
-        </Button>
-      </div>
-
-      {/* Loading State */}
-      {isLoading && (
-        <div className="flex justify-center py-4">
-          <Loader2 className="w-6 h-6 text-primary animate-spin" />
-        </div>
-      )}
-
-      {/* Locations List */}
-      <div className="space-y-2 max-h-80 overflow-y-auto">
-        {locations.length > 0 && !isLoading && (
-          <h4 className="font-medium text-sm text-muted-foreground">
-            Found {locations.length} fitness centers nearby
-          </h4>
-        )}
-        
-        {locations.map((location) => (
-          <Card 
-            key={location.id} 
-            className={`p-3 hover:shadow-lg transition-all cursor-pointer border ${
-              selectedLocationId === location.id 
-                ? 'border-primary bg-primary/5 shadow-md ring-2 ring-primary/20' 
-                : 'border-border/50 hover:border-primary/50'
-            }`}
-            onClick={() => handleLocationSelect(location)}
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h5 className={`font-medium text-sm ${
-                    selectedLocationId === location.id ? 'text-primary' : 'text-foreground'
-                  }`}>
-                    {location.name}
-                  </h5>
-                  {location.distance !== undefined && (
-                    <Badge variant="secondary" className="text-xs">
-                      {location.distance < 1 
-                        ? `${(location.distance * 1000).toFixed(0)}m away`
-                        : `${location.distance.toFixed(1)}km away`
-                      }
-                    </Badge>
-                  )}
-                  {selectedLocationId === location.id && (
-                    <Badge className="text-xs bg-primary text-primary-foreground">
-                      Selected
-                    </Badge>
-                  )}
-                </div>
-                
-                <p className="text-xs text-muted-foreground mb-2">
-                  {location.address}
-                </p>
-                
-                <Badge variant="outline" className="text-xs">
-                  {location.type}
+      {/* Selected Location Display */}
+      {selectedLocation && !showResults && (
+        <Card className="p-4 border-primary bg-primary/5 shadow-md ring-2 ring-primary/20">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <MapPin className="w-4 h-4 text-primary" />
+                <h5 className="font-medium text-sm text-primary">
+                  {selectedLocation.name}
+                </h5>
+                <Badge className="text-xs bg-primary text-primary-foreground">
+                  Selected
                 </Badge>
               </div>
-              
-              <div className="flex gap-1 ml-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openInMaps(location);
-                  }}
-                  className="h-8 w-8 p-0"
-                  title="Open in OpenStreetMap"
-                >
-                  <Navigation className="w-4 h-4 text-primary" />
-                </Button>
-              </div>
+              <p className="text-xs text-muted-foreground ml-6">
+                {selectedLocation.address}
+              </p>
             </div>
-          </Card>
-        ))}
-        
-        {locations.length === 0 && !isLoading && (
-          <div className="text-center py-4 text-muted-foreground text-sm">
-            No fitness centers found. Try searching for a specific area.
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClearSelection}
+              className="text-xs text-muted-foreground hover:text-foreground"
+            >
+              Change
+            </Button>
           </div>
-        )}
-      </div>
+        </Card>
+      )}
+
+      {/* Search Input - only show when no selection or showResults is true */}
+      {showResults && (
+        <>
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by area or city..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 bg-background border-input focus:border-primary focus:ring-2 focus:ring-primary/20"
+                onKeyPress={(e) => e.key === 'Enter' && searchByText()}
+              />
+            </div>
+            <Button 
+              onClick={searchByText} 
+              variant="outline" 
+              size="sm"
+              disabled={!searchQuery || isLoading}
+            >
+              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Search"}
+            </Button>
+          </div>
+
+          {/* Loading State */}
+          {isLoading && (
+            <div className="flex justify-center py-4">
+              <Loader2 className="w-6 h-6 text-primary animate-spin" />
+            </div>
+          )}
+
+          {/* Locations List */}
+          <div className="space-y-2 max-h-60 overflow-y-auto">
+            {locations.length > 0 && !isLoading && (
+              <h4 className="font-medium text-sm text-muted-foreground">
+                Found {locations.length} fitness centers nearby
+              </h4>
+            )}
+            
+            {locations.map((location) => (
+              <Card 
+                key={location.id} 
+                className={`p-3 hover:shadow-lg transition-all cursor-pointer border ${
+                  selectedLocationId === location.id 
+                    ? 'border-primary bg-primary/5 shadow-md ring-2 ring-primary/20' 
+                    : 'border-border/50 hover:border-primary/50'
+                }`}
+                onClick={() => handleLocationSelect(location)}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <h5 className={`font-medium text-sm ${
+                        selectedLocationId === location.id ? 'text-primary' : 'text-foreground'
+                      }`}>
+                        {location.name}
+                      </h5>
+                      {location.distance !== undefined && (
+                        <Badge variant="secondary" className="text-xs shrink-0">
+                          {location.distance < 1 
+                            ? `${(location.distance * 1000).toFixed(0)}m away`
+                            : `${location.distance.toFixed(1)}km away`
+                          }
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    <p className="text-xs text-muted-foreground mb-2 break-words">
+                      {location.address}
+                    </p>
+                    
+                    <Badge variant="outline" className="text-xs">
+                      {location.type}
+                    </Badge>
+                  </div>
+                  
+                  <div className="flex gap-1 ml-2 shrink-0">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openInMaps(location);
+                      }}
+                      className="h-8 w-8 p-0"
+                      title="Open in OpenStreetMap"
+                    >
+                      <Navigation className="w-4 h-4 text-primary" />
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+            
+            {locations.length === 0 && !isLoading && (
+              <div className="text-center py-4 text-muted-foreground text-sm">
+                No fitness centers found. Try searching for a specific area.
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };
