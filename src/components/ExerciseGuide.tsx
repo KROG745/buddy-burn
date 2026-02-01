@@ -79,61 +79,67 @@ const ExerciseGuide = ({
 
       {/* Add Exercise Form */}
       {isAdding && (
-        <Card className="p-4 border-primary/20 bg-primary/5">
-          <div className="space-y-3">
+        <Card className="p-4 border-primary/30 bg-primary/5 shadow-sm">
+          <div className="space-y-4">
             <div>
-              <Label htmlFor="new-exercise-name">Exercise Name *</Label>
+              <Label htmlFor="new-exercise-name" className="text-foreground font-medium">Exercise Name *</Label>
               <Input
                 id="new-exercise-name"
                 placeholder="e.g., Push-ups"
                 value={newExercise.name}
                 onChange={(e) => setNewExercise({ ...newExercise, name: e.target.value })}
+                className="mt-1.5 bg-background border-input focus:border-primary focus:ring-2 focus:ring-primary/20"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="new-sets">Sets</Label>
+                <Label htmlFor="new-sets" className="text-foreground font-medium">Sets</Label>
                 <Input
                   id="new-sets"
                   placeholder="e.g., 3"
                   value={newExercise.sets}
                   onChange={(e) => setNewExercise({ ...newExercise, sets: e.target.value })}
+                  className="mt-1.5 bg-background border-input focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
               <div>
-                <Label htmlFor="new-reps">Reps</Label>
+                <Label htmlFor="new-reps" className="text-foreground font-medium">Reps</Label>
                 <Input
                   id="new-reps"
                   placeholder="e.g., 10-12"
                   value={newExercise.reps}
                   onChange={(e) => setNewExercise({ ...newExercise, reps: e.target.value })}
+                  className="mt-1.5 bg-background border-input focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="new-duration">Duration</Label>
+                <Label htmlFor="new-duration" className="text-foreground font-medium">Duration</Label>
                 <Input
                   id="new-duration"
                   placeholder="e.g., 45s"
                   value={newExercise.duration}
                   onChange={(e) => setNewExercise({ ...newExercise, duration: e.target.value })}
+                  className="mt-1.5 bg-background border-input focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
               <div>
-                <Label htmlFor="new-rest">Rest</Label>
+                <Label htmlFor="new-rest" className="text-foreground font-medium">Rest</Label>
                 <Input
                   id="new-rest"
                   placeholder="e.g., 60s"
                   value={newExercise.rest}
                   onChange={(e) => setNewExercise({ ...newExercise, rest: e.target.value })}
+                  className="mt-1.5 bg-background border-input focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 pt-2">
               <Button
                 type="button"
                 size="sm"
+                variant="fitness"
                 onClick={handleAddExercise}
                 disabled={!newExercise.name}
               >
@@ -160,51 +166,56 @@ const ExerciseGuide = ({
       {/* Exercise List */}
       <div className="space-y-2">
         {exercises.map((exercise, index) => (
-          <Card key={exercise.id} className="p-4">
+          <Card key={exercise.id} className="p-4 border-border/50 hover:border-primary/30 transition-colors">
             {editingId === exercise.id && editingExercise ? (
               // Edit Mode
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div>
-                  <Label>Exercise Name</Label>
+                  <Label className="text-foreground font-medium">Exercise Name</Label>
                   <Input
                     value={editingExercise.name}
                     onChange={(e) => setEditingExercise({ ...editingExercise, name: e.target.value })}
+                    className="mt-1.5 bg-background border-input focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label>Sets</Label>
+                    <Label className="text-foreground font-medium">Sets</Label>
                     <Input
                       value={editingExercise.sets || ''}
                       onChange={(e) => setEditingExercise({ ...editingExercise, sets: e.target.value })}
+                      className="mt-1.5 bg-background border-input focus:border-primary focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div>
-                    <Label>Reps</Label>
+                    <Label className="text-foreground font-medium">Reps</Label>
                     <Input
                       value={editingExercise.reps || ''}
                       onChange={(e) => setEditingExercise({ ...editingExercise, reps: e.target.value })}
+                      className="mt-1.5 bg-background border-input focus:border-primary focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label>Duration</Label>
+                    <Label className="text-foreground font-medium">Duration</Label>
                     <Input
                       value={editingExercise.duration || ''}
                       onChange={(e) => setEditingExercise({ ...editingExercise, duration: e.target.value })}
+                      className="mt-1.5 bg-background border-input focus:border-primary focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                   <div>
-                    <Label>Rest</Label>
+                    <Label className="text-foreground font-medium">Rest</Label>
                     <Input
                       value={editingExercise.rest || ''}
                       onChange={(e) => setEditingExercise({ ...editingExercise, rest: e.target.value })}
+                      className="mt-1.5 bg-background border-input focus:border-primary focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button type="button" size="sm" onClick={handleSaveEdit}>
+                <div className="flex gap-2 pt-2">
+                  <Button type="button" size="sm" variant="fitness" onClick={handleSaveEdit}>
                     <Check className="w-4 h-4 mr-1" />
                     Save
                   </Button>
