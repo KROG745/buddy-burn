@@ -20,7 +20,7 @@ const SocialFeed = () => {
   const { addConversation } = useConversations();
   const { toast } = useToast();
   
-  // Fetch scheduled workout details for each share
+  // Fetch scheduled workout details using secure RPC function (masks location for non-friends)
   const { data: workoutDetails } = useQuery({
     queryKey: ['workout-details-social', shares],
     queryFn: async () => {
@@ -28,9 +28,7 @@ const SocialFeed = () => {
       
       const workoutIds = shares.map(share => share.workout_id);
       const { data } = await supabase
-        .from('scheduled_workouts')
-        .select('*')
-        .in('id', workoutIds);
+        .rpc('get_shared_workout_details', { p_workout_ids: workoutIds });
       
       return data || [];
     },
@@ -192,8 +190,6 @@ const SocialFeed = () => {
     const scheduledWorkout = workoutDetails?.find(w => w.id === share.workout_id);
     if (!scheduledWorkout) return null;
     
-    const hideLocation = share.profiles?.hide_location_from_friends || false;
-    
     return {
       id: share.id,
       userId: share.user_id,
@@ -204,13 +200,12 @@ const SocialFeed = () => {
         type: scheduledWorkout.workout_type,
         title: `${scheduledWorkout.workout_type} Workout`,
         duration: scheduledWorkout.duration,
-        location: hideLocation ? 'Location hidden' : scheduledWorkout.location,
+        location: scheduledWorkout.location, // Location already masked by RPC function
         intensity: scheduledWorkout.intensity,
         time: scheduledWorkout.time,
       },
       caption: share.caption,
       createdAt: new Date(share.created_at),
-      hideLocation,
     };
   }).filter(Boolean);
 
