@@ -1,27 +1,52 @@
+import { useEffect, useState } from "react";
 import { TrendingUp, Flame, Trophy, Users } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const StatsOverview = () => {
+  const [userStats, setUserStats] = useState<{
+    current_streak: number;
+    total_workouts: number;
+    level: number;
+    total_friends: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { data } = await supabase
+        .from("user_stats")
+        .select("current_streak, total_workouts, level, total_friends")
+        .eq("user_id", session.user.id)
+        .single();
+
+      if (data) setUserStats(data);
+    };
+    fetchStats();
+  }, []);
+
   const stats = [
     {
       icon: Flame,
       label: "Streak",
-      value: "7",
+      value: userStats?.current_streak?.toString() ?? "0",
       unit: "days",
       color: "text-fitness-warning",
       bgColor: "bg-fitness-warning/10"
     },
     {
       icon: TrendingUp,
-      label: "This Week",
-      value: "4",
-      unit: "workouts",
+      label: "Workouts",
+      value: userStats?.total_workouts?.toString() ?? "0",
+      unit: "total",
       color: "text-fitness-success",
       bgColor: "bg-fitness-success/10"
     },
     {
       icon: Trophy,
       label: "Level",
-      value: "12",
+      value: userStats?.level?.toString() ?? "1",
       unit: "athlete",
       color: "text-fitness-accent",
       bgColor: "bg-fitness-accent/10"
@@ -29,7 +54,7 @@ const StatsOverview = () => {
     {
       icon: Users,
       label: "Friends",
-      value: "23",
+      value: userStats?.total_friends?.toString() ?? "0",
       unit: "active",
       color: "text-primary",
       bgColor: "bg-primary/10"
