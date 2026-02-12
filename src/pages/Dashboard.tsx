@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Bell, Settings, LogOut } from "lucide-react";
@@ -18,14 +18,27 @@ const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { newAchievements, clearAchievementNotification } = useAchievementSystem();
+  const [displayName, setDisplayName] = useState<string>("");
 
   useEffect(() => {
-    // Check if user is logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const fetchUserProfile = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigate("/auth");
+        return;
       }
-    });
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("display_name")
+        .eq("id", session.user.id)
+        .single();
+      if (profile?.display_name) {
+        setDisplayName(profile.display_name);
+      } else {
+        setDisplayName(session.user.user_metadata?.display_name || "there");
+      }
+    };
+    fetchUserProfile();
   }, [navigate]);
 
   const handleLogout = async () => {
@@ -62,7 +75,7 @@ const Index = () => {
             </div>
           </div>
           <div>
-            <h1 className="text-2xl font-bold mb-1 drop-shadow-md">Welcome back, Alex!</h1>
+            <h1 className="text-2xl font-bold mb-1 drop-shadow-md">Welcome back, {displayName}!</h1>
             <p className="text-primary-foreground/90 drop-shadow-sm">Ready for today's workout?</p>
           </div>
         </div>
