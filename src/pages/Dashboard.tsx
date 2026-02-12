@@ -27,11 +27,12 @@ const Index = () => {
         navigate("/auth");
         return;
       }
-      const { data: profile } = await supabase
+      const { data: profile, error } = await supabase
         .from("profiles")
         .select("display_name")
         .eq("id", session.user.id)
-        .single();
+        .maybeSingle();
+      console.log("Profile fetch:", { profile, error });
       if (profile?.display_name) {
         setDisplayName(profile.display_name);
       } else {
