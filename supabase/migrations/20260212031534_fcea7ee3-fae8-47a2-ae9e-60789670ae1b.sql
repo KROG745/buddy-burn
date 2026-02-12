@@ -1,0 +1,1 @@
+UPDATE public.profiles SET display_name = 'Kenny', username = 'kenny_fitness' WHERE id = 'e68ead74-ef89-435e-a624-3fa64f5e0108';
