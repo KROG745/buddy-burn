@@ -133,7 +133,40 @@ Deno.serve(async (req) => {
       return true;
     });
 
-    return new Response(JSON.stringify({ matches: deduped }), {
+    // Fetch pending friend requests and existing friendships for matched users
+    const matchedIds = deduped.map((m: any) => m.id);
+
+    const [friendRequests, friends] = await Promise.all([
+      adminClient
+        .from("friend_requests")
+        .select("sender_id, receiver_id, status")
+        .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
+        .in("status", ["pending", "accepted"]),
+      adminClient
+        .from("friends")
+        .select("friend_id")
+        .eq("user_id", user.id),
+    ]);
+
+    const pendingSet = new Set<string>();
+    const friendSet = new Set<string>();
+
+    (friends.data || []).forEach((f: any) => friendSet.add(f.friend_id));
+    (friendRequests.data || []).forEach((fr: any) => {
+      const otherId = fr.sender_id === user.id ? fr.receiver_id : fr.sender_id;
+      if (fr.status === "pending") pendingSet.add(otherId);
+    });
+
+    const enriched = deduped.map((m: any) => ({
+      ...m,
+      relationshipStatus: friendSet.has(m.id)
+        ? "friend"
+        : pendingSet.has(m.id)
+        ? "pending"
+        : "none",
+    }));
+
+    return new Response(JSON.stringify({ matches: enriched }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
