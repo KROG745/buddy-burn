@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, MapPin, Dumbbell, UserPlus, MessageCircle, Loader2 } from "lucide-react";
+import { Users, MapPin, Dumbbell, UserPlus, MessageCircle, Loader2, Check, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -20,6 +20,7 @@ interface MatchedUser {
   fitnessLevel: string;
   isOnline: boolean;
   workoutDate?: string;
+  relationshipStatus?: "none" | "pending" | "friend";
 }
 
 interface FindWorkoutMatchProps {
@@ -190,6 +191,18 @@ const FindWorkoutMatch = ({
                             <p className="text-xs text-muted-foreground">{user.fitnessLevel}</p>
                           </div>
                         </div>
+                        {user.relationshipStatus === "pending" && (
+                          <Badge variant="secondary" className="text-xs">
+                            <Clock className="w-3 h-3 mr-1" />
+                            Pending
+                          </Badge>
+                        )}
+                        {user.relationshipStatus === "friend" && (
+                          <Badge className="text-xs bg-green-500/20 text-green-700 border-green-200">
+                            <Check className="w-3 h-3 mr-1" />
+                            Friend
+                          </Badge>
+                        )}
                       </div>
 
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -204,15 +217,27 @@ const FindWorkoutMatch = ({
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="flex-1 h-8 text-xs"
-                          onClick={() => handleAddFriend(user)}
-                        >
-                          <UserPlus className="w-3.5 h-3.5 mr-1" />
-                          Add Friend
-                        </Button>
+                        {user.relationshipStatus === "friend" ? (
+                          <Badge variant="outline" className="flex-1 h-8 text-xs justify-center text-green-600 border-green-300">
+                            <Check className="w-3.5 h-3.5 mr-1" />
+                            Already Friends
+                          </Badge>
+                        ) : user.relationshipStatus === "pending" ? (
+                          <Badge variant="outline" className="flex-1 h-8 text-xs justify-center text-muted-foreground">
+                            <Clock className="w-3.5 h-3.5 mr-1" />
+                            Request Pending
+                          </Badge>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1 h-8 text-xs"
+                            onClick={() => handleAddFriend(user)}
+                          >
+                            <UserPlus className="w-3.5 h-3.5 mr-1" />
+                            Add Friend
+                          </Button>
+                        )}
                         <Button
                           size="sm"
                           className="flex-1 h-8 text-xs"
