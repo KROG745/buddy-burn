@@ -2,12 +2,12 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
@@ -19,7 +19,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Create client with user's token for auth check
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -37,95 +36,97 @@ Deno.serve(async (req) => {
     }
 
     const { workout_type, location, date } = await req.json();
-
-    // Use service role to query across users (RLS blocks cross-user reads)
     const adminClient = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Find scheduled workouts from other users with public profiles at similar locations
-    const { data: matches, error } = await adminClient
-      .from("scheduled_workouts")
-      .select(`
-        id,
-        workout_type,
-        date,
-        time,
-        location,
-        location_normalized,
-        duration,
-        intensity,
-        user_id,
-        profiles!inner (
-          id,
-          display_name,
-          avatar_url,
-          username,
-          experience_level,
-          is_public
-        )
-      `)
-      .neq("user_id", user.id)
-      .eq("profiles.is_public", true);
+    // Step 1: Get public profile user IDs
+    const { data: publicProfiles, error: profilesError } = await adminClient
+      .from("profiles")
+      .select("id, display_name, avatar_url, username, experience_level")
+      .eq("is_public", true)
+      .neq("id", user.id);
 
-    if (error) {
-      console.error("Query error:", error);
-      return new Response(JSON.stringify({ error: error.message }), {
+    if (profilesError) {
+      console.error("Profiles query error:", profilesError);
+      return new Response(JSON.stringify({ error: profilesError.message }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Score and filter matches based on similarity
+    if (!publicProfiles || publicProfiles.length === 0) {
+      return new Response(JSON.stringify({ matches: [] }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const publicUserIds = publicProfiles.map((p) => p.id);
+    const profileMap = new Map(publicProfiles.map((p) => [p.id, p]));
+
+    // Step 2: Get scheduled workouts for those users
+    const { data: workouts, error: workoutsError } = await adminClient
+      .from("scheduled_workouts")
+      .select("id, workout_type, date, time, location, user_id")
+      .in("user_id", publicUserIds);
+
+    if (workoutsError) {
+      console.error("Workouts query error:", workoutsError);
+      return new Response(JSON.stringify({ error: workoutsError.message }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Step 3: Score matches
     const normalizeLocation = (loc: string) =>
       loc?.toLowerCase().replace(/[^a-z0-9]/g, "") || "";
 
     const inputLocationNorm = normalizeLocation(location || "");
     const inputType = workout_type?.toLowerCase() || "";
 
-    const scoredMatches = (matches || [])
-      .map((m: any) => {
+    const scoredMatches = (workouts || [])
+      .map((w) => {
         let score = 0;
-        const profile = m.profiles;
+        const profile = profileMap.get(w.user_id);
+        if (!profile) return null;
 
-        // Location match (highest priority)
-        const matchLocNorm = normalizeLocation(m.location);
+        const matchLocNorm = normalizeLocation(w.location);
         if (inputLocationNorm && matchLocNorm === inputLocationNorm) {
-          score += 3; // Exact location match
+          score += 3;
         } else if (
           inputLocationNorm &&
-          (matchLocNorm.includes(inputLocationNorm) ||
-            inputLocationNorm.includes(matchLocNorm))
+          (matchLocNorm.includes(inputLocationNorm) || inputLocationNorm.includes(matchLocNorm))
         ) {
-          score += 2; // Partial location match
-        }
-
-        // Workout type match
-        if (inputType && m.workout_type?.toLowerCase() === inputType) {
           score += 2;
         }
 
-        // Date match
-        if (date && m.date === date) {
+        if (inputType && w.workout_type?.toLowerCase() === inputType) {
+          score += 2;
+        }
+
+        if (date && w.date === date) {
           score += 1;
         }
 
+        if (score === 0) return null;
+
         return {
-          id: m.user_id,
-          name: profile?.display_name || profile?.username || "User",
-          avatar: profile?.avatar_url || "/placeholder.svg",
-          workoutType: m.workout_type,
-          location: m.location,
-          time: m.time,
-          fitnessLevel: profile?.experience_level || "Not specified",
-          isOnline: false, // Can't determine from DB
+          id: w.user_id,
+          name: profile.display_name || profile.username || "User",
+          avatar: profile.avatar_url || "/placeholder.svg",
+          workoutType: w.workout_type,
+          location: w.location,
+          time: w.time,
+          fitnessLevel: profile.experience_level || "Not specified",
+          isOnline: false,
           score,
-          workoutDate: m.date,
+          workoutDate: w.date,
         };
       })
-      .filter((m: any) => m.score > 0)
+      .filter(Boolean)
       .sort((a: any, b: any) => b.score - a.score)
       .slice(0, 10);
 
-    // Deduplicate by user id (keep highest scored)
+    // Deduplicate by user id
     const seen = new Set();
     const deduped = scoredMatches.filter((m: any) => {
       if (seen.has(m.id)) return false;
@@ -133,9 +134,7 @@ Deno.serve(async (req) => {
       return true;
     });
 
-    // Fetch pending friend requests and existing friendships for matched users
-    const matchedIds = deduped.map((m: any) => m.id);
-
+    // Step 4: Get relationship statuses
     const [friendRequests, friends] = await Promise.all([
       adminClient
         .from("friend_requests")
