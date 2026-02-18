@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar as CalendarIcon, Clock, Target, Edit, Trash2, MapPin, Check, Filter } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Target, Edit, Trash2, MapPin, Check, Filter, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,12 +8,14 @@ import { useWorkouts } from "@/contexts/WorkoutContext";
 import { format, isToday, isTomorrow, isPast, isFuture } from "date-fns";
 import { cn } from "@/lib/utils";
 import Navigation from "@/components/Navigation";
+import FindWorkoutMatch from "@/components/FindWorkoutMatch";
 import { useToast } from "@/hooks/use-toast";
 
 const Schedule = () => {
   const { workouts, updateWorkout, deleteWorkout } = useWorkouts();
   const { toast } = useToast();
   const [filter, setFilter] = useState<string>("all");
+  const [matchWorkout, setMatchWorkout] = useState<{ location?: string; type: string; date: string; time: string } | null>(null);
 
   const getIntensityColor = (intensity: string) => {
     switch (intensity) {
@@ -236,25 +238,41 @@ const Schedule = () => {
                           </div>
                         )}
                         
-                        {/* Action Button */}
-                        {!workout.completed ? (
-                          <Button 
-                            onClick={() => handleMarkComplete(workout.id)}
-                            className="bg-green-600 hover:bg-green-700 text-white shadow-sm w-full h-10"
-                          >
-                            <Check className="w-4 h-4 mr-2" />
-                            Mark Complete
-                          </Button>
-                        ) : (
-                          <Button 
-                            onClick={() => handleMarkIncomplete(workout.id)}
+                        {/* Action Buttons */}
+                        <div className="flex gap-2">
+                          <Button
                             variant="outline"
-                            className="border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 w-full h-10"
+                            size="sm"
+                            className="flex-1 h-10"
+                            onClick={() => setMatchWorkout({
+                              location: workout.location,
+                              type: workout.type,
+                              date: format(workout.date, "MMM d"),
+                              time: workout.time,
+                            })}
                           >
-                            <Check className="w-4 h-4 mr-2" />
-                            Completed
+                            <Users className="w-4 h-4 mr-2" />
+                            Find Match
                           </Button>
-                        )}
+                          {!workout.completed ? (
+                            <Button 
+                              onClick={() => handleMarkComplete(workout.id)}
+                              className="flex-1 bg-green-600 hover:bg-green-700 text-white shadow-sm h-10"
+                            >
+                              <Check className="w-4 h-4 mr-2" />
+                              Complete
+                            </Button>
+                          ) : (
+                            <Button 
+                              onClick={() => handleMarkIncomplete(workout.id)}
+                              variant="outline"
+                              className="flex-1 border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 h-10"
+                            >
+                              <Check className="w-4 h-4 mr-2" />
+                              Completed
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </Card>
                   ))}
@@ -264,7 +282,16 @@ const Schedule = () => {
           </div>
         )}
       </div>
-      
+      {/* Find Match Dialog */}
+      <FindWorkoutMatch
+        open={!!matchWorkout}
+        onOpenChange={(open) => !open && setMatchWorkout(null)}
+        workoutLocation={matchWorkout?.location}
+        workoutType={matchWorkout?.type || ""}
+        workoutDate={matchWorkout?.date || ""}
+        workoutTime={matchWorkout?.time || ""}
+      />
+
       {/* Navigation */}
       <Navigation />
     </div>
