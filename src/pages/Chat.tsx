@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MessageCircle, Plus, Send, Users, Search } from "lucide-react";
+import { MessageCircle, Plus, Send, Users, Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
 import ConversationsList from "@/components/ConversationsList";
 import ChatIceBreakers from "@/components/ChatIceBreakers";
 import Navigation from "@/components/Navigation";
@@ -129,37 +130,59 @@ const Chat = () => {
                     filteredContacts.map((contact) => (
                       <Card
                         key={contact.id}
-                        className="p-3 cursor-pointer hover:bg-accent/50 transition-all duration-200"
-                        onClick={() => {
-                          addConversation({
-                            id: contact.id,
-                            name: contact.name,
-                            avatar: contact.avatar,
-                            lastMessage: "Started a new conversation",
-                            timestamp: "Just now",
-                            unreadCount: 0,
-                            isOnline: contact.isOnline,
-                          });
-                          navigate(`/chat/${contact.id}`);
-                          setIsFindFriendOpen(false);
-                          setFriendSearchQuery("");
-                        }}
+                        className="p-3 transition-all duration-200"
                       >
-                        <div className="flex items-center space-x-3">
-                          <div className="relative">
-                            <Avatar className="w-8 h-8">
-                              <AvatarImage src={contact.avatar} alt={contact.name} />
-                              <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                                {contact.name.split(' ').map(n => n[0]).join('')}
-                              </AvatarFallback>
-                            </Avatar>
-                            {contact.isOnline && (
-                              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border border-background"></div>
-                            )}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="relative">
+                              <Avatar className="w-8 h-8">
+                                <AvatarImage src={contact.avatar} alt={contact.name} />
+                                <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                                  {contact.name.split(' ').map(n => n[0]).join('')}
+                                </AvatarFallback>
+                              </Avatar>
+                              {contact.isOnline && (
+                                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border border-background"></div>
+                              )}
+                            </div>
+                            <div>
+                              <span className="text-sm font-medium">{contact.name}</span>
+                              <p className="text-xs text-muted-foreground">{contact.isOnline ? "Online" : "Offline"}</p>
+                            </div>
                           </div>
-                          <div>
-                            <span className="text-sm font-medium">{contact.name}</span>
-                            <p className="text-xs text-muted-foreground">{contact.isOnline ? "Online" : "Offline"}</p>
+                          <div className="flex items-center space-x-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-8 px-2 text-xs"
+                              onClick={() => {
+                                toast.success(`Friend request sent to ${contact.name}!`);
+                              }}
+                            >
+                              <UserPlus className="w-3.5 h-3.5 mr-1" />
+                              Add
+                            </Button>
+                            <Button
+                              size="sm"
+                              className="h-8 px-2 text-xs"
+                              onClick={() => {
+                                addConversation({
+                                  id: contact.id,
+                                  name: contact.name,
+                                  avatar: contact.avatar,
+                                  lastMessage: "Started a new conversation",
+                                  timestamp: "Just now",
+                                  unreadCount: 0,
+                                  isOnline: contact.isOnline,
+                                });
+                                navigate(`/chat/${contact.id}`);
+                                setIsFindFriendOpen(false);
+                                setFriendSearchQuery("");
+                              }}
+                            >
+                              <MessageCircle className="w-3.5 h-3.5 mr-1" />
+                              Chat
+                            </Button>
                           </div>
                         </div>
                       </Card>
