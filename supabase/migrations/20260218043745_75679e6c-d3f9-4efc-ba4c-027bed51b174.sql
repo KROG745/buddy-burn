@@ -1,0 +1,1 @@
+ALTER TABLE public.friend_requests ADD CONSTRAINT friend_requests_sender_receiver_unique UNIQUE (sender_id, receiver_id);
