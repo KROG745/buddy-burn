@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MessageCircle, Plus, X, Send, Users } from "lucide-react";
+import { MessageCircle, Plus, Send, Users, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -24,6 +24,8 @@ const Chat = () => {
   const navigate = useNavigate();
   const { addConversation } = useConversations();
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
+  const [isFindFriendOpen, setIsFindFriendOpen] = useState(false);
+  const [friendSearchQuery, setFriendSearchQuery] = useState("");
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [selectedIceBreaker, setSelectedIceBreaker] = useState<string>("");
 
@@ -34,6 +36,10 @@ const Chat = () => {
     { id: "4", name: "Mike Power", avatar: "/placeholder.svg", isOnline: true },
     { id: "5", name: "Sarah Flex", avatar: "/placeholder.svg", isOnline: false },
   ];
+
+  const filteredContacts = contacts.filter(c =>
+    c.name.toLowerCase().includes(friendSearchQuery.toLowerCase())
+  );
 
   const handleContactSelect = (contactId: string) => {
     setSelectedContacts(prev => 
@@ -90,7 +96,80 @@ const Chat = () => {
               <p className="text-sm text-muted-foreground">Stay connected with your fitness friends</p>
             </div>
           </div>
-          
+          <div className="flex items-center space-x-2">
+          <Dialog open={isFindFriendOpen} onOpenChange={(open) => { setIsFindFriendOpen(open); if (!open) setFriendSearchQuery(""); }}>
+            <DialogTrigger asChild>
+              <Button size="sm" variant="outline" className="border-primary/30 text-primary">
+                <Users className="w-4 h-4 mr-2" />
+                Find
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center space-x-2">
+                  <Search className="w-5 h-5 text-primary" />
+                  <span>Find a Friend</span>
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search by name..."
+                    value={friendSearchQuery}
+                    onChange={(e) => setFriendSearchQuery(e.target.value)}
+                    className="pl-9"
+                    autoFocus
+                  />
+                </div>
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {filteredContacts.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-6">No friends found</p>
+                  ) : (
+                    filteredContacts.map((contact) => (
+                      <Card
+                        key={contact.id}
+                        className="p-3 cursor-pointer hover:bg-accent/50 transition-all duration-200"
+                        onClick={() => {
+                          addConversation({
+                            id: contact.id,
+                            name: contact.name,
+                            avatar: contact.avatar,
+                            lastMessage: "Started a new conversation",
+                            timestamp: "Just now",
+                            unreadCount: 0,
+                            isOnline: contact.isOnline,
+                          });
+                          navigate(`/chat/${contact.id}`);
+                          setIsFindFriendOpen(false);
+                          setFriendSearchQuery("");
+                        }}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div className="relative">
+                            <Avatar className="w-8 h-8">
+                              <AvatarImage src={contact.avatar} alt={contact.name} />
+                              <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                                {contact.name.split(' ').map(n => n[0]).join('')}
+                              </AvatarFallback>
+                            </Avatar>
+                            {contact.isOnline && (
+                              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border border-background"></div>
+                            )}
+                          </div>
+                          <div>
+                            <span className="text-sm font-medium">{contact.name}</span>
+                            <p className="text-xs text-muted-foreground">{contact.isOnline ? "Online" : "Offline"}</p>
+                          </div>
+                        </div>
+                      </Card>
+                    ))
+                  )}
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
           <Dialog open={isNewChatOpen} onOpenChange={setIsNewChatOpen}>
             <DialogTrigger asChild>
               <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
@@ -182,6 +261,7 @@ const Chat = () => {
               </div>
             </DialogContent>
           </Dialog>
+          </div>
         </div>
 
         {/* Chat Tabs */}
