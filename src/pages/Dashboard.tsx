@@ -21,12 +21,15 @@ const Index = () => {
   const [displayName, setDisplayName] = useState<string>("");
 
   useEffect(() => {
+    let userId: string | null = null;
+
     const fetchUserProfile = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigate("/auth");
         return;
       }
+      userId = session.user.id;
       const { data: profile, error } = await supabase
         .from("profiles")
         .select("display_name")
@@ -40,6 +43,24 @@ const Index = () => {
       }
     };
     fetchUserProfile();
+
+    // Realtime subscription for profile name changes
+    const channel = supabase
+      .channel("dashboard-profile")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "profiles" },
+        (payload) => {
+          if (payload.new.id === userId && payload.new.display_name) {
+            setDisplayName(payload.new.display_name);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [navigate]);
 
   const handleLogout = async () => {
