@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Camera, MapPin, Mail, Phone, Calendar, Award, Users, Star, Edit, Save, X, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Camera, MapPin, Mail, Phone, Calendar, Award, Users, Star, Edit, Save, X, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,63 +12,112 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import Navigation from "@/components/Navigation";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface UserProfile {
   name: string;
+  username: string;
   email: string;
-  phone: string;
-  location: string;
   bio: string;
-  birthDate: string;
-  fitnessLevel: string;
-  goals: string[];
-  interests: string[];
-  isTrainer: boolean;
+  fitnessGoal: string;
+  experienceLevel: string;
   isPublic: boolean;
   hideLocationFromFriends: boolean;
-  trainerInfo?: {
-    specialties: string[];
-    experience: string;
-    certifications: string[];
-    hourlyRate: string;
-    availability: string;
-  };
+  avatarUrl: string;
 }
+
+const experienceLevels = ["beginner", "intermediate", "advanced", "expert"];
+const commonGoals = ["Weight Loss", "Muscle Building", "Endurance", "Flexibility", "General Health", "Build strength and stay active"];
+
+const defaultProfile: UserProfile = {
+  name: "",
+  username: "",
+  email: "",
+  bio: "",
+  fitnessGoal: "",
+  experienceLevel: "",
+  isPublic: false,
+  hideLocationFromFriends: false,
+  avatarUrl: "",
+};
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState<UserProfile>({
-    name: "Alex Johnson",
-    email: "alex.johnson@email.com",
-    phone: "+1 (555) 123-4567",
-    location: "New York, NY",
-    bio: "Passionate about fitness and helping others achieve their health goals. Love outdoor activities and strength training.",
-    birthDate: "1990-05-15",
-    fitnessLevel: "Intermediate",
-    goals: ["Weight Loss", "Muscle Building", "Endurance"],
-    interests: ["Running", "Weightlifting", "Yoga", "Hiking", "Nutrition"],
-    isTrainer: false,
-    isPublic: true,
-    hideLocationFromFriends: false,
-    trainerInfo: {
-      specialties: [],
-      experience: "",
-      certifications: [],
-      hourlyRate: "",
-      availability: ""
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [profile, setProfile] = useState<UserProfile>(defaultProfile);
+  const [editedProfile, setEditedProfile] = useState<UserProfile>(defaultProfile);
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (error) throw error;
+
+      const loaded: UserProfile = {
+        name: data.display_name || "",
+        username: data.username || "",
+        email: user.email || "",
+        bio: data.bio || "",
+        fitnessGoal: data.fitness_goal || "",
+        experienceLevel: data.experience_level || "",
+        isPublic: data.is_public ?? false,
+        hideLocationFromFriends: data.hide_location_from_friends ?? false,
+        avatarUrl: data.avatar_url || "",
+      };
+
+      setProfile(loaded);
+      setEditedProfile(loaded);
+    } catch (err: any) {
+      console.error("Error fetching profile:", err);
+      toast.error("Failed to load profile");
+    } finally {
+      setIsLoading(false);
     }
-  });
+  };
 
-  const [editedProfile, setEditedProfile] = useState<UserProfile>(profile);
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
 
-  const fitnessLevels = ["Beginner", "Intermediate", "Advanced", "Expert"];
-  const commonGoals = ["Weight Loss", "Muscle Building", "Endurance", "Flexibility", "General Health"];
-  const commonInterests = ["Running", "Weightlifting", "Yoga", "Pilates", "CrossFit", "Swimming", "Cycling", "Boxing", "Martial Arts", "Dancing", "Hiking", "Rock Climbing", "Nutrition", "Meditation"];
-  const trainerSpecialties = ["Personal Training", "Group Fitness", "Yoga Instruction", "Nutrition Coaching", "Strength Training", "Cardio Training", "Rehabilitation", "Sports Performance"];
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          display_name: editedProfile.name.trim(),
+          username: editedProfile.username.trim(),
+          bio: editedProfile.bio.trim(),
+          fitness_goal: editedProfile.fitnessGoal.trim(),
+          experience_level: editedProfile.experienceLevel,
+          is_public: editedProfile.isPublic,
+          hide_location_from_friends: editedProfile.hideLocationFromFriends,
+        })
+        .eq("id", user.id);
 
-  const handleSave = () => {
-    setProfile(editedProfile);
-    setIsEditing(false);
+      if (error) throw error;
+
+      setProfile(editedProfile);
+      setIsEditing(false);
+      toast.success("Profile updated successfully!");
+    } catch (err: any) {
+      console.error("Error saving profile:", err);
+      toast.error("Failed to save profile");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleCancel = () => {
@@ -76,35 +125,15 @@ const Profile = () => {
     setIsEditing(false);
   };
 
-  const toggleGoal = (goal: string) => {
-    const currentGoals = editedProfile.goals;
-    const updatedGoals = currentGoals.includes(goal)
-      ? currentGoals.filter(g => g !== goal)
-      : [...currentGoals, goal];
-    setEditedProfile({ ...editedProfile, goals: updatedGoals });
-  };
-
-  const toggleInterest = (interest: string) => {
-    const currentInterests = editedProfile.interests;
-    const updatedInterests = currentInterests.includes(interest)
-      ? currentInterests.filter(i => i !== interest)
-      : [...currentInterests, interest];
-    setEditedProfile({ ...editedProfile, interests: updatedInterests });
-  };
-
-  const toggleSpecialty = (specialty: string) => {
-    if (!editedProfile.trainerInfo) return;
-    const currentSpecialties = editedProfile.trainerInfo.specialties;
-    const updatedSpecialties = currentSpecialties.includes(specialty)
-      ? currentSpecialties.filter(s => s !== specialty)
-      : [...currentSpecialties, specialty];
-    setEditedProfile({
-      ...editedProfile,
-      trainerInfo: { ...editedProfile.trainerInfo, specialties: updatedSpecialties }
-    });
-  };
-
   const currentProfile = isEditing ? editedProfile : profile;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -129,6 +158,7 @@ const Profile = () => {
                 size="sm"
                 onClick={handleCancel}
                 className="text-primary-foreground hover:bg-white/20"
+                disabled={isSaving}
               >
                 <X className="w-4 h-4 mr-2" />
                 Cancel
@@ -138,8 +168,13 @@ const Profile = () => {
                 size="sm"
                 onClick={handleSave}
                 className="text-primary-foreground hover:bg-white/20"
+                disabled={isSaving}
               >
-                <Save className="w-4 h-4 mr-2" />
+                {isSaving ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4 mr-2" />
+                )}
                 Save
               </Button>
             </div>
@@ -154,9 +189,9 @@ const Profile = () => {
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="relative">
               <Avatar className="w-24 h-24">
-                <AvatarImage src="" alt="Profile" />
+                <AvatarImage src={currentProfile.avatarUrl} alt="Profile" />
                 <AvatarFallback className="bg-gradient-primary text-primary-foreground text-2xl font-bold">
-                  {currentProfile.name.split(' ').map(n => n[0]).join('')}
+                  {currentProfile.name ? currentProfile.name.split(' ').map(n => n[0]).join('') : '?'}
                 </AvatarFallback>
               </Avatar>
               {isEditing && (
@@ -175,28 +210,20 @@ const Profile = () => {
                   value={editedProfile.name}
                   onChange={(e) => setEditedProfile({ ...editedProfile, name: e.target.value })}
                   className="text-center text-xl font-bold"
+                  placeholder="Your display name"
                 />
               </div>
             ) : (
-              <h2 className="text-xl font-bold text-foreground">{currentProfile.name}</h2>
+              <h2 className="text-xl font-bold text-foreground">{currentProfile.name || "No name set"}</h2>
             )}
+
+            <p className="text-sm text-muted-foreground">@{currentProfile.username || "username"}</p>
             
-            <div className="flex items-center text-muted-foreground">
-              <MapPin className="w-4 h-4 mr-2" />
-              {isEditing ? (
-                <Input
-                  value={editedProfile.location}
-                  onChange={(e) => setEditedProfile({ ...editedProfile, location: e.target.value })}
-                  className="text-center"
-                />
-              ) : (
-                <span>{currentProfile.location}</span>
-              )}
-            </div>
-            
-            <Badge variant="secondary" className="bg-gradient-primary text-primary-foreground">
-              {currentProfile.fitnessLevel}
-            </Badge>
+            {currentProfile.experienceLevel && (
+              <Badge variant="secondary" className="bg-gradient-primary text-primary-foreground capitalize">
+                {currentProfile.experienceLevel}
+              </Badge>
+            )}
           </div>
         </Card>
 
@@ -204,9 +231,9 @@ const Profile = () => {
         {(() => {
           const fields = [
             { label: "Bio", done: !!currentProfile.bio.trim() },
-            { label: "Fitness Goals", done: currentProfile.goals.length > 0 },
-            { label: "Fitness Level", done: !!currentProfile.fitnessLevel && currentProfile.fitnessLevel !== "Beginner" },
-            { label: "Interests", done: currentProfile.interests.length > 0 },
+            { label: "Fitness Goal", done: !!currentProfile.fitnessGoal.trim() },
+            { label: "Experience Level", done: !!currentProfile.experienceLevel },
+            { label: "Display Name", done: !!currentProfile.name.trim() },
           ];
           const completed = fields.filter(f => f.done).length;
           const total = fields.length;
@@ -318,64 +345,35 @@ const Profile = () => {
 
         {/* Profile Details */}
         <Tabs defaultValue="personal" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="personal">Personal</TabsTrigger>
             <TabsTrigger value="fitness">Fitness</TabsTrigger>
-            <TabsTrigger value="trainer">Trainer</TabsTrigger>
           </TabsList>
           
           <TabsContent value="personal" className="space-y-4">
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
               <div className="space-y-4">
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <Label>Email</Label>
-                    {isEditing ? (
-                      <Input
-                        type="email"
-                        value={editedProfile.email}
-                        onChange={(e) => setEditedProfile({ ...editedProfile, email: e.target.value })}
-                      />
-                    ) : (
-                      <div className="flex items-center mt-1">
-                        <Mail className="w-4 h-4 mr-2 text-muted-foreground" />
-                        <span>{currentProfile.email}</span>
-                      </div>
-                    )}
+                <div>
+                  <Label>Email</Label>
+                  <div className="flex items-center mt-1">
+                    <Mail className="w-4 h-4 mr-2 text-muted-foreground" />
+                    <span className="text-muted-foreground">{currentProfile.email}</span>
                   </div>
-                  
-                  <div>
-                    <Label>Phone</Label>
-                    {isEditing ? (
-                      <Input
-                        type="tel"
-                        value={editedProfile.phone}
-                        onChange={(e) => setEditedProfile({ ...editedProfile, phone: e.target.value })}
-                      />
-                    ) : (
-                      <div className="flex items-center mt-1">
-                        <Phone className="w-4 h-4 mr-2 text-muted-foreground" />
-                        <span>{currentProfile.phone}</span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div>
-                    <Label>Birth Date</Label>
-                    {isEditing ? (
-                      <Input
-                        type="date"
-                        value={editedProfile.birthDate}
-                        onChange={(e) => setEditedProfile({ ...editedProfile, birthDate: e.target.value })}
-                      />
-                    ) : (
-                      <div className="flex items-center mt-1">
-                        <Calendar className="w-4 h-4 mr-2 text-muted-foreground" />
-                        <span>{new Date(currentProfile.birthDate).toLocaleDateString()}</span>
-                      </div>
-                    )}
-                  </div>
+                </div>
+
+                <div>
+                  <Label>Username</Label>
+                  {isEditing ? (
+                    <Input
+                      value={editedProfile.username}
+                      onChange={(e) => setEditedProfile({ ...editedProfile, username: e.target.value })}
+                      placeholder="your_username"
+                      className="mt-1"
+                    />
+                  ) : (
+                    <p className="mt-1 text-muted-foreground">@{currentProfile.username || "Not set"}</p>
+                  )}
                 </div>
                 
                 <div>
@@ -388,7 +386,7 @@ const Profile = () => {
                       className="mt-1"
                     />
                   ) : (
-                    <p className="mt-1 text-muted-foreground">{currentProfile.bio}</p>
+                    <p className="mt-1 text-muted-foreground">{currentProfile.bio || "No bio yet. Tell others about yourself!"}</p>
                   )}
                 </div>
               </div>
@@ -397,155 +395,50 @@ const Profile = () => {
           
           <TabsContent value="fitness" className="space-y-4">
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Fitness Goals</h3>
+              <h3 className="text-lg font-semibold mb-4">Experience Level</h3>
               <div className="flex flex-wrap gap-2">
-                {commonGoals.map((goal) => (
+                {experienceLevels.map((level) => (
                   <Badge
-                    key={goal}
-                    variant={currentProfile.goals.includes(goal) ? "default" : "outline"}
-                    className={`cursor-pointer transition-all ${
+                    key={level}
+                    variant={currentProfile.experienceLevel === level ? "default" : "outline"}
+                    className={`cursor-pointer transition-all capitalize ${
                       isEditing ? "hover:scale-105" : ""
-                    } ${currentProfile.goals.includes(goal) ? "bg-gradient-primary text-primary-foreground" : ""}`}
-                    onClick={() => isEditing && toggleGoal(goal)}
+                    } ${currentProfile.experienceLevel === level ? "bg-gradient-primary text-primary-foreground" : ""}`}
+                    onClick={() => isEditing && setEditedProfile({ ...editedProfile, experienceLevel: level })}
                   >
-                    {goal}
+                    {level}
                   </Badge>
                 ))}
               </div>
             </Card>
-            
+
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Interests</h3>
-              <div className="flex flex-wrap gap-2">
-                {commonInterests.map((interest) => (
-                  <Badge
-                    key={interest}
-                    variant={currentProfile.interests.includes(interest) ? "default" : "outline"}
-                    className={`cursor-pointer transition-all ${
-                      isEditing ? "hover:scale-105" : ""
-                    } ${currentProfile.interests.includes(interest) ? "bg-fitness-accent/20 text-fitness-accent border-fitness-accent" : ""}`}
-                    onClick={() => isEditing && toggleInterest(interest)}
-                  >
-                    {interest}
-                  </Badge>
-                ))}
-              </div>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="trainer" className="space-y-4">
-            <Card className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Trainer Profile</h3>
-                {isEditing && (
-                  <div className="flex items-center space-x-2">
-                    <Label htmlFor="trainer-toggle">I'm a Trainer</Label>
-                    <Switch
-                      id="trainer-toggle"
-                      checked={editedProfile.isTrainer}
-                      onCheckedChange={(checked) => 
-                        setEditedProfile({ ...editedProfile, isTrainer: checked })
-                      }
-                    />
+              <h3 className="text-lg font-semibold mb-4">Fitness Goal</h3>
+              {isEditing ? (
+                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    {commonGoals.map((goal) => (
+                      <Badge
+                        key={goal}
+                        variant={editedProfile.fitnessGoal === goal ? "default" : "outline"}
+                        className={`cursor-pointer transition-all hover:scale-105 ${
+                          editedProfile.fitnessGoal === goal ? "bg-gradient-primary text-primary-foreground" : ""
+                        }`}
+                        onClick={() => setEditedProfile({ ...editedProfile, fitnessGoal: goal })}
+                      >
+                        {goal}
+                      </Badge>
+                    ))}
                   </div>
-                )}
-              </div>
-              
-              {currentProfile.isTrainer ? (
-                <div className="space-y-4">
-                  <div>
-                    <Label>Specialties</Label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {trainerSpecialties.map((specialty) => (
-                        <Badge
-                          key={specialty}
-                          variant={currentProfile.trainerInfo?.specialties.includes(specialty) ? "default" : "outline"}
-                          className={`cursor-pointer transition-all ${
-                            isEditing ? "hover:scale-105" : ""
-                          } ${currentProfile.trainerInfo?.specialties.includes(specialty) ? "bg-fitness-success/20 text-fitness-success border-fitness-success" : ""}`}
-                          onClick={() => isEditing && toggleSpecialty(specialty)}
-                        >
-                          {specialty}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <Label>Experience</Label>
-                    {isEditing ? (
-                      <Textarea
-                        value={editedProfile.trainerInfo?.experience || ""}
-                        onChange={(e) => setEditedProfile({
-                          ...editedProfile,
-                          trainerInfo: { ...editedProfile.trainerInfo!, experience: e.target.value }
-                        })}
-                        placeholder="Describe your training experience..."
-                        className="mt-1"
-                      />
-                    ) : (
-                      <p className="mt-1 text-muted-foreground">
-                        {currentProfile.trainerInfo?.experience || "No experience added yet."}
-                      </p>
-                    )}
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label>Hourly Rate</Label>
-                      {isEditing ? (
-                        <Input
-                          value={editedProfile.trainerInfo?.hourlyRate || ""}
-                          onChange={(e) => setEditedProfile({
-                            ...editedProfile,
-                            trainerInfo: { ...editedProfile.trainerInfo!, hourlyRate: e.target.value }
-                          })}
-                          placeholder="$50/hour"
-                          className="mt-1"
-                        />
-                      ) : (
-                        <p className="mt-1 text-muted-foreground">
-                          {currentProfile.trainerInfo?.hourlyRate || "Not specified"}
-                        </p>
-                      )}
-                    </div>
-                    
-                    <div>
-                      <Label>Availability</Label>
-                      {isEditing ? (
-                        <Input
-                          value={editedProfile.trainerInfo?.availability || ""}
-                          onChange={(e) => setEditedProfile({
-                            ...editedProfile,
-                            trainerInfo: { ...editedProfile.trainerInfo!, availability: e.target.value }
-                          })}
-                          placeholder="Mon-Fri 6AM-8PM"
-                          className="mt-1"
-                        />
-                      ) : (
-                        <p className="mt-1 text-muted-foreground">
-                          {currentProfile.trainerInfo?.availability || "Not specified"}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+                  <Input
+                    value={editedProfile.fitnessGoal}
+                    onChange={(e) => setEditedProfile({ ...editedProfile, fitnessGoal: e.target.value })}
+                    placeholder="Or type your own goal..."
+                    className="mt-2"
+                  />
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <Users className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-                  <h4 className="text-lg font-medium mb-2">Become a Trainer</h4>
-                  <p className="text-muted-foreground mb-4">
-                    Share your expertise and help others achieve their fitness goals.
-                  </p>
-                  {isEditing && (
-                    <Button
-                      onClick={() => setEditedProfile({ ...editedProfile, isTrainer: true })}
-                      variant="outline"
-                    >
-                      Enable Trainer Profile
-                    </Button>
-                  )}
-                </div>
+                <p className="text-muted-foreground">{currentProfile.fitnessGoal || "No fitness goal set yet."}</p>
               )}
             </Card>
           </TabsContent>
