@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Camera, MapPin, Mail, Phone, Calendar, Award, Users, Star, Edit, Save, X } from "lucide-react";
+import { Camera, MapPin, Mail, Phone, Calendar, Award, Users, Star, Edit, Save, X, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
 import Navigation from "@/components/Navigation";
 
 interface UserProfile {
@@ -198,6 +199,64 @@ const Profile = () => {
             </Badge>
           </div>
         </Card>
+
+        {/* Profile Completion Prompt */}
+        {(() => {
+          const fields = [
+            { label: "Bio", done: !!currentProfile.bio.trim() },
+            { label: "Fitness Goals", done: currentProfile.goals.length > 0 },
+            { label: "Fitness Level", done: !!currentProfile.fitnessLevel && currentProfile.fitnessLevel !== "Beginner" },
+            { label: "Interests", done: currentProfile.interests.length > 0 },
+          ];
+          const completed = fields.filter(f => f.done).length;
+          const total = fields.length;
+          const incomplete = fields.filter(f => !f.done);
+
+          if (completed === total) return null;
+
+          return (
+            <Card className="p-4 border-primary/20 bg-primary/5">
+              <div className="flex items-start gap-3">
+                <div className="rounded-full bg-primary/10 p-2 mt-0.5">
+                  <AlertCircle className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1 space-y-3">
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground">Complete Your Profile</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      A complete profile helps you connect with workout buddies and get better recommendations.
+                    </p>
+                  </div>
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>{completed} of {total} completed</span>
+                      <span>{Math.round((completed / total) * 100)}%</span>
+                    </div>
+                    <Progress value={(completed / total) * 100} className="h-2" />
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {incomplete.map(f => (
+                      <Badge key={f.label} variant="outline" className="text-xs border-primary/30 text-primary">
+                        + {f.label}
+                      </Badge>
+                    ))}
+                  </div>
+                  {!isEditing && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-xs border-primary/30 text-primary hover:bg-primary/10"
+                      onClick={() => setIsEditing(true)}
+                    >
+                      <Edit className="w-3 h-3 mr-1.5" />
+                      Complete Now
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </Card>
+          );
+        })()}
 
         {/* Privacy Settings */}
         <Card className="p-6 space-y-4">
