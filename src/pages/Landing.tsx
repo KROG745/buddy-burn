@@ -75,10 +75,10 @@ const Landing = () => {
             <div className="text-left space-y-8">
               <img src={appIcon} alt="Fitness Friends App Icon" className="w-24 h-24 rounded-3xl shadow-2xl" />
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-                A easy way to find friends and get fit, it's that simple.
+                Stop working out alone. Start showing up for each other.
               </h1>
               <p className="text-lg md:text-xl text-gray-300 max-w-xl">
-                Meet "Fitness Friends", the next generation mobile app that makes finding a workout buddy an easy task. Are you ready to make the leap? Signup to take part in our closed Beta!
+                The hardest part of fitness isn't the workout — it's walking through the door alone. Fitness Friends connects you with people who actually show up, so you never have to face the gym by yourself again.
               </p>
               <Button size="lg" className="bg-[#4169E1] hover:bg-[#3159D1] text-white gap-2 shadow-lg" asChild>
                 <Link to="/auth">
@@ -105,10 +105,10 @@ const Landing = () => {
           <div className="text-center mb-4">
             <p className="text-sm uppercase tracking-wider text-[#4169E1] font-semibold mb-2">Features</p>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Powerful features to supercharge your workout
+              Built for the moments that keep you going
             </h2>
             <p className="text-xl text-gray-600 mb-16">
-              And many more amazing features!
+              Because consistency isn't about willpower — it's about having someone in your corner.
             </p>
           </div>
 
@@ -119,9 +119,9 @@ const Landing = () => {
                 <div className="w-20 h-20 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
                   <Users className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Friend Matching</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Find Your People</h3>
                 <p className="text-gray-600">
-                  Get the best fitness friend matches based on your search criteria and requirements.
+                  No more awkward gym small talk. Get matched with people who share your goals, your vibe, and your drive.
                 </p>
               </CardContent>
             </Card>
@@ -132,9 +132,9 @@ const Landing = () => {
                 <div className="w-20 h-20 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
                   <MapPin className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Gym Map</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Your Gym, Your Turf</h3>
                 <p className="text-gray-600">
-                  View your gym and other gyms in your area.
+                  Discover where your future workout partner already trains — because great friendships start closer than you think.
                 </p>
               </CardContent>
             </Card>
@@ -145,9 +145,9 @@ const Landing = () => {
                 <div className="w-20 h-20 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
                   <Calendar className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Fitness Schedule</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Stay Accountable Together</h3>
                 <p className="text-gray-600">
-                  Build your fitness schedule to receive smart notifications and find the best matches.
+                  Plans are easy to break alone. When someone's counting on you, you show up — every single time.
                 </p>
               </CardContent>
             </Card>
@@ -158,9 +158,9 @@ const Landing = () => {
                 <div className="w-20 h-20 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
                   <Dumbbell className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Customizable Workouts</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Train Your Way</h3>
                 <p className="text-gray-600">
-                  Build your workouts one exercise at a time and save them to your fitness schedule.
+                  Your body, your rules. Build routines that feel like you — then share them with someone who gets it.
                 </p>
               </CardContent>
             </Card>
@@ -171,9 +171,9 @@ const Landing = () => {
                 <div className="w-20 h-20 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
                   <MessageCircle className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">In-App Messaging</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Real Conversations</h3>
                 <p className="text-gray-600">
-                  Connect with your fitness friends or message someone new without having to give out your number.
+                  The best motivation doesn't come from an app notification — it comes from a friend saying "see you at 6."
                 </p>
               </CardContent>
             </Card>
@@ -184,9 +184,9 @@ const Landing = () => {
                 <div className="w-20 h-20 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
                   <Activity className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Activity History</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">See How Far You've Come</h3>
                 <p className="text-gray-600">
-                  Keep track of your workout progress with our activity log to see how far you've come.
+                  On the days you want to quit, look back at your journey. Every rep, every session — proof that you're stronger than yesterday.
                 </p>
               </CardContent>
             </Card>
@@ -220,9 +220,9 @@ const Landing = () => {
                 <h3 className="text-3xl font-bold text-gray-900">Friend Matching</h3>
               </div>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Our intelligent matching algorithm connects you with workout partners who share your fitness goals, 
-                schedule, and preferred gym locations. Get personalized match recommendations based on your workout 
-                preferences, experience level, and availability.
+                Everyone deserves a gym partner who just gets it. Our matching algorithm finds people who train like you, 
+                think like you, and will push you when you need it most. No more scrolling through strangers — just 
+                real connections with people who are on the same journey.
               </p>
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-2">
@@ -251,8 +251,8 @@ const Landing = () => {
                 <h3 className="text-3xl font-bold text-gray-900">Gym Map</h3>
               </div>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Discover gyms and fitness centers near you with our interactive map feature. See which facilities 
-                your matches prefer, check gym amenities, and find the perfect location to meet up for your workouts.
+                Your next best friend might already be training at the gym down the street. Our interactive map shows 
+                you exactly where your potential workout partners are — making that first meetup feel natural, not forced.
               </p>
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-2">
@@ -295,8 +295,8 @@ const Landing = () => {
                 <h3 className="text-3xl font-bold text-gray-900">Fitness Schedule</h3>
               </div>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Plan your workouts in advance with our intuitive scheduling system. Set recurring sessions, get 
-                reminders, and coordinate workout times with your fitness friends to maintain consistency.
+                Motivation fades. Habits stick. Build a rhythm with your workout partner that turns "I should go" 
+                into "I can't wait to go." Our scheduling tools make commitment feel effortless.
               </p>
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-2">
@@ -325,8 +325,8 @@ const Landing = () => {
                 <h3 className="text-3xl font-bold text-gray-900">Customizable Workouts</h3>
               </div>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Create personalized workout routines tailored to your fitness goals. Choose from a comprehensive 
-                exercise library, set your reps and sets, and save your favorite workouts for easy access.
+                Fitness isn't one-size-fits-all — and neither are you. Craft routines that match your goals, your pace, 
+                and your story. Then share them with a partner who'll celebrate every milestone with you.
               </p>
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-2">
@@ -369,8 +369,8 @@ const Landing = () => {
                 <h3 className="text-3xl font-bold text-gray-900">In-App Messaging</h3>
               </div>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Stay connected with your workout community through our secure messaging system. Chat with your 
-                fitness friends, coordinate meetups, and share progress without leaving the app.
+                The "you got this" text before leg day. The check-in after a tough week. Real support from real people 
+                who care about your progress — all within a safe, private space.
               </p>
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-2">
@@ -399,8 +399,8 @@ const Landing = () => {
                 <h3 className="text-3xl font-bold text-gray-900">Activity History</h3>
               </div>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Track your fitness journey with detailed activity logs. Monitor your progress over time, celebrate 
-                milestones, and stay motivated by seeing how far you've come.
+                Growth is invisible day-to-day, but undeniable month-to-month. Your activity history is your proof — 
+                a timeline of every time you chose yourself, even when it was hard.
               </p>
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-2">
@@ -533,10 +533,10 @@ const Landing = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Version 1.0 Is In Development!
+              Be Part of Something Bigger
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We're working hard to produce this app and you can help us. Join our beta test and help us create a better way to work out.
+              We're building more than an app — we're building a community where no one works out alone. Join the beta and help shape the future of fitness friendships.
             </p>
           </div>
 
@@ -577,7 +577,7 @@ const Landing = () => {
         <div className="container mx-auto px-4 text-center">
           <FitnessLogo className="justify-center mb-6" textColor="text-white" />
           <p className="text-gray-400 mb-6">
-            The next generation mobile app that makes finding a workout buddy an easy task.
+            Because the strongest version of you shouldn't have to go it alone.
           </p>
           <div className="flex justify-center gap-6 mb-6 text-sm">
             <Link to="/support" className="text-gray-400 hover:text-white transition-colors">
