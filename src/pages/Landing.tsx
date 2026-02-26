@@ -15,7 +15,7 @@ import featureWorkouts from "@/assets/feature-workouts.png";
 import featureMessaging from "@/assets/feature-messaging.png";
 import featureActivity from "@/assets/feature-activity.png";
 
-const VISITED_KEY = "fitness_friends_visited";
+
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -32,17 +32,7 @@ const Landing = () => {
         return;
       }
 
-      // Check if user has visited before
-      const hasVisited = localStorage.getItem(VISITED_KEY);
-      
-      if (hasVisited) {
-        // Returning visitor, go to auth page
-        navigate("/auth", { replace: true });
-        return;
-      }
-
-      // First-time visitor, mark as visited and show landing page
-      localStorage.setItem(VISITED_KEY, "true");
+      // Not logged in, show landing page
       setIsChecking(false);
     };
 
