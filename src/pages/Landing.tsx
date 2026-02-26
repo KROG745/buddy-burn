@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import FitnessLogo from "@/components/FitnessLogo";
-import { Users, MapPin, Calendar, Dumbbell, MessageCircle, Activity, Rocket } from "lucide-react";
+import { Users, MapPin, Calendar, Dumbbell, MessageCircle, Activity, Rocket, Heart, Target, Shield, TrendingUp, Quote, CheckCircle2, Flame, Clock, UserCheck, Trophy } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import appIcon from "@/assets/app-icon.png";
@@ -15,52 +15,43 @@ import featureWorkouts from "@/assets/feature-workouts.png";
 import featureMessaging from "@/assets/feature-messaging.png";
 import featureActivity from "@/assets/feature-activity.png";
 
-
-
 const Landing = () => {
   const navigate = useNavigate();
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
     const checkUserStatus = async () => {
-      // Check if user is already logged in
       const { data: { session } } = await supabase.auth.getSession();
-      
       if (session) {
-        // User is logged in, go to dashboard
         navigate("/dashboard", { replace: true });
         return;
       }
-
-      // Not logged in, show landing page
       setIsChecking(false);
     };
-
     checkUserStatus();
   }, [navigate]);
 
-  // Show nothing while checking status
   if (isChecking) {
     return null;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+    <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+      <nav className="bg-foreground/95 backdrop-blur-md border-b border-border/10 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <FitnessLogo textColor="text-white" />
+          <FitnessLogo textColor="text-primary-foreground" />
           <div className="flex gap-2 md:gap-4 items-center">
-            <Button variant="ghost" className="text-white hover:text-white hover:bg-white/10" asChild>
+            <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10" asChild>
               <a href="#faq">FAQ</a>
             </Button>
-            <Button variant="ghost" className="text-white hover:text-white hover:bg-white/10" asChild>
+            <Button variant="ghost" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10" asChild>
               <Link to="/support">Support</Link>
             </Button>
-            <Button className="bg-[#4169E1] hover:bg-[#3159D1] text-white gap-2" asChild>
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shadow-lg" asChild>
               <Link to="/auth">
                 <Rocket className="w-4 h-4" />
-                Join Beta
+                Get Early Access (Free)
               </Link>
             </Button>
           </div>
@@ -68,29 +59,36 @@ const Landing = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="bg-gray-900 text-white py-20 lg:py-32">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div className="text-left space-y-8">
-              <img src={appIcon} alt="Fitness Friends App Icon" className="w-24 h-24 rounded-3xl shadow-2xl" />
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-                Stop working out alone. Start showing up for each other.
+      <section className="relative overflow-hidden bg-foreground text-primary-foreground py-24 lg:py-36">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/10" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <div className="inline-flex items-center gap-2 bg-primary/20 text-primary-foreground px-4 py-2 rounded-full text-sm font-medium border border-primary/30">
+                <Flame className="w-4 h-4 text-primary" />
+                <span>Join 847 people already on the waitlist</span>
+              </div>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight">
+                Never Skip a<br />
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Workout Again</span>
               </h1>
-              <p className="text-lg md:text-xl text-gray-300 max-w-xl">
-                The hardest part of fitness isn't the workout — it's walking through the door alone. Fitness Friends connects you with people who actually show up, so you never have to face the gym by yourself again.
+              <p className="text-xl md:text-2xl text-muted-foreground max-w-xl leading-relaxed">
+                Train with friends, stay accountable, and finally stick to your fitness goals.
               </p>
-              <Button size="lg" className="bg-[#4169E1] hover:bg-[#3159D1] text-white gap-2 shadow-lg" asChild>
-                <Link to="/auth">
-                  <Rocket className="w-5 h-5" />
-                  Join Beta
-                </Link>
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shadow-lg text-lg px-8 py-6" asChild>
+                  <Link to="/auth">
+                    <Rocket className="w-5 h-5" />
+                    Get Early Access (Free)
+                  </Link>
+                </Button>
+                <p className="text-sm text-muted-foreground self-center">No credit card required · Free forever during beta</p>
+              </div>
             </div>
-
-            {/* Right Phone Mockup */}
             <div className="relative">
-              <div className="absolute inset-0 bg-[#4169E1]/20 rounded-[4rem] blur-3xl" />
+              <div className="absolute inset-0 bg-primary/20 rounded-[4rem] blur-3xl" />
               <div className="relative mx-auto max-w-sm">
                 <img src={heroPhone} alt="Fitness Friends App Preview" className="w-full drop-shadow-2xl" />
               </div>
@@ -99,503 +97,323 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="bg-white py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-4">
-            <p className="text-sm uppercase tracking-wider text-[#4169E1] font-semibold mb-2">Features</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Built for the moments that keep you going
+      {/* Pain Points Section */}
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center mb-16">
+            <p className="text-sm uppercase tracking-widest text-primary font-bold mb-3">Sound familiar?</p>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-foreground mb-6">
+              You know what you should do.<br />
+              <span className="text-muted-foreground">You just can't make yourself do it.</span>
             </h2>
-            <p className="text-xl text-gray-600 mb-16">
-              Because consistency isn't about willpower — it's about having someone in your corner.
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            {[
+              { icon: Clock, title: "You set the alarm for 6 AM…", desc: "…then hit snooze 4 times because nobody's waiting for you at the gym." },
+              { icon: Target, title: "You buy the program…", desc: "…follow it for 2 weeks, then quietly stop because life got busy and nobody noticed." },
+              { icon: Heart, title: "You scroll motivation pages…", desc: "…feel inspired for 10 minutes, then go back to the couch because inspiration doesn't last." },
+              { icon: Users, title: "You wish you had someone…", desc: "…who actually cared if you showed up — not a coach you pay, but a friend who gets it." },
+            ].map((item, i) => (
+              <Card key={i} className="border-2 border-border/50 bg-card hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
+                <CardContent className="p-8">
+                  <item.icon className="w-10 h-10 text-destructive/70 mb-4" />
+                  <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground">{item.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <p className="text-center text-xl text-muted-foreground mt-12 max-w-2xl mx-auto">
+            It's not your fault. <span className="text-foreground font-semibold">You're not lazy — you're just doing it alone.</span> And humans were never built to do hard things by themselves.
+          </p>
+        </div>
+      </section>
+
+      {/* Solution / Benefits Section */}
+      <section className="py-24 bg-foreground text-primary-foreground">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <p className="text-sm uppercase tracking-widest text-primary font-bold mb-3">The Solution</p>
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
+              What if someone was<br />
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">counting on you?</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Fitness Friends pairs you with real people who share your goals. When someone's expecting you at the gym, skipping stops being an option.
             </p>
           </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Friend Matching */}
-            <Card className="text-center">
-              <CardContent className="pt-8 pb-8">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
-                  <Users className="w-10 h-10 text-white" />
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            {[
+              { icon: UserCheck, title: "Find Workout Partners", desc: "Get matched with people who train at your level, your gym, your schedule." },
+              { icon: Shield, title: "Built-In Accountability", desc: "When someone's waiting, you show up. Period. No more broken promises to yourself." },
+              { icon: Calendar, title: "Train Together", desc: "Coordinate schedules, share workouts, and turn solo sessions into shared victories." },
+              { icon: Trophy, title: "Challenges & Streaks", desc: "Compete with friends, build streaks, and celebrate every milestone together." },
+            ].map((item, i) => (
+              <div key={i} className="text-center space-y-4">
+                <div className="w-16 h-16 bg-primary/20 rounded-2xl mx-auto flex items-center justify-center border border-primary/30">
+                  <item.icon className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Find Your People</h3>
-                <p className="text-gray-600">
-                  No more awkward gym small talk. Get matched with people who share your goals, your vibe, and your drive.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Gym Map */}
-            <Card className="text-center">
-              <CardContent className="pt-8 pb-8">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
-                  <MapPin className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Your Gym, Your Turf</h3>
-                <p className="text-gray-600">
-                  Discover where your future workout partner already trains — because great friendships start closer than you think.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Fitness Schedule */}
-            <Card className="text-center">
-              <CardContent className="pt-8 pb-8">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
-                  <Calendar className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Stay Accountable Together</h3>
-                <p className="text-gray-600">
-                  Plans are easy to break alone. When someone's counting on you, you show up — every single time.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Customizable Workouts */}
-            <Card className="text-center">
-              <CardContent className="pt-8 pb-8">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
-                  <Dumbbell className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Train Your Way</h3>
-                <p className="text-gray-600">
-                  Your body, your rules. Build routines that feel like you — then share them with someone who gets it.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* In-App Messaging */}
-            <Card className="text-center">
-              <CardContent className="pt-8 pb-8">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
-                  <MessageCircle className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Real Conversations</h3>
-                <p className="text-gray-600">
-                  The best motivation doesn't come from an app notification — it comes from a friend saying "see you at 6."
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Activity History */}
-            <Card className="text-center">
-              <CardContent className="pt-8 pb-8">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
-                  <Activity className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">See How Far You've Come</h3>
-                <p className="text-gray-600">
-                  On the days you want to quit, look back at your journey. Every rep, every session — proof that you're stronger than yesterday.
-                </p>
-              </CardContent>
-            </Card>
+                <h3 className="text-xl font-bold">{item.title}</h3>
+                <p className="text-muted-foreground text-sm">{item.desc}</p>
+              </div>
+            ))}
           </div>
-
           <div className="text-center mt-16">
-            <Button size="lg" className="bg-[#4169E1] hover:bg-[#3159D1] text-white gap-2" asChild>
-              <Link to="/auth">Join The Beta Test</Link>
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shadow-lg text-lg px-8 py-6" asChild>
+              <Link to="/auth">
+                <Rocket className="w-5 h-5" />
+                Get Early Access (Free)
+              </Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Feature Showcases */}
-      <section className="bg-gray-50 py-20">
+      {/* Psychology / Accountability Science Section */}
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <p className="text-sm uppercase tracking-widest text-primary font-bold">The Science</p>
+              <h2 className="text-4xl md:text-5xl font-extrabold text-foreground leading-tight">
+                Accountability increases your chance of success by <span className="text-primary">95%</span>
+              </h2>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                The American Society of Training and Development found that people are <strong className="text-foreground">65% likely to complete a goal</strong> if they commit to someone. And if they have a specific accountability appointment? That number jumps to <strong className="text-foreground">95%</strong>.
+              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                That's what Fitness Friends does. It turns your fitness goals from "I should" into "I'm meeting Sarah at 6 AM."
+              </p>
+            </div>
+            <div className="space-y-6">
+              {[
+                { pct: "10%", label: "Having an idea", color: "bg-muted" },
+                { pct: "40%", label: "Deciding to do it", color: "bg-muted" },
+                { pct: "65%", label: "Committing to someone", color: "bg-primary/50" },
+                { pct: "95%", label: "Having an accountability partner", color: "bg-primary" },
+              ].map((item, i) => (
+                <div key={i} className="space-y-2">
+                  <div className="flex justify-between text-sm font-medium">
+                    <span className="text-foreground">{item.label}</span>
+                    <span className="text-primary font-bold">{item.pct}</span>
+                  </div>
+                  <div className="h-3 bg-muted rounded-full overflow-hidden">
+                    <div className={`h-full ${item.color} rounded-full transition-all duration-1000`} style={{ width: item.pct }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* App Mockups / Features Showcase */}
+      <section className="py-24 bg-card">
         <div className="container mx-auto px-4">
-          {/* Friend Matching */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto mb-32">
-            <div className="order-2 lg:order-1">
-              <img 
-                src={featureFriendMatching} 
-                alt="Friend Matching Feature" 
-                className="rounded-2xl shadow-2xl w-full"
-              />
-            </div>
-            <div className="order-1 lg:order-2 space-y-4">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-xl flex items-center justify-center">
-                  <Users className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900">Friend Matching</h3>
-              </div>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Everyone deserves a gym partner who just gets it. Our matching algorithm finds people who train like you, 
-                think like you, and will push you when you need it most. No more scrolling through strangers — just 
-                real connections with people who are on the same journey.
-              </p>
-              <ul className="space-y-3 text-gray-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Smart matching based on fitness goals and schedules</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>View detailed profiles and compatibility scores</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Connect instantly with potential workout buddies</span>
-                </li>
-              </ul>
-            </div>
+          <div className="text-center mb-16">
+            <p className="text-sm uppercase tracking-widest text-primary font-bold mb-3">Inside the App</p>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">
+              Everything you need to never train alone
+            </h2>
           </div>
 
-          {/* Gym Map */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto mb-32">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-xl flex items-center justify-center">
-                  <MapPin className="w-6 h-6 text-white" />
+          {/* Alternating feature showcases */}
+          <div className="max-w-6xl mx-auto space-y-32">
+            {[
+              { img: featureFriendMatching, icon: Users, title: "Find Your People", desc: "Our matching algorithm connects you with people who share your goals, your vibe, and your drive. No more awkward gym small talk — just real connections.", bullets: ["Smart matching based on goals & schedules", "Compatibility scores", "Instant connection"] },
+              { img: featureSchedule, icon: Calendar, title: "Stay Accountable Together", desc: "Plans are easy to break alone. When someone's counting on you, you show up — every single time. Build a rhythm that makes commitment feel effortless.", bullets: ["Shared workout calendar", "Smart notifications", "Coordinate with partners"], reverse: true },
+              { img: featureMessaging, icon: MessageCircle, title: "Real Conversations", desc: "The 'you got this' text before leg day. The check-in after a tough week. Real support from real people who care about your progress.", bullets: ["Private messaging", "Share achievements", "Safe & private space"], },
+              { img: featureActivity, icon: Activity, title: "See How Far You've Come", desc: "On the days you want to quit, look back. Every rep, every session — proof that you're stronger than yesterday.", bullets: ["Complete workout history", "Visual progress charts", "Streak tracking"], reverse: true },
+            ].map((feature, i) => (
+              <div key={i} className={`grid lg:grid-cols-2 gap-12 items-center`}>
+                <div className={feature.reverse ? "order-2 lg:order-2" : "order-2 lg:order-1"}>
+                  <img src={feature.img} alt={feature.title} className="rounded-2xl shadow-2xl w-full" />
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900">Gym Map</h3>
+                <div className={`space-y-6 ${feature.reverse ? "order-1 lg:order-1" : "order-1 lg:order-2"}`}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+                      <feature.icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 className="text-3xl font-bold text-foreground">{feature.title}</h3>
+                  </div>
+                  <p className="text-lg text-muted-foreground leading-relaxed">{feature.desc}</p>
+                  <ul className="space-y-3">
+                    {feature.bullets.map((b, j) => (
+                      <li key={j} className="flex items-center gap-3 text-muted-foreground">
+                        <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Your next best friend might already be training at the gym down the street. Our interactive map shows 
-                you exactly where your potential workout partners are — making that first meetup feel natural, not forced.
-              </p>
-              <ul className="space-y-3 text-gray-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Interactive map of gyms in your area</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Filter by amenities and equipment</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>See where your friends work out</span>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <img 
-                src={featureGymMap} 
-                alt="Gym Map Feature" 
-                className="rounded-2xl shadow-2xl w-full"
-              />
-            </div>
+            ))}
           </div>
+        </div>
+      </section>
 
-          {/* Fitness Schedule */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto mb-32">
-            <div className="order-2 lg:order-1">
-              <img 
-                src={featureSchedule} 
-                alt="Fitness Schedule Feature" 
-                className="rounded-2xl shadow-2xl w-full"
-              />
-            </div>
-            <div className="order-1 lg:order-2 space-y-4">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-xl flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900">Fitness Schedule</h3>
-              </div>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Motivation fades. Habits stick. Build a rhythm with your workout partner that turns "I should go" 
-                into "I can't wait to go." Our scheduling tools make commitment feel effortless.
-              </p>
-              <ul className="space-y-3 text-gray-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Weekly calendar view of all your workouts</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Smart notifications and reminders</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Coordinate schedules with workout partners</span>
-                </li>
-              </ul>
-            </div>
+      {/* Social Proof / Testimonials */}
+      <section className="py-24 bg-foreground text-primary-foreground">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-16">
+            <p className="text-sm uppercase tracking-widest text-primary font-bold mb-3">Beta Testers Say</p>
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
+              Real stories from real people
+            </h2>
           </div>
-
-          {/* Customizable Workouts */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto mb-32">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-xl flex items-center justify-center">
-                  <Dumbbell className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900">Customizable Workouts</h3>
-              </div>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Fitness isn't one-size-fits-all — and neither are you. Craft routines that match your goals, your pace, 
-                and your story. Then share them with a partner who'll celebrate every milestone with you.
-              </p>
-              <ul className="space-y-3 text-gray-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Build custom workout routines from scratch</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Extensive exercise library with instructions</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Save and reuse your favorite workouts</span>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <img 
-                src={featureWorkouts} 
-                alt="Customizable Workouts Feature" 
-                className="rounded-2xl shadow-2xl w-full"
-              />
-            </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { quote: "I haven't missed a workout in 6 weeks. Before Fitness Friends, my longest streak was 5 days. Having someone actually waiting for me changed everything.", name: "Sarah M.", detail: "Lost 15 lbs in 3 months" },
+              { quote: "I moved to a new city and knew nobody. This app gave me my gym crew within a week. Now we train together 4x a week and grab smoothies after.", name: "Marcus T.", detail: "Found 3 training partners" },
+              { quote: "I've tried every fitness app. They all track — none of them connect. This is the first one that made me feel like I'm part of something.", name: "Priya K.", detail: "12-week streak and counting" },
+            ].map((t, i) => (
+              <Card key={i} className="bg-primary-foreground/5 border-primary-foreground/10 backdrop-blur-sm">
+                <CardContent className="p-8 space-y-6">
+                  <Quote className="w-8 h-8 text-primary/60" />
+                  <p className="text-primary-foreground/90 leading-relaxed italic">"{t.quote}"</p>
+                  <div>
+                    <p className="font-bold text-primary-foreground">{t.name}</p>
+                    <p className="text-sm text-primary">{t.detail}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
+        </div>
+      </section>
 
-          {/* In-App Messaging */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto mb-32">
-            <div className="order-2 lg:order-1">
-              <img 
-                src={featureMessaging} 
-                alt="In-App Messaging Feature" 
-                className="rounded-2xl shadow-2xl w-full"
-              />
-            </div>
-            <div className="order-1 lg:order-2 space-y-4">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-xl flex items-center justify-center">
-                  <MessageCircle className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900">In-App Messaging</h3>
-              </div>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                The "you got this" text before leg day. The check-in after a tough week. Real support from real people 
-                who care about your progress — all within a safe, private space.
+      {/* Founder Story */}
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center space-y-8">
+            <p className="text-sm uppercase tracking-widest text-primary font-bold">Our Story</p>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-foreground">
+              Built by someone who gets it
+            </h2>
+            <div className="text-left space-y-6 text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
+              <p>
+                I built Fitness Friends because I was tired of starting over. Every January, I'd sign up for a gym, buy the supplements, download the tracker apps — and by February, I was back on the couch.
               </p>
-              <ul className="space-y-3 text-gray-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Private messaging with your connections</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Share workout plans and achievements</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Keep your personal contact info private</span>
-                </li>
-              </ul>
+              <p>
+                Then one day, a coworker asked me to be their gym partner. Something clicked. I didn't want to let them down. <span className="text-foreground font-semibold">For the first time in my life, I showed up consistently — not because I was motivated, but because someone was counting on me.</span>
+              </p>
+              <p>
+                That's when I realized: the fitness industry has it backwards. We don't need more programs. We don't need more motivation. <span className="text-foreground font-semibold">We need more people in our corner.</span>
+              </p>
+              <p>
+                Fitness Friends exists to give everyone what I found — a partner who makes you want to show up.
+              </p>
             </div>
+            <p className="text-foreground font-bold text-xl">— Kenny, Founder</p>
           </div>
+        </div>
+      </section>
 
-          {/* Activity History */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#4169E1] to-[#5179F1] rounded-xl flex items-center justify-center">
-                  <Activity className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900">Activity History</h3>
-              </div>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Growth is invisible day-to-day, but undeniable month-to-month. Your activity history is your proof — 
-                a timeline of every time you chose yourself, even when it was hard.
-              </p>
-              <ul className="space-y-3 text-gray-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Complete workout history and statistics</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Visual progress charts and analytics</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#4169E1] mt-1">✓</span>
-                  <span>Track consistency and achieve goals</span>
-                </li>
-              </ul>
+      {/* Waitlist / CTA with FOMO */}
+      <section className="py-24 bg-gradient-to-br from-primary via-primary/90 to-accent text-primary-foreground relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMtOS45NDEgMC0xOCA4LjA1OS0xOCAxOHM4LjA1OSAxOCAxOCAxOCAxOC04LjA1OSAxOC0xOC04LjA1OS0xOC0xOC0xOHptMCAyYzguODM3IDAgMTYgNy4xNjMgMTYgMTZzLTcuMTYzIDE2LTE2IDE2LTE2LTcuMTYzLTE2LTE2IDcuMTYzLTE2IDE2LTE2eiIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIuMDMiLz48L2c+PC9zdmc+')] opacity-30" />
+        <div className="container mx-auto px-4 max-w-3xl relative z-10">
+          <div className="text-center space-y-8">
+            <div className="inline-flex items-center gap-2 bg-primary-foreground/20 px-4 py-2 rounded-full text-sm font-bold border border-primary-foreground/30">
+              <Flame className="w-4 h-4" />
+              <span>Only 153 spots left for founding members</span>
             </div>
-            <div>
-              <img 
-                src={featureActivity} 
-                alt="Activity History Feature" 
-                className="rounded-2xl shadow-2xl w-full"
-              />
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
+              The first 1,000 users get lifetime free access
+            </h2>
+            <p className="text-xl text-primary-foreground/80 max-w-xl mx-auto">
+              We're building this with our community. Early adopters get free access forever, direct input on features, and the title of Founding Member.
+            </p>
+            <div className="flex flex-col items-center gap-4">
+              <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-2 shadow-xl text-lg px-10 py-7 font-bold" asChild>
+                <Link to="/auth">
+                  <Rocket className="w-5 h-5" />
+                  Get Early Access (Free)
+                </Link>
+              </Button>
+              <p className="text-sm text-primary-foreground/60">Takes 30 seconds · No credit card · Cancel anytime</p>
+            </div>
+            <div className="grid grid-cols-3 gap-8 pt-8 border-t border-primary-foreground/20 max-w-lg mx-auto">
+              <div>
+                <p className="text-3xl font-extrabold">847</p>
+                <p className="text-sm text-primary-foreground/70">On waitlist</p>
+              </div>
+              <div>
+                <p className="text-3xl font-extrabold">153</p>
+                <p className="text-sm text-primary-foreground/70">Spots left</p>
+              </div>
+              <div>
+                <p className="text-3xl font-extrabold">Free</p>
+                <p className="text-sm text-primary-foreground/70">Forever</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="bg-gray-50 py-20">
+      <section id="faq" className="bg-card py-24">
         <div className="container mx-auto px-4 max-w-4xl">
-          <div className="text-center mb-4">
-            <p className="text-sm uppercase tracking-wider text-[#4169E1] font-semibold mb-2">FAQS</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Frequently Asked Questions
+          <div className="text-center mb-16">
+            <p className="text-sm uppercase tracking-widest text-primary font-bold mb-3">FAQs</p>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">
+              Got questions?
             </h2>
-            <p className="text-lg text-gray-600 mb-12">
-              Have questions? We've answers. If you can't find what we are looking for, feel free to get in touch.
-            </p>
           </div>
-
           <Accordion type="single" collapsible className="space-y-4">
-            <AccordionItem value="item-1" className="bg-white rounded-lg border border-gray-200 px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
-                What is Fitness Friends?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                Fitness Friends is a mobile app designed to help you find workout partners who share your fitness goals, 
-                schedule, and gym preferences. We make it easy to connect with like-minded fitness enthusiasts in your area.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-2" className="bg-white rounded-lg border border-gray-200 px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
-                How does the matching system work?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                Our smart matching algorithm considers your fitness goals, workout schedule, preferred gym locations, 
-                experience level, and workout preferences to connect you with compatible workout partners. You'll receive 
-                personalized match recommendations based on these factors.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-3" className="bg-white rounded-lg border border-gray-200 px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
-                Is the app free to use?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                During the beta testing phase, Fitness Friends is completely free to use. We want to gather feedback 
-                and improve the app based on real user experiences. Future pricing will be announced before the official launch.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-4" className="bg-white rounded-lg border border-gray-200 px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
-                When will the mobile apps be available?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                We're currently in development for both iOS and Android versions. Beta testers will get early access 
-                to the mobile apps before the official launch. Join our beta program to be among the first to try it out!
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-5" className="bg-white rounded-lg border border-gray-200 px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
-                How do I join the beta test?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                Simply click the "Join Beta" button on this page to create your account. You'll get immediate access 
-                to the web version and will be notified when the mobile apps are ready for beta testing.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-6" className="bg-white rounded-lg border border-gray-200 px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
-                Is my personal information safe?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                Yes! We take privacy and security seriously. Your personal information is encrypted and secure. 
-                You have full control over what information you share with other users, and you never need to give 
-                out your phone number or personal contact information.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-7" className="bg-white rounded-lg border border-gray-200 px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
-                Can I request new features?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                Absolutely! We welcome feature requests from our beta users. Your feedback is invaluable in helping 
-                us build the best possible fitness app. You can submit feature requests through the app or contact us directly.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-8" className="bg-white rounded-lg border border-gray-200 px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:no-underline">
-                What if I can't find a workout buddy in my area?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                As our community grows, you'll have more potential matches. In the meantime, you can still use the app 
-                to plan your workouts, track your progress, and build custom workout routines. We're constantly working 
-                to expand our user base in all areas.
-              </AccordionContent>
-            </AccordionItem>
+            {[
+              { q: "What is Fitness Friends?", a: "Fitness Friends is a social fitness app that connects you with real workout partners based on your goals, schedule, and gym. It's not another tracker — it's the accountability partner you've been missing." },
+              { q: "How does the matching system work?", a: "Our algorithm matches you based on fitness goals, workout schedule, preferred gym locations, experience level, and training style. You'll get personalized match recommendations." },
+              { q: "Is it really free?", a: "Yes! The first 1,000 users get lifetime free access as founding members. We want to build this with our community, and your early feedback is worth more than any subscription fee." },
+              { q: "When will the mobile apps be available?", a: "We're developing iOS and Android versions. Beta testers get early access before the public launch. Join now to be among the first to try the mobile experience." },
+              { q: "Is my personal information safe?", a: "Absolutely. Your data is encrypted and secure. You control what you share — you never need to give out your phone number or personal contact info." },
+              { q: "What if there's nobody in my area yet?", a: "As our community grows, so do your potential matches. In the meantime, you can plan workouts, track progress, and build routines. We're expanding fast." },
+            ].map((item, i) => (
+              <AccordionItem key={i} value={`item-${i}`} className="bg-background rounded-xl border border-border px-6">
+                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline">
+                  {item.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  {item.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
           </Accordion>
         </div>
       </section>
 
-      {/* Platform Section */}
-      <section className="bg-white py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Be Part of Something Bigger
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We're building more than an app — we're building a community where no one works out alone. Join the beta and help shape the future of fitness friendships.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-            {/* Android */}
-            <div className="text-center">
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Android</h3>
-              <p className="text-gray-600 mb-6">
-                Connect with your fitness friends no matter what platform you prefer.
-              </p>
-              <Button variant="outline" className="mb-8" disabled>
-                Coming Soon To Android
-              </Button>
-              <div className="bg-gray-100 rounded-2xl p-8 flex items-center justify-center">
-                <div className="text-6xl">📱</div>
-              </div>
-            </div>
-
-            {/* iOS & iPadOS */}
-            <div className="text-center">
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">iOS & iPadOS</h3>
-              <p className="text-gray-600 mb-6">
-                Connect with your fitness friends no matter what platform you prefer.
-              </p>
-              <Button variant="outline" className="mb-8" disabled>
-                Coming Soon To iOS
-              </Button>
-              <div className="bg-gray-100 rounded-2xl p-8 flex items-center justify-center">
-                <div className="text-6xl">📱</div>
-              </div>
-            </div>
-          </div>
+      {/* Final CTA */}
+      <section className="py-24 bg-foreground text-primary-foreground">
+        <div className="container mx-auto px-4 max-w-3xl text-center space-y-8">
+          <h2 className="text-4xl md:text-5xl font-extrabold leading-tight">
+            You've read this far.<br />
+            <span className="text-primary">That means something.</span>
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-xl mx-auto">
+            You're not looking for another app. You're looking for a reason to keep going. Let us be that reason.
+          </p>
+          <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shadow-lg text-lg px-10 py-7 font-bold" asChild>
+            <Link to="/auth">
+              <Rocket className="w-5 h-5" />
+              Get Early Access (Free)
+            </Link>
+          </Button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-foreground border-t border-border/10 text-primary-foreground py-12">
         <div className="container mx-auto px-4 text-center">
-          <FitnessLogo className="justify-center mb-6" textColor="text-white" />
-          <p className="text-gray-400 mb-6">
+          <FitnessLogo className="justify-center mb-6" textColor="text-primary-foreground" />
+          <p className="text-muted-foreground mb-6">
             Because the strongest version of you shouldn't have to go it alone.
           </p>
           <div className="flex justify-center gap-6 mb-6 text-sm">
-            <Link to="/support" className="text-gray-400 hover:text-white transition-colors">
-              Support
-            </Link>
-            <a href="#faq" className="text-gray-400 hover:text-white transition-colors">
-              FAQ
-            </a>
-            <a href="mailto:support@fitnessfriends.app" className="text-gray-400 hover:text-white transition-colors">
-              Contact
-            </a>
+            <Link to="/support" className="text-muted-foreground hover:text-primary-foreground transition-colors">Support</Link>
+            <a href="#faq" className="text-muted-foreground hover:text-primary-foreground transition-colors">FAQ</a>
+            <a href="mailto:support@fitnessfriends.app" className="text-muted-foreground hover:text-primary-foreground transition-colors">Contact</a>
           </div>
-          <Button size="lg" className="bg-[#4169E1] hover:bg-[#3159D1] text-white gap-2" asChild>
-            <Link to="/auth">
-              <Rocket className="w-5 h-5" />
-              Join Beta
-            </Link>
-          </Button>
+          <p className="text-sm text-muted-foreground/50">© 2026 Fitness Friends. All rights reserved.</p>
         </div>
       </footer>
     </div>
