@@ -13,7 +13,7 @@ import featureGymMap from "@/assets/feature-gym-map.png";
 import featureSchedule from "@/assets/feature-schedule.png";
 import featureWorkouts from "@/assets/feature-workouts.png";
 import featureMessaging from "@/assets/feature-messaging.png";
-import kennyFounder from "/lovable-uploads/deff32ce-7e44-4c1b-8c5f-3e5b49f3b7db.png";
+
 import featureActivity from "@/assets/feature-activity.png";
 
 const Landing = () => {
@@ -285,24 +285,13 @@ const Landing = () => {
 
       {/* Founder Story */}
       <section className="py-24 bg-background">
-        <div className="container mx-auto px-4 max-w-5xl">
+        <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center space-y-8">
             <p className="text-sm uppercase tracking-widest text-primary font-bold">Our Story</p>
             <h2 className="text-4xl md:text-5xl font-extrabold text-foreground">
               Built by someone who lives it
             </h2>
-          </div>
-          <div className="mt-12 flex flex-col md:flex-row items-center gap-10">
-            <div className="flex-shrink-0">
-              <img
-                src={kennyFounder}
-                alt="Kenny Rogers, IFBB Pro & Founder of Fitness Friends"
-                className="w-64 h-64 md:w-80 md:h-80 rounded-2xl object-cover shadow-xl border-4 border-primary/20"
-              />
-              <p className="text-foreground font-bold text-lg text-center mt-4">Kenny Rogers</p>
-              <p className="text-primary font-semibold text-sm text-center">IFBB Pro & Founder</p>
-            </div>
-            <div className="text-left space-y-5 text-lg text-muted-foreground leading-relaxed">
+            <div className="text-left space-y-6 text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
               <p>
                 I've dedicated my life to fitness — not just as a sport, but as a lifestyle. I'm a husband, a father, and a working professional, and I know how quickly life can pull you in a dozen directions at once.
               </p>
@@ -319,6 +308,7 @@ const Landing = () => {
                 I built Fitness Friends because I wanted a solution for me — and for anyone else out there who's juggling life, family, work, and fitness. This platform exists so you don't have to go it alone anymore.
               </p>
             </div>
+            <p className="text-foreground font-bold text-xl">— Kenny Rogers, IFBB Pro & Founder</p>
           </div>
         </div>
       </section>
