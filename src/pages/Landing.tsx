@@ -288,23 +288,29 @@ const Landing = () => {
           <div className="text-center space-y-8">
             <p className="text-sm uppercase tracking-widest text-primary font-bold">Our Story</p>
             <h2 className="text-4xl md:text-5xl font-extrabold text-foreground">
-              Built by someone who gets it
+              Built by someone who lives it
             </h2>
             <div className="text-left space-y-6 text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
               <p>
-                I built Fitness Friends because I was tired of starting over. Every January, I'd sign up for a gym, buy the supplements, download the tracker apps — and by February, I was back on the couch.
+                I've dedicated my life to fitness — not just as a sport, but as a lifestyle. I'm a husband, a father, and a working professional, and I know how quickly life can pull you in a dozen directions at once.
               </p>
               <p>
-                Then one day, a coworker asked me to be their gym partner. Something clicked. I didn't want to let them down. <span className="text-foreground font-semibold">For the first time in my life, I showed up consistently — not because I was motivated, but because someone was counting on me.</span>
+                Training isn't just a hobby for me — it's part of who I am. It's what keeps me disciplined, focused, and ready to take on everything life throws my way. But even with years in the gym, stage prep, and competition experience as an IFBB Pro bodybuilder, <span className="text-foreground font-semibold">there's one thing I've never been able to master: consistency with a workout partner.</span>
               </p>
               <p>
-                That's when I realized: the fitness industry has it backwards. We don't need more programs. We don't need more motivation. <span className="text-foreground font-semibold">We need more people in our corner.</span>
+                Every week looks different. Between family time, client sessions, travel, work obligations, and raising kids, most schedules never align perfectly. I've had lots of training partners over the years… but they've always come and gone because life got in the way.
               </p>
               <p>
-                Fitness Friends exists to give everyone what I found — a partner who makes you want to show up.
+                What I realized is that <span className="text-foreground font-semibold">motivation is fragile — consistency isn't. Motivation comes from within, but consistency comes from accountability.</span> When you have someone counting on you, someone you don't want to let down — that's what gets you out the door on the days where life is loudest.
+              </p>
+              <p>
+                But here's the problem: <span className="text-foreground font-semibold">there's no easy way to find someone who's as committed as you are, with a schedule that actually matches yours.</span>
+              </p>
+              <p>
+                I built Fitness Friends because I wanted a solution for me — and for anyone else out there who's juggling life, family, work, and fitness, and still wants to be the best version of themselves. This platform exists so you don't have to go it alone anymore.
               </p>
             </div>
-            <p className="text-foreground font-bold text-xl">— Kenny, Founder</p>
+            <p className="text-foreground font-bold text-xl">— Kenny Rogers, IFBB Pro & Founder</p>
           </div>
         </div>
       </section>
