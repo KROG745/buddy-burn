@@ -12,6 +12,7 @@ import AchievementsDisplay from "@/components/AchievementsDisplay";
 import Navigation from "@/components/Navigation";
 import ConversationsList from "@/components/ConversationsList";
 import AchievementNotification from "@/components/AchievementNotification";
+import WorkoutVolumeChart from "@/components/WorkoutVolumeChart";
 import { useAchievementSystem } from "@/hooks/useAchievementSystem";
 
 const Index = () => {
@@ -109,6 +110,9 @@ const Index = () => {
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-4">Your Progress</h2>
           <StatsOverview />
+          <div className="mt-6">
+            <WorkoutVolumeChart />
+          </div>
         </section>
 
         {/* Quick Actions */}
