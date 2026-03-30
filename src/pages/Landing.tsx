@@ -412,9 +412,11 @@ const Landing = () => {
           <p className="text-muted-foreground mb-6">
             Because the strongest version of you shouldn't have to go it alone.
           </p>
-          <div className="flex justify-center gap-6 mb-6 text-sm">
+          <div className="flex justify-center gap-6 mb-6 text-sm flex-wrap">
             <Link to="/support" className="text-muted-foreground hover:text-primary-foreground transition-colors">Support</Link>
             <a href="#faq" className="text-muted-foreground hover:text-primary-foreground transition-colors">FAQ</a>
+            <Link to="/terms" className="text-muted-foreground hover:text-primary-foreground transition-colors">Terms of Service</Link>
+            <Link to="/privacy" className="text-muted-foreground hover:text-primary-foreground transition-colors">Privacy Policy</Link>
             <a href="mailto:support@fitnessfriends.app" className="text-muted-foreground hover:text-primary-foreground transition-colors">Contact</a>
           </div>
           <p className="text-sm text-muted-foreground/50">© 2026 Fitness Friends. All rights reserved.</p>
