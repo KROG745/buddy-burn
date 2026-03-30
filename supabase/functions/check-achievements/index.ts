@@ -68,6 +68,14 @@ Deno.serve(async (req) => {
       throw new Error('Not authenticated');
     }
 
+    // Rate limit per user
+    if (isRateLimited(user.id)) {
+      return new Response(
+        JSON.stringify({ error: 'Too many requests. Please try again later.' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 429 }
+      );
+    }
+
     console.log('Checking achievements for user:', user.id);
 
     // Get user stats using client (respects RLS - user can only see their own)
