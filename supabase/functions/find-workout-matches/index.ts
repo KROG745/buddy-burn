@@ -51,6 +51,14 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Rate limit per user
+    if (isRateLimited(user.id)) {
+      return new Response(JSON.stringify({ error: "Too many requests. Please try again later." }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { workout_type, location, date } = await req.json();
     const adminClient = createClient(supabaseUrl, supabaseServiceKey);
 

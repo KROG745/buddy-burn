@@ -84,6 +84,14 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Honeypot check - bots will fill this hidden field
+    if (honeypot) {
+      // Silently reject bot submissions
+      toast({ title: "Success", description: "Check your email to confirm your account" });
+      return;
+    }
+    
     setLoading(true);
 
     try {
