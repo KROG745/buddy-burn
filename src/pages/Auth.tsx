@@ -25,6 +25,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [honeypot, setHoneypot] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -83,6 +84,14 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Honeypot check - bots will fill this hidden field
+    if (honeypot) {
+      // Silently reject bot submissions
+      toast({ title: "Success", description: "Check your email to confirm your account" });
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -212,6 +221,18 @@ const Auth = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       minLength={8}
+                    />
+                  </div>
+                  {/* Honeypot field - invisible to users, bots will fill it */}
+                  <div className="absolute opacity-0 pointer-events-none h-0 overflow-hidden" aria-hidden="true" tabIndex={-1}>
+                    <Label htmlFor="signup-website">Website</Label>
+                    <Input
+                      id="signup-website"
+                      type="text"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                      autoComplete="off"
+                      tabIndex={-1}
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
