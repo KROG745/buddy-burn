@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import FitnessLogo from "@/components/FitnessLogo";
+import { Link } from "react-router-dom";
 import { z } from "zod";
 
 const signInSchema = z.object({
@@ -234,6 +235,19 @@ const Auth = () => {
                       autoComplete="off"
                       tabIndex={-1}
                     />
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <input
+                      type="checkbox"
+                      id="health-disclaimer"
+                      required
+                      className="mt-1 h-4 w-4 rounded border-border"
+                    />
+                    <Label htmlFor="health-disclaimer" className="text-xs text-muted-foreground leading-tight">
+                      I acknowledge that I should consult a physician before starting any exercise program. I understand that Fitness Friends does not provide medical advice and I assume full responsibility for any risks associated with physical activity. I agree to the{" "}
+                      <Link to="/terms" className="text-primary hover:underline">Terms of Service</Link> and{" "}
+                      <Link to="/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
+                    </Label>
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? "Signing up..." : "Sign Up"}

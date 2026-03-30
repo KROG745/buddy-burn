@@ -14,6 +14,8 @@ import Schedule from "./pages/Schedule";
 import Profile from "./pages/Profile";
 import FAQ from "./pages/FAQ";
 import Support from "./pages/Support";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 import AchievementDemo from "./pages/AchievementDemo";
 
@@ -37,6 +39,8 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/support" element={<Support />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/achievement-demo" element={<AchievementDemo />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
