@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import Navigation from "@/components/Navigation";
+import DeleteAccountDialog from "@/components/DeleteAccountDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -443,6 +444,15 @@ const Profile = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Danger Zone */}
+        <Card className="p-6 border-destructive/30 bg-destructive/5 mt-6">
+          <h3 className="text-lg font-semibold text-destructive mb-2">Danger Zone</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Once you delete your account, there is no going back. Please be certain.
+          </p>
+          <DeleteAccountDialog />
+        </Card>
       </main>
       
       {/* Navigation */}
