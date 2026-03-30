@@ -223,6 +223,18 @@ const Auth = () => {
                       minLength={8}
                     />
                   </div>
+                  {/* Honeypot field - invisible to users, bots will fill it */}
+                  <div className="absolute opacity-0 pointer-events-none h-0 overflow-hidden" aria-hidden="true" tabIndex={-1}>
+                    <Label htmlFor="signup-website">Website</Label>
+                    <Input
+                      id="signup-website"
+                      type="text"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                      autoComplete="off"
+                      tabIndex={-1}
+                    />
+                  </div>
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? "Signing up..." : "Sign Up"}
                   </Button>
