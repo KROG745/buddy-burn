@@ -1,0 +1,11 @@
+REVOKE SELECT ON public.achievements FROM anon;
+REVOKE SELECT ON public.blocked_users FROM anon;
+REVOKE SELECT ON public.friend_requests FROM anon;
+REVOKE SELECT ON public.friends FROM anon;
+REVOKE SELECT ON public.notifications FROM anon;
+REVOKE SELECT ON public.profiles FROM anon;
+REVOKE SELECT ON public.scheduled_workouts FROM anon;
+REVOKE SELECT ON public.user_achievement_progress FROM anon;
+REVOKE SELECT ON public.user_reports FROM anon;
+REVOKE SELECT ON public.user_stats FROM anon;
+REVOKE SELECT ON public.workout_shares FROM anon;
