@@ -1,17 +1,21 @@
 -- Seed script for Apple App Store Review Test Account
--- Email: applereviewer@buddy-burn.app
--- Password: AppleReview2026!
--- 
+--
+-- SECURITY: Do NOT commit the reviewer email, password, or account UUID here.
+-- Store these credentials in a private secrets manager (e.g. 1Password or
+-- Supabase Vault) and reference them by name only.
+--
 -- INSTRUCTIONS:
--- 1. First create the user in Supabase Auth Dashboard with the credentials above
--- 2. Copy the user's UUID from the Auth dashboard
--- 3. Replace 'APPLE_REVIEWER_USER_ID' below with that UUID
--- 4. Run this script in the Supabase SQL Editor
+-- 1. Create the reviewer user in the Supabase Auth Dashboard using a freshly
+--    generated one-time password (do not reuse or commit it).
+-- 2. Copy the user's UUID from the Auth dashboard.
+-- 3. Set the REVIEWER_USER_ID environment / session value below before running.
+-- 4. Run this script in the Supabase SQL Editor.
 
--- Set the reviewer's user ID here (get this from Auth dashboard after creating the user)
+-- Set the reviewer's user ID here (paste from the Auth dashboard at run time;
+-- do not commit a real UUID back to source control).
 DO $$
 DECLARE
-  reviewer_id UUID := '4317ecfa-6f3d-433a-80e8-d8a377752313'; -- Apple reviewer UUID
+  reviewer_id UUID := '00000000-0000-0000-0000-000000000000'; -- REPLACE at run time, do not commit
   demo_friend_1 UUID := gen_random_uuid();
   demo_friend_2 UUID := gen_random_uuid();
   demo_friend_3 UUID := gen_random_uuid();
